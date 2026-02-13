@@ -1,0 +1,5 @@
+Only for assest such as music, sounds, images, ....
+
+e.g for icons:
+   icons/
+      welcome.svg

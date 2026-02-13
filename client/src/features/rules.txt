@@ -1,0 +1,9 @@
+Only for features (CAREFUL WITH THE ORAGNIZATION)
+
+e.g for the auth feature:
+
+auth/
+   ├── components/
+   ├── pages/
+   ├── hooks/
+   ├── services.ts
