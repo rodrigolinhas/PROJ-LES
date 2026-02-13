@@ -1,0 +1,1 @@
+Only for css files, e.g: variables.css, theme.css

@@ -1,0 +1,9 @@
+Only for code that is shared bettewn features (CAREFUL WITH THE ORAGNIZATION)
+
+e.g:
+
+   ├── components/
+   ├── hooks/
+   ├── utils/
+   ├── types/
+   └── constants/
