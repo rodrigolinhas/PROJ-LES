@@ -1,0 +1,25 @@
+basePath: /
+host: localhost:8080
+info:
+  contact: {}
+  description: Local Scientific Event Manager System
+  title: Scientific Event Manager API
+  version: "0.1"
+paths:
+  /ping:
+    get:
+      description: Return "ping" and log the time in the DB
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Example ping endpoint
+      tags:
+      - Dev
+swagger: "2.0"
+tags:
+- description: Endpoints only available for development purposes
+  name: Dev
