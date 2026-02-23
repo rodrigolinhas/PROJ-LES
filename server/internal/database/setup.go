@@ -2,8 +2,9 @@ package database
 
 import (
 	"fmt"
-	"gorm.io/gorm"
+
 	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 
 	"LES/server/internal/models"
 )
@@ -11,9 +12,9 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	database, err := gorm.Open(sqlite.Open("dev.db"), &gorm.Config{}) 
+	database, err := gorm.Open(sqlite.Open("dev.db"), &gorm.Config{})
 	if err != nil {
-		panic("Can't connect to database!")
+		panic("Can't connect to database! " + err.Error())
 	}
 
 	// Migrate tables
