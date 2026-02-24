@@ -1,6 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import App from './App';
+import './index.css'
 
+/*
 // Since there are no other components, we define a simple App here
 // You can move this to src/app/App.tsx later
 function App() {
@@ -11,6 +14,7 @@ function App() {
         </div>
     )
 }
+*/
 
 const root = document.getElementById('root')
 
