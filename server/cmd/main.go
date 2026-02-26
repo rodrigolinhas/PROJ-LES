@@ -35,6 +35,9 @@ func setEndpoints(router *gin.Engine) {
 	//example endpoint
 	router.GET("/ping", api.ExampleAPIMethod)
 
+	//auth
+	router.POST("/user/register", api.UserRegister)
+
 	// swagger handler
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swagfiles.Handler))
 }

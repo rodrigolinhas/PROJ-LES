@@ -2,8 +2,10 @@ package models
 
 import (
 	"errors"
-	"gorm.io/gorm"
+	"fmt"
 	"regexp"
+
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -13,26 +15,33 @@ type User struct {
 	Role			Role   	`gorm:"not null"`
 	Email 			string 	`gorm:"uniqueIndex;not null"`
 	HashedPassword	string 	`gorm:"not null"`
+	SessionToken 	string
+	CSRFToken		string
 }
 
 type Role uint
 
 const (
-	Invalid Role = iota
+	None Role = iota
 	Student
 	Professor
 	EventOrganizer
 )
 
-var EmailRegex string = "/ ^((?!\\.)[\\w\\-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$ / gm"
+//TODO: usar um regex melhor
+var EmailRegex string = `^\S+@\S+\.\S+$`
 
-func NewUser(firstName string, lastName string, role Role, email string, hashedPass string) (*User, error) {
+//TODO: TEST
+func NewUser(firstName string, lastName string, role string, email string, hashedPass string) (*User, error) {
 	if(firstName == "" || lastName == "") {
 		return nil, errors.New("NewUser: Empty Name")
 	}
 
-	ok, _ := regexp.MatchString(EmailRegex, email)
+	ok, err := regexp.MatchString(EmailRegex, email)
 	if(!ok) {
+		if(err != nil) {
+			fmt.Println(err.Error())
+		}
 		return nil, errors.New("NewUser: Email doesnt match regex")
 	}
 
@@ -40,10 +49,24 @@ func NewUser(firstName string, lastName string, role Role, email string, hashedP
 		return nil, errors.New("NewUser: Empty Password")
 	}
 
+	var roleEnum Role = None
+	switch(role) {
+		case "none":
+			roleEnum = None
+		case "student":
+			roleEnum = Student
+		case "professor":
+			roleEnum = Professor
+		case "event_organizer":
+			roleEnum = EventOrganizer
+		default:
+			return nil, errors.New("NewUser: Invalid Role")
+	}
+
 	user := User{
 		FirstName: firstName,
 		LastName: lastName,
-		Role: role,
+		Role: roleEnum,
 		Email: email,
 		HashedPassword: hashedPass,
 	}

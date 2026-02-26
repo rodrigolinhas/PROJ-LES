@@ -18,7 +18,7 @@ func ConnectDB() {
 	}
 
 	// Migrate tables
-	err = database.AutoMigrate(&models.Ping{})
+	err = database.AutoMigrate(&models.Ping{}, &models.User{})
 	if err != nil {
 		fmt.Println("Failed to migrate: Ping")
 	}
