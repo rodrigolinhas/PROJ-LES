@@ -8,11 +8,11 @@ import (
 
 type User struct {
 	gorm.Model
-	FirstName	string 	`gorm:"not null"`
-	LastName	string 	`gorm:"not null"`
-	Role		Role   	`gorm:"not null"`
-	Email 		string 	`gorm:"uniqueIndex;not null"`
-	Password	string 	`gorm:"not null"`
+	FirstName		string 	`gorm:"not null"`
+	LastName		string 	`gorm:"not null"`
+	Role			Role   	`gorm:"not null"`
+	Email 			string 	`gorm:"uniqueIndex;not null"`
+	HashedPassword	string 	`gorm:"not null"`
 }
 
 type Role uint
@@ -26,7 +26,7 @@ const (
 
 var EmailRegex string = "/ ^((?!\\.)[\\w\\-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$ / gm"
 
-func NewUser(firstName string, lastName string, role Role, email string, encryptedPass string) (*User, error) {
+func NewUser(firstName string, lastName string, role Role, email string, hashedPass string) (*User, error) {
 	if(firstName == "" || lastName == "") {
 		return nil, errors.New("NewUser: Empty Name")
 	}
@@ -36,7 +36,7 @@ func NewUser(firstName string, lastName string, role Role, email string, encrypt
 		return nil, errors.New("NewUser: Email doesnt match regex")
 	}
 
-	if(encryptedPass == "") {
+	if(hashedPass == "") {
 		return nil, errors.New("NewUser: Empty Password")
 	}
 
@@ -45,7 +45,7 @@ func NewUser(firstName string, lastName string, role Role, email string, encrypt
 		LastName: lastName,
 		Role: role,
 		Email: email,
-		Password: encryptedPass,
+		HashedPassword: hashedPass,
 	}
 	return &user, nil
 }
