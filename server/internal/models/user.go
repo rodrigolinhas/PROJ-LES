@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -33,6 +34,10 @@ var EmailRegex string = `^\S+@\S+\.\S+$`
 
 //TODO: TEST
 func NewUser(firstName string, lastName string, role string, email string, hashedPass string) (*User, error) {
+	firstName = strings.TrimSpace(firstName)
+	lastName = strings.TrimSpace(lastName)
+	email = strings.TrimSpace(email)
+
 	if(firstName == "" || lastName == "") {
 		return nil, errors.New("NewUser: Empty Name")
 	}
@@ -45,8 +50,8 @@ func NewUser(firstName string, lastName string, role string, email string, hashe
 		return nil, errors.New("NewUser: Email doesnt match regex")
 	}
 
-	if(hashedPass == "") {
-		return nil, errors.New("NewUser: Empty Password")
+	if(len(hashedPass) < 59) {
+		return nil, errors.New("NewUser: Hashed Password is too short")
 	}
 
 	var roleEnum Role = None

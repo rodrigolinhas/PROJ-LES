@@ -75,7 +75,7 @@
                     {
                         "minLength": 8,
                         "type": "string",
-                        "description": "User's plain password",
+                        "description": "User's plain password (must be at least 8 characters long)",
                         "name": "pass",
                         "in": "formData",
                         "required": true

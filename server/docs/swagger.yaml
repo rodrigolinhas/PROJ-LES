@@ -45,7 +45,7 @@ paths:
         name: email
         required: true
         type: string
-      - description: User's plain password
+      - description: User's plain password (must be at least 8 characters long)
         in: formData
         minLength: 8
         name: pass

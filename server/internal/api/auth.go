@@ -22,7 +22,7 @@ import (
 // @Param 		lastName	formData	string	true	"User's last name"
 // @Param 		role		formData	string	true	"User's role (must be a valid role)"
 // @Param 		email		formData	string	true	"User's email"
-// @Param 		pass		formData	string	true	"User's plain password"	minlength(8)
+// @Param 		pass		formData	string	true	"User's plain password (must be at least 8 characters long)"	minlength(8)
 // @Success 	201 {object} string "User registered successfully"
 // @Failure		406 {object} string "Error found on the form params"
 // @Failure		500 {object} string "Error found on user registration"
