@@ -87,3 +87,12 @@ func TestNewUser7(t *testing.T) {
 	assert.Nil(t, user)
 	assert.NotNil(t, err)
 }
+
+func TestFullName(t *testing.T) {
+	var fname = "Jake"
+	var lname = "Felix"
+	var role = "student"
+	var email = "jfelix@gmail.com"
+	user, _ := NewUser(fname, lname, role, email, examplePass)
+	assert.Equal(t, "Jake Felix", user.FullName())
+}
