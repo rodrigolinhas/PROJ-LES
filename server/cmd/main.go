@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/gin-gonic/gin"
+    "github.com/gin-gonic/gin"
 	swagfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	"LES/server/docs"
-	"LES/server/internal/api"
 	db "LES/server/internal/database"
+	"LES/server/internal/api"
+	"LES/server/docs"
 )
 
 // @title Scientific Event Manager API
@@ -27,9 +26,9 @@ func main() {
 
 	docs.SwaggerInfo.BasePath = "/"
 
-	router := gin.Default()
-	setEndpoints(router)
-	router.Run()
+    router := gin.Default()
+    setEndpoints(router)
+    router.Run()
 }
 
 func setEndpoints(router *gin.Engine) {
