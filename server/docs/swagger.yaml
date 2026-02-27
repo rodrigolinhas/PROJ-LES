@@ -19,7 +19,62 @@ paths:
       summary: Example ping endpoint
       tags:
       - Dev
+  /user/register:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Registers an user on the DB
+      parameters:
+      - description: User's first name
+        in: formData
+        name: firstName
+        required: true
+        type: string
+      - description: User's last name
+        in: formData
+        name: lastName
+        required: true
+        type: string
+      - description: User's role (must be a valid role)
+        in: formData
+        name: role
+        required: true
+        type: string
+      - description: User's email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: User's plain password
+        in: formData
+        minLength: 8
+        name: pass
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "201":
+          description: User registered successfully
+          schema:
+            type: string
+        "406":
+          description: Error found on the form params
+          schema:
+            type: string
+        "500":
+          description: Error found on user registration
+          schema:
+            type: string
+      summary: User registration
+      tags:
+      - User
+      - Auth
 swagger: "2.0"
 tags:
 - description: Endpoints only available for development purposes
   name: Dev
+- description: Endpoints related with user account management
+  name: User
+- description: Endpoints related with user authentication
+  name: Auth

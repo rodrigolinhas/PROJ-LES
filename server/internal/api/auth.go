@@ -11,8 +11,22 @@ import (
 	"LES/server/internal/utils"
 )
 
-//TODO: DOC
 //TODO: TEST
+// UserRegister
+// @Summary 	User registration
+// @Description Registers an user on the DB
+// @Tags 		User, Auth
+// @Accept		mpfd
+// @Produce 	plain
+// @Param 		firstName	formData	string	true	"User's first name"
+// @Param 		lastName	formData	string	true	"User's last name"
+// @Param 		role		formData	string	true	"User's role (must be a valid role)"
+// @Param 		email		formData	string	true	"User's email"
+// @Param 		pass		formData	string	true	"User's plain password"	minlength(8)
+// @Success 	201 {object} string "User registered successfully"
+// @Failure		406 {object} string "Error found on the form params"
+// @Failure		500 {object} string "Error found on user registration"
+// @Router 		/user/register [post]
 func UserRegister(c *gin.Context) {
 	fName := c.Request.FormValue("firstName")
 	lName := c.Request.FormValue("lastName")
@@ -34,7 +48,7 @@ func UserRegister(c *gin.Context) {
 	user, userErr := models.NewUser(fName, lName, role, email, hashedPass)
 	if(userErr != nil) {
 		fmt.Println(userErr.Error())
-		c.String(http.StatusInternalServerError, "Error found during user model creation")
+		c.String(http.StatusNotAcceptable, "Error found during user model creation")
 		return
 	}
 
