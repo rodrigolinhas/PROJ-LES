@@ -11,7 +11,6 @@ import (
 	"LES/server/internal/utils"
 )
 
-//TODO: TEST
 // UserRegister
 // @Summary 	User registration
 // @Description Registers an user on the DB
