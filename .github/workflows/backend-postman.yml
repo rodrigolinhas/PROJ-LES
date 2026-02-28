@@ -2,9 +2,9 @@ name: Backend run + Postman Tests
 
 on:
   push:
-    branches: ["main", "develop", "postman"]
+    branches: ["main", "postman"]
   pull_request:
-    branches: ["main", "develop"]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -30,26 +30,26 @@ jobs:
           echo "PORT env (se existir):"
           echo "${PORT:-<not set>}"
 
-          #garantir q esta a usar a port 8080
+          #make sure that are using port 8080
           export PORT=8080
 
           go mod download
 
-          #arranca o backend
+          #start the backend
           nohup go run ./cmd > server.log 2>&1 &
           echo $! > server.pid
 
           echo "Backend PID: $(cat server.pid)"
           sleep 2
 
-          #exibir as primeiras linhas do log para ver se ha erro no start do server
+          #display the first lines of the log to see if there is an error when starting the server
           echo "=== server.log (primeiras linhas) ==="
           sed -n '1,120p' server.log || true
 
-          echo "=== processos Go (debug) ==="
+          echo "=== (debug) ==="
           ps aux | grep -E "go run|cmd/main.go" | grep -v grep || true
 
-          echo "=== portas abertas (debug) ==="
+          echo "=== open ports (debug) ==="
           ss -ltnp | head -200 || true
 
       - name: Wait for backend
