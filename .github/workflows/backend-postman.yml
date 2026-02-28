@@ -27,7 +27,7 @@ jobs:
           echo "Go version:"
           go version
 
-          echo "PORT env (se existir):"
+          echo "PORT env (if exits):"
           echo "${PORT:-<not set>}"
 
           #make sure that are using port 8080
