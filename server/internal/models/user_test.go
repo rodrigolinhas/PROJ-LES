@@ -1,3 +1,7 @@
+/*
+user_test.go defines the automated tests to confirm the behavior,
+initialization, and validation logic of the User model.
+*/
 package models
 
 import (
@@ -7,6 +11,27 @@ import (
 )
 
 var examplePass = "$2a$10$7yMENToziU425C8qLoBAJ.WNnTIcysarw/y./qLr1Je8uGC8NsF4m"
+
+func TestNewUser(t *testing.T) {
+	fname := "Test"
+	lname := "Example"
+	email := "test@example.com"
+	role := "event_organizer"
+
+	var result, _ = NewUser(fname, lname, role, email, examplePass) // function for testing
+
+	assert.NotNil(t, result)
+
+	// fields
+	assert.Equal(t, email, result.Email)
+
+	// defaults
+	assert.Equal(t, EventOrganizer, result.Role)
+	assert.False(t, result.Verified)
+
+	// INFO: It's impossible to validate time, since GORM only initializes it,
+	//		 when it is added to the DB.
+}
 
 func TestNewUser1(t *testing.T) {
 	var fname = "Jake"

@@ -1,3 +1,9 @@
+/*
+user.go defines the database table and structural model for users in the system.
+It includes the User struct, initialization functions, and validation logic
+for user attributes like email and role.
+*/
+
 package models
 
 import (
@@ -9,12 +15,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// User represents a system user and maps to the underlying database table.
+// It includes authentication details, role-based access control flags, and timestamps.
 type User struct {
-	gorm.Model
+	gorm.Model		//gorm.Model already includes the following fields: ID, CreatedAt, UpdatedAt, DeletedAt
 	FirstName		string 	`gorm:"not null"`
 	LastName		string 	`gorm:"not null"`
-	Role			Role   	`gorm:"not null"`
+	Role			Role   	`gorm:"not null;default:0"`
 	Email 			string 	`gorm:"uniqueIndex;not null"`
+	Verified  		bool    `gorm:"not null;default:false"`
 	HashedPassword	string 	`gorm:"not null"`
 	SessionToken 	string
 	CSRFToken		string
@@ -29,8 +38,30 @@ const (
 	EventOrganizer
 )
 
+// INFO: Change keys based on frontend form
+var RoleMap = map[string]Role {
+	"none": None,
+	"student": Student,
+	"professor": Professor,
+	"event_organizer": EventOrganizer,
+}
+
 var EmailRegex string = `(?:[a-z0-9!#$%&'*+/=?^_` + "`" + `{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_` + "`" + `{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])`
 
+// NewUser creates and returns a new User instance.
+// It initializes the User struct and runs validations on the parameters.
+//
+// Parameters:
+//
+//  firstName:	The user's first name;
+//  lastName: 	The user's last name;
+//	role:  		The user's assigned role as a string (must be a valid Role, as per the Role type);
+//	email: 		The user's email address (must be a valid format);
+//	hashedPass: The user's already hashed password.
+//
+// Returns:
+//
+//	A pointer to the created User, or an error if validation fails.
 func NewUser(firstName string, lastName string, role string, email string, hashedPass string) (*User, error) {
 	firstName = strings.TrimSpace(firstName)
 	lastName = strings.TrimSpace(lastName)
@@ -52,17 +83,8 @@ func NewUser(firstName string, lastName string, role string, email string, hashe
 		return nil, errors.New("NewUser: Hashed Password is too short")
 	}
 
-	var roleEnum Role = None
-	switch(role) {
-		case "none":
-			roleEnum = None
-		case "student":
-			roleEnum = Student
-		case "professor":
-			roleEnum = Professor
-		case "event_organizer":
-			roleEnum = EventOrganizer
-		default:
+	roleEnum, valid := RoleMap[role]
+	if(!valid) {
 			return nil, errors.New("NewUser: Invalid Role")
 	}
 
@@ -71,6 +93,7 @@ func NewUser(firstName string, lastName string, role string, email string, hashe
 		LastName: lastName,
 		Role: roleEnum,
 		Email: email,
+		Verified: false,
 		HashedPassword: hashedPass,
 	}
 	return &user, nil
