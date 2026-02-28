@@ -1,0 +1,108 @@
+name: Backend run + Postman Tests
+
+on:
+  push:
+    branches: ["main", "postman"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+
+      #1) start backend (server)
+      - name: Start backend
+        working-directory: server
+        run: |
+          echo "Go version:"
+          go version
+
+          echo "PORT env (if exits):"
+          echo "${PORT:-<not set>}"
+
+          #make sure that are using port 8080
+          export PORT=8080
+
+          go mod download
+
+          #start the backend
+          nohup go run ./cmd > server.log 2>&1 &
+          echo $! > server.pid
+
+          echo "Backend PID: $(cat server.pid)"
+          sleep 2
+
+          #display the first lines of the log to see if there is an error when starting the server
+          echo "=== server.log (primeiras linhas) ==="
+          sed -n '1,120p' server.log || true
+
+          echo "=== (debug) ==="
+          ps aux | grep -E "go run|cmd/main.go" | grep -v grep || true
+
+          echo "=== open ports (debug) ==="
+          ss -ltnp | head -200 || true
+
+      - name: Wait for backend
+        run: |
+          for i in {1..90}; do
+            if curl -fsS http://localhost:8080/ping > /dev/null; then
+              echo "Backend is up!"
+              exit 0
+            fi
+            echo "Waiting for backend... ($i/90)"
+            sleep 2
+          done
+
+          echo "Backend did not start. Logs:"
+          sed -n '1,200p' server/server.log || true
+          echo "PID file:"
+          cat server/server.pid || true
+          echo "ps check:"
+          [ -f server/server.pid ] && ps -p $(cat server/server.pid) -o pid,cmd || true
+          exit 1
+
+      #2) run Postman tests (with Newman)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Newman
+        run: npm install -g newman newman-reporter-htmlextra
+
+      - name: Run Postman (health only)
+        env:
+          BASE_URL: ${{ vars.BASE_URL }}
+        run: |
+          newman run postman/collection.json \
+            -e postman/environment.json \
+            --env-var "baseUrl=$BASE_URL" \
+            --folder "01 - health" \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export newman-report.html
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-artifacts
+          path: |
+            server/server.log
+            newman-report.html
+
+      - name: Stop backend
+        if: always()
+        run: |
+          if [ -f server/server.pid ]; then
+            kill $(cat server/server.pid) || true
+          fi
