@@ -13,6 +13,7 @@ func SetTestRouter() *gin.Engine {
 
 	router := gin.Default() // creates a fake router for testing
 	router.GET("/ping", ExampleAPIMethod)
+	router.POST("/user/register", UserRegister)
 
 	return router
 }

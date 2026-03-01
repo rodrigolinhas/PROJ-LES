@@ -18,6 +18,12 @@ import (
 // @tag.name Dev
 // @tag.description Endpoints only available for development purposes
 
+// @tag.name User
+// @tag.description Endpoints related with user account management
+
+// @tag.name Auth
+// @tag.description Endpoints related with user authentication
+
 // @host localhost:8080
 // @BasePath /
 func main() {
@@ -34,6 +40,9 @@ func main() {
 func setEndpoints(router *gin.Engine) {
 	//example endpoint
 	router.GET("/ping", api.ExampleAPIMethod)
+
+	//auth
+	router.POST("/user/register", api.UserRegister)
 
 	// swagger handler
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swagfiles.Handler))

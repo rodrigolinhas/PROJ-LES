@@ -34,12 +34,94 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/register": {
+            "post": {
+                "description": "Registers an user on the DB",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "User",
+                    "Auth"
+                ],
+                "summary": "User registration",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's first name",
+                        "name": "firstName",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's last name",
+                        "name": "lastName",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's role (must be a valid role)",
+                        "name": "role",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "minLength": 8,
+                        "type": "string",
+                        "description": "User's plain password (must be at least 8 characters long)",
+                        "name": "pass",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "406": {
+                        "description": "Error found on the form params",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found on user registration",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "tags": [
         {
             "description": "Endpoints only available for development purposes",
             "name": "Dev"
+        },
+        {
+            "description": "Endpoints related with user account management",
+            "name": "User"
+        },
+        {
+            "description": "Endpoints related with user authentication",
+            "name": "Auth"
         }
     ]
 }`

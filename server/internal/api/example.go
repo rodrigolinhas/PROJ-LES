@@ -8,7 +8,7 @@ import (
 	"LES/server/internal/models"
 )
 
-// PingExample godoc
+// PingExample
 // @Summary 	Example ping endpoint
 // @Description Return "ping" and log the time in the DB
 // @Tags 		Dev
