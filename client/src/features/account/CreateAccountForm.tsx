@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {Link} from "react-router-dom";
 
 export default function CreateAccountForm() {
     const [name, setName] = useState("");
@@ -84,6 +85,11 @@ export default function CreateAccountForm() {
             />
 
             <button type="submit">Create Account</button>
+
+            <p>
+                Already have an account?{" "}
+                <Link to={"/"}>Login to your account</Link>
+            </p>
 
             <p className = {isError ? "error" : "success"}> {message} </p>
         </form>
