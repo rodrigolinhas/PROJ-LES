@@ -2,13 +2,15 @@ package main
 
 import (
 	"fmt"
-    "github.com/gin-gonic/gin"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	swagfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	db "LES/server/internal/database"
-	"LES/server/internal/api"
 	"LES/server/docs"
+	"LES/server/internal/api"
+	db "LES/server/internal/database"
 )
 
 // @title Scientific Event Manager API
@@ -32,9 +34,15 @@ func main() {
 
 	docs.SwaggerInfo.BasePath = "/"
 
-    router := gin.Default()
-    setEndpoints(router)
-    router.Run()
+	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"POST", "GET", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type"},
+		AllowCredentials: true,
+	}))
+	setEndpoints(router)
+	router.Run()
 }
 
 func setEndpoints(router *gin.Engine) {

@@ -6,7 +6,7 @@ import (
 
 const COST_FACTOR int = 10
 
-func HashPassword(pass string) (string, error) {
-	hashed, err := bcrypt.GenerateFromPassword([]byte(pass), COST_FACTOR)
+func HashPassword(password string) (string, error) {
+	hashed, err := bcrypt.GenerateFromPassword([]byte(password), COST_FACTOR)
 	return string(hashed), err
 }

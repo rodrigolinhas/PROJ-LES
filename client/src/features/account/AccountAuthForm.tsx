@@ -47,7 +47,7 @@ export default function AccountAuthForm() {
 
             <p>
                 Don't have an account?{" "}
-                <Link to={"/register"}>Create Account</Link>
+                <Link to={"user/register"}>Create Account</Link>
             </p>
 
             <p className = {isError ? "error" : "success"}> {message} </p>

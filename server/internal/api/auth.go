@@ -31,28 +31,28 @@ func UserRegister(c *gin.Context) {
 	lName := c.Request.FormValue("lastName")
 	role := c.Request.FormValue("role")
 	email := c.Request.FormValue("email")
-	pass := c.Request.FormValue("pass")
+	password := c.Request.FormValue("password")
 
-	if(len(pass) < 8){
+	if len(password) < 8 {
 		c.String(http.StatusNotAcceptable, "Password smaller than 8 characters")
 		return
 	}
 
-	hashedPass, hashErr := utils.HashPassword(pass)
-	if(hashErr != nil) {
+	hashedPass, hashErr := utils.HashPassword(password)
+	if hashErr != nil {
 		c.String(http.StatusInternalServerError, "Error found during password hashing")
 		return
 	}
 
 	user, userErr := models.NewUser(fName, lName, role, email, hashedPass)
-	if(userErr != nil) {
+	if userErr != nil {
 		fmt.Println(userErr.Error())
 		c.String(http.StatusNotAcceptable, "Error found during user model creation")
 		return
 	}
 
 	res := db.DB.Create(user)
-	if(res.Error != nil) {
+	if res.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found during user registration in the DB")
 		return
 	}
