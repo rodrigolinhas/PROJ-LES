@@ -19,6 +19,45 @@ paths:
       summary: Example ping endpoint
       tags:
       - Dev
+  /user/login:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Authenticates a user and generates session and CSRF tokens
+      parameters:
+      - description: User's email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: User's password
+        in: formData
+        name: pass
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: User login with success
+          schema:
+            type: string
+        "400":
+          description: Missing email or password
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "500":
+          description: Error found during user login
+          schema:
+            type: string
+      summary: User login
+      tags:
+      - User
+      - Auth
   /user/register:
     post:
       consumes:

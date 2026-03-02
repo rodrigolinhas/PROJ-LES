@@ -60,6 +60,19 @@ func UserRegister(c *gin.Context) {
 	c.String(http.StatusCreated, "User registered successfully")
 }
 
+// UserLogin
+// @Summary 	User login
+// @Description Authenticates a user and generates session and CSRF tokens
+// @Tags 		User, Auth
+// @Accept		mpfd
+// @Produce 	plain
+// @Param 		email	formData	string	true	"User's email"
+// @Param 		pass	formData	string	true	"User's password"
+// @Success 	200 {object} string "User login with success"
+// @Failure		400 {object} string "Missing email or password"
+// @Failure		401 {object} string "Invalid credentials"
+// @Failure 	500 {object} string "Error found during user login"
+// @Router 		/user/login [post]
 func UserLogin(c *gin.Context) {
 	email := c.Request.FormValue("email")
 	pass := c.Request.FormValue("pass")
