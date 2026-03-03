@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function AccountAuthForm() {
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [pass, setPass] = useState("");
 
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
@@ -30,8 +30,8 @@ export default function AccountAuthForm() {
             <input
                 type="password"
                 placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={pass}
+                onChange={(e) => setPass(e.target.value)}
                 required
             />
             <button type="submit">Login</button>
