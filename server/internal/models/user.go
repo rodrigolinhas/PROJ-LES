@@ -18,15 +18,15 @@ import (
 // User represents a system user and maps to the underlying database table.
 // It includes authentication details, role-based access control flags, and timestamps.
 type User struct {
-	gorm.Model		//gorm.Model already includes the following fields: ID, CreatedAt, UpdatedAt, DeletedAt
-	FirstName		string 	`gorm:"not null"`
-	LastName		string 	`gorm:"not null"`
-	Role			Role   	`gorm:"not null;default:0"`
-	Email 			string 	`gorm:"uniqueIndex;not null"`
-	Verified  		bool    `gorm:"not null;default:false"`
-	HashedPassword	string 	`gorm:"not null"`
-	SessionToken 	string
-	CSRFToken		string
+	gorm.Model            //gorm.Model already includes the following fields: ID, CreatedAt, UpdatedAt, DeletedAt
+	FirstName      string `gorm:"not null"`
+	LastName       string `gorm:"not null"`
+	Role           Role   `gorm:"not null;default:0"`
+	Email          string `gorm:"uniqueIndex;not null"`
+	Verified       bool   `gorm:"not null;default:false"`
+	HashedPassword string `gorm:"not null"`
+	SessionToken   string
+	CSRFToken      string
 }
 
 type Role uint
@@ -39,11 +39,11 @@ const (
 )
 
 // INFO: Change keys based on frontend form
-var RoleMap = map[string]Role {
-	"none": None,
-	"student": Student,
-	"professor": Professor,
-	"event_organizer": EventOrganizer,
+var RoleMap = map[string]Role{
+	"none":           None,
+	"Student":        Student,
+	"Professor":      Professor,
+	"EventOrganizer": EventOrganizer,
 }
 
 var EmailRegex string = `(?:[a-z0-9!#$%&'*+/=?^_` + "`" + `{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_` + "`" + `{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])`
@@ -53,11 +53,11 @@ var EmailRegex string = `(?:[a-z0-9!#$%&'*+/=?^_` + "`" + `{|}~-]+(?:\.[a-z0-9!#
 //
 // Parameters:
 //
-//  firstName:	The user's first name;
-//  lastName: 	The user's last name;
-//	role:  		The user's assigned role as a string (must be a valid Role, as per the Role type);
-//	email: 		The user's email address (must be a valid format);
-//	hashedPass: The user's already hashed password.
+//	 firstName:	The user's first name;
+//	 lastName: 	The user's last name;
+//		role:  		The user's assigned role as a string (must be a valid Role, as per the Role type);
+//		email: 		The user's email address (must be a valid format);
+//		hashedPass: The user's already hashed password.
 //
 // Returns:
 //
@@ -67,33 +67,33 @@ func NewUser(firstName string, lastName string, role string, email string, hashe
 	lastName = strings.TrimSpace(lastName)
 	email = strings.TrimSpace(email)
 
-	if(firstName == "" || lastName == "") {
+	if firstName == "" || lastName == "" {
 		return nil, errors.New("NewUser: Empty Name")
 	}
 
 	ok, err := regexp.MatchString(EmailRegex, email)
-	if(!ok) {
-		if(err != nil) {
+	if !ok {
+		if err != nil {
 			fmt.Println(err.Error())
 		}
 		return nil, errors.New("NewUser: Email doesnt match regex")
 	}
 
-	if(len(hashedPass) < 59) {
+	if len(hashedPass) < 59 {
 		return nil, errors.New("NewUser: Hashed Password is too short")
 	}
 
 	roleEnum, valid := RoleMap[role]
-	if(!valid) {
-			return nil, errors.New("NewUser: Invalid Role")
+	if !valid {
+		return nil, errors.New("NewUser: Invalid Role")
 	}
 
 	user := User{
-		FirstName: firstName,
-		LastName: lastName,
-		Role: roleEnum,
-		Email: email,
-		Verified: false,
+		FirstName:      firstName,
+		LastName:       lastName,
+		Role:           roleEnum,
+		Email:          email,
+		Verified:       false,
 		HashedPassword: hashedPass,
 	}
 	return &user, nil
