@@ -93,6 +93,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/logout": {
+            "post": {
+                "description": "Logs out the user, clears cookies and resets tokens in DB",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "User",
+                    "Auth"
+                ],
+                "summary": "User logout",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully!",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/register": {
             "post": {
                 "description": "Registers an user on the DB",

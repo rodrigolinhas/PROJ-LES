@@ -58,6 +58,35 @@ paths:
       tags:
       - User
       - Auth
+  /user/logout:
+    post:
+      description: Logs out the user, clears cookies and resets tokens in DB
+      parameters:
+      - description: User's email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Logged out successfully!
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: User logout
+      tags:
+      - User
+      - Auth
   /user/register:
     post:
       consumes:
