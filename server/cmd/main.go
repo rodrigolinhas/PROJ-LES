@@ -44,7 +44,8 @@ func setEndpoints(router *gin.Engine) {
 
 	//auth
 	router.POST("/user/register", api.UserRegister)
-	router.POST("user/login", api.UserLogin)
+	router.POST("/user/login", api.UserLogin)
+	router.POST("/user/logout", api.UserLogout)
 
 	// swagger handler
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swagfiles.Handler))
