@@ -8,8 +8,8 @@ export default function CreateAccountForm() {
     const [role, setRole] = useState("");
 
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordConfirm, setPasswordConfirm] = useState("");
+    const [pass, setPass] = useState("");
+    const [passConfirm, setPassConfirm] = useState("");
 
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
@@ -19,13 +19,13 @@ export default function CreateAccountForm() {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        if (password !== passwordConfirm) {
+        if (pass !== passConfirm) {
             setMessage("Passwords do not match");
             setIsError(true);
             setAccountCreated(false);
             return;
         }
-        else if (password.length < 8) {
+        else if (pass.length < 8) {
             setMessage("Password must have at least 8 characters");
             setIsError(true);
             setAccountCreated(false);
@@ -37,7 +37,7 @@ export default function CreateAccountForm() {
         formData.append("lastName", lastName);
         formData.append("role", role);
         formData.append("email", email);
-        formData.append("password", password);
+        formData.append("pass", pass);
 
         try {
             const response = await fetch("http://localhost:8080/user/register", {
@@ -119,8 +119,8 @@ export default function CreateAccountForm() {
                 <input
                     type="password"
                     placeholder="Password (must be at least 8 characters)"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={pass}
+                    onChange={(e) => setPass(e.target.value)}
                     required
                 />
 
@@ -128,8 +128,8 @@ export default function CreateAccountForm() {
                 <input
                     type="password"
                     placeholder="Confirm Password"
-                    value={passwordConfirm}
-                    onChange={(e) => setPasswordConfirm(e.target.value)}
+                    value={passConfirm}
+                    onChange={(e) => setPassConfirm(e.target.value)}
                     required
                 />
 
