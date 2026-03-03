@@ -32,14 +32,14 @@ func UserRegister(c *gin.Context) {
 	lName := c.Request.FormValue("lastName")
 	role := c.Request.FormValue("role")
 	email := c.Request.FormValue("email")
-	password := c.Request.FormValue("password")
+	pass := c.Request.FormValue("pass")
 
-	if len(password) < 8 {
+	if len(pass) < 8 {
 		c.String(http.StatusNotAcceptable, "Password smaller than 8 characters")
 		return
 	}
 
-	hashedPass, hashErr := utils.HashPassword(password)
+	hashedPass, hashErr := utils.HashPassword(pass)
 	if hashErr != nil {
 		c.String(http.StatusInternalServerError, "Error found during password hashing")
 		return
