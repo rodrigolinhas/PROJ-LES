@@ -45,3 +45,5 @@ sketch
 dev.db
 
 .idea
+
+.env
