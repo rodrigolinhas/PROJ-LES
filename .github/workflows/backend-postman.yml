@@ -87,7 +87,6 @@ jobs:
           newman run postman/collection.json \
             -e postman/environment.json \
             --env-var "baseUrl=$BASE_URL" \
-            --folder "01 - health" \
             --reporters cli,htmlextra \
             --reporter-htmlextra-export newman-report.html
 
