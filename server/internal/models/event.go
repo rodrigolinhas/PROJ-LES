@@ -23,8 +23,22 @@ type Event struct {
 	Closed			bool		`gorm:"not null;default:false"`
 }
 
+// Creates an event model and validates it
 func NewEvent(name string, theme string, desc string, org string, owner User, 
 		      start time.Time, end time.Time, local string, db *gorm.DB) (*Event, error) {
+	e := newEvent(name, theme, desc, org, owner, start, end, local)
+
+	err := e.validate(db)
+	if(err != nil) {
+		return nil, err
+	}
+
+	return e, nil
+}
+
+// Creates an event model without validating it
+func newEvent(name string, theme string, desc string, org string, owner User, 
+		      start time.Time, end time.Time, local string) *Event {
 	e := &Event{ 
 		Name: 			strings.TrimSpace(name), 
 		Theme: 			strings.TrimSpace(theme), 
@@ -38,15 +52,11 @@ func NewEvent(name string, theme string, desc string, org string, owner User,
 		Closed: 		false,
 	}
 
-	err := e.validate(db)
-	if(err != nil) {
-		return nil, err
-	}
-
-	return &Event{}, nil
+	return e
 }
 
-func (e Event) validate(db *gorm.DB) error {
+// Validates every field except the foreign key
+func (e Event) validateFields() error {
 	if(e.Name == "" || e.Theme == "" || e.Description == "") {
 		return errors.New("Event: Empty name/theme/description")
 	}
@@ -55,7 +65,8 @@ func (e Event) validate(db *gorm.DB) error {
 		return errors.New("Event: No organization")
 	}
 
-	if(e.StartDate.IsZero() || e.EndDate.IsZero()) {
+	epoch := time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC)
+	if(e.StartDate.Before(epoch) || e.EndDate.Before(epoch) || e.StartDate.After(e.EndDate)) {
 		return errors.New("Event: Invalid date")	
 	}
 
@@ -63,6 +74,11 @@ func (e Event) validate(db *gorm.DB) error {
 		return errors.New("Event: No location")
 	}
 
+	return nil
+}
+
+// Checks if the user is present in the database and has the proper role
+func (e Event) validateOwner(db *gorm.DB) error {
 	var res User
 	tx := db.Model(e.Organizer).Take(&res)
 	if(tx.Error != nil || tx.RowsAffected != 1) {
@@ -73,4 +89,13 @@ func (e Event) validate(db *gorm.DB) error {
 	}
 
 	return nil
+}
+
+// Validates everything
+func (e Event) validate(db *gorm.DB) error {
+	err := e.validateFields()
+	if err != nil {
+		return err
+	}
+	return e.validateOwner(db)
 }
