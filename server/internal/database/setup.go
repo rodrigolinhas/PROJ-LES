@@ -18,7 +18,12 @@ func ConnectDB() {
 	}
 
 	// Migrate tables
-	err = database.AutoMigrate(&models.Ping{}, &models.User{})
+	err = database.AutoMigrate(
+		&models.Ping{}, 
+		&models.User{}, 
+		&models.Event{},
+	)
+
 	if err != nil {
 		fmt.Println("Failed to migrate tables", err)
 	}
