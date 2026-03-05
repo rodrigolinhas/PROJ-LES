@@ -57,6 +57,65 @@
       "name": "02 - auth",
       "item": [
         {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "firstName",
+                  "value": "{{fName}}",
+                  "type": "text",
+                  "uuid": "93aeec8b-2531-463c-8bce-e7b5ffdf7758"
+                },
+                {
+                  "key": "lastName",
+                  "value": "{{lName}}",
+                  "type": "text",
+                  "uuid": "c86f0f10-882e-4f3a-887d-df780c0fa24e"
+                },
+                {
+                  "key": "role",
+                  "value": "{{role}}",
+                  "type": "text",
+                  "uuid": "f8ea54a5-823a-4263-98bb-ef4a96267dd7"
+                },
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "fe5ac9c4-b217-4b77-b0c2-82df010a5e80"
+                },
+                {
+                  "key": "pass",
+                  "value": "{{password}}",
+                  "type": "text",
+                  "uuid": "3f4f22d5-467c-4f28-b071-0685e27d716d"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "login",
           "event": [
             {
@@ -137,65 +196,6 @@
               "path": [
                 "user",
                 "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "register",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "urlencoded",
-              "urlencoded": [
-                {
-                  "key": "firstName",
-                  "value": "{{fName}}",
-                  "type": "text",
-                  "uuid": "93aeec8b-2531-463c-8bce-e7b5ffdf7758"
-                },
-                {
-                  "key": "lastName",
-                  "value": "{{lName}}",
-                  "type": "text",
-                  "uuid": "c86f0f10-882e-4f3a-887d-df780c0fa24e"
-                },
-                {
-                  "key": "role",
-                  "value": "{{role}}",
-                  "type": "text",
-                  "uuid": "f8ea54a5-823a-4263-98bb-ef4a96267dd7"
-                },
-                {
-                  "key": "email",
-                  "value": "{{email}}",
-                  "type": "text",
-                  "uuid": "fe5ac9c4-b217-4b77-b0c2-82df010a5e80"
-                },
-                {
-                  "key": "pass",
-                  "value": "{{password}}",
-                  "type": "text",
-                  "uuid": "3f4f22d5-467c-4f28-b071-0685e27d716d"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/user/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "user",
-                "register"
               ]
             }
           },
