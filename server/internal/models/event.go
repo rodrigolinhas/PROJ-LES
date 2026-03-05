@@ -3,7 +3,6 @@ package models
 import (
 	"errors"
 	"strings"
-	//"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -81,7 +80,7 @@ func (e Event) validateFields() error {
 // Checks if the user is present in the database and has the proper role
 func (e Event) validateOwner(db *gorm.DB) error {
 	var res User
-	tx := db.Model(e.Organizer).Take(&res)
+	tx := db.Where("id = ?", e.Organizer.ID).Take(&res)
 	if(tx.Error != nil || tx.RowsAffected != 1) {
 		return errors.New("Event: Invalid organizer")
 	}
