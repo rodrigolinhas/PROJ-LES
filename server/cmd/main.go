@@ -26,6 +26,9 @@ import (
 // @tag.name Auth
 // @tag.description Endpoints related with user authentication
 
+// @tag.name Event
+// @tag.description Endpoints related to event management
+
 // @host localhost:8080
 // @BasePath /
 func main() {

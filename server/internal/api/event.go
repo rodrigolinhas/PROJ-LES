@@ -11,8 +11,27 @@ import (
 	"LES/server/internal/models"
 )
 
-//TODO: Documentation
+// EventCreate
+// @Summary 	Create event
+// @Description While the user is logged in, creates an event and registers it in the database
+// @Tags 		Event
+// @Accept		mpfd
+// @Produce 	plain
+// @Param 		email			formData	string	true	"User's email"
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		name			formData	string	true	"Event name"
+// @Param 		theme			formData	string	true	"Event theme"
+// @Param 		description		formData	string	true	"Event description"
+// @Param 		organization	formData	string	true	"Organization responsable for the event"
+// @Param 		startDate		formData	string	true	"Date/Time at which the event starts (RFC3339/ISO8601 format)"
+// @Param 		endDate			formData	string	true	"Date/Time at which the event ends (RFC3339/ISO8601 format)"
+// @Param 		location		formData	string	true	"Location where the event takes place"
+// @Success 	201 {object} string "User login with success"
+// @Failure		401 {object} string "Invalid credentials"
+// @Failure 	501 {object} string "Error found during event creation"
+// @Router 		/event/create [post]
 func EventCreate(c *gin.Context) {
+	//TODO: Authorize could already return the user information
 	autherr := Authorize(c)
 	if autherr != nil {
 		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
