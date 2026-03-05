@@ -16,37 +16,31 @@
 		},
 		{
 			"key": "password",
-			"value": "test123",
+			"value": "test12345",
 			"type": "default",
 			"enabled": true
 		},
 		{
 			"key": "fName",
-			"value": "",
+			"value": "Tester",
 			"type": "default",
 			"enabled": true
 		},
 		{
 			"key": "lName",
-			"value": "",
+			"value": "Tester",
 			"type": "default",
 			"enabled": true
 		},
 		{
 			"key": "role",
-			"value": "",
+			"value": "Student",
 			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "csrfToken",
-			"value": "",
-			"type": "any",
 			"enabled": true
 		}
 	],
 	"color": null,
 	"_postman_variable_scope": "environment",
-	"_postman_exported_at": "2026-03-05T19:56:29.794Z",
+	"_postman_exported_at": "2026-03-05T23:39:03.308Z",
 	"_postman_exported_using": "Postman/12.0.3"
 }
