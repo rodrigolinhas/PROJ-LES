@@ -16,7 +16,7 @@ func TestNewUser(t *testing.T) {
 	fname := "Test"
 	lname := "Example"
 	email := "test@example.com"
-	role := "event_organizer"
+	role := "EventOrganizer"
 
 	var result, _ = NewUser(fname, lname, role, email, examplePass) // function for testing
 
@@ -36,7 +36,7 @@ func TestNewUser(t *testing.T) {
 func TestNewUser1(t *testing.T) {
 	var fname = "Jake"
 	var lname = "Felix"
-	var role = "student"
+	var role = "Student"
 	var email = "jfelix@gmail.com"
 	user, err := NewUser(fname, lname, role, email, examplePass)
 	assert.NotNil(t, user)
@@ -51,7 +51,7 @@ func TestNewUser1(t *testing.T) {
 func TestNewUser2(t *testing.T) {
 	var fname = "T"
 	var lname = "T"
-	var role = "professor"
+	var role = "Professor"
 	var email = "tt@gmail.com"
 	user, err := NewUser(fname, lname, role, email, examplePass)
 	assert.NotNil(t, user)
@@ -66,7 +66,7 @@ func TestNewUser2(t *testing.T) {
 func TestNewUser3(t *testing.T) {
 	var fname = "John"
 	var lname = ""
-	var role = "student"
+	var role = "Student"
 	var email = "john@gmail.com"
 	user, err := NewUser(fname, lname, role, email, examplePass)
 	assert.Nil(t, user)
@@ -76,7 +76,7 @@ func TestNewUser3(t *testing.T) {
 func TestNewUser4(t *testing.T) {
 	var fname = "    "
 	var lname = "Doe"
-	var role = "student"
+	var role = "Student"
 	var email = "doe@gmail.com"
 	user, err := NewUser(fname, lname, role, email, examplePass)
 	assert.Nil(t, user)
@@ -86,7 +86,7 @@ func TestNewUser4(t *testing.T) {
 func TestNewUser5(t *testing.T) {
 	var fname = "Didi"
 	var lname = "Bandeiras"
-	var role = "baker"
+	var role = "Baker"
 	var email = "didi@gmail.com"
 	user, err := NewUser(fname, lname, role, email, examplePass)
 	assert.Nil(t, user)
@@ -96,7 +96,7 @@ func TestNewUser5(t *testing.T) {
 func TestNewUser6(t *testing.T) {
 	var fname = "João"
 	var lname = "Maria"
-	var role = "student"
+	var role = "Student"
 	var email = "maria@joao"
 	user, err := NewUser(fname, lname, role, email, examplePass)
 	assert.Nil(t, user)
@@ -106,7 +106,7 @@ func TestNewUser6(t *testing.T) {
 func TestNewUser7(t *testing.T) {
 	var fname = "Pedro"
 	var lname = "Ezequiel"
-	var role = "student"
+	var role = "Student"
 	var email = "pedroe@outlook.com"
 	user, err := NewUser(fname, lname, role, email, "12345678")
 	assert.Nil(t, user)
@@ -116,7 +116,7 @@ func TestNewUser7(t *testing.T) {
 func TestFullName(t *testing.T) {
 	var fname = "Jake"
 	var lname = "Felix"
-	var role = "student"
+	var role = "Student"
 	var email = "jfelix@gmail.com"
 	user, _ := NewUser(fname, lname, role, email, examplePass)
 	assert.Equal(t, "Jake Felix", user.FullName())
