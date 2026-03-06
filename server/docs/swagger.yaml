@@ -6,6 +6,62 @@ info:
   title: Scientific Event Manager API
   version: "0.1"
 paths:
+  /auth/google:
+    get:
+      description: Redirects the user to Google's OAuth2 consent screen for SSO login.
+        If the user does not have an account, one will be created automatically upon
+        callback.
+      parameters:
+      - description: OAuth provider (must be 'google')
+        in: query
+        name: provider
+        required: true
+        type: string
+      produces:
+      - text/html
+      responses:
+        "307":
+          description: Redirect to Google consent screen
+      summary: Begin Google SSO authentication
+      tags:
+      - Auth
+  /auth/google/callback:
+    get:
+      description: Handles the OAuth2 callback from Google after user consent. Exchanges
+        the authorization code for user info, creates a new account if the user does
+        not exist, generates session and CSRF tokens, and redirects to the frontend.
+      parameters:
+      - description: Authorization code from Google
+        in: query
+        name: code
+        required: true
+        type: string
+      - description: OAuth state parameter
+        in: query
+        name: state
+        required: true
+        type: string
+      - description: Granted OAuth scopes
+        in: query
+        name: scope
+        required: true
+        type: string
+      produces:
+      - text/html
+      responses:
+        "307":
+          description: Redirect to frontend with session cookies set
+        "400":
+          description: Missing authorization code
+          schema:
+            type: string
+        "500":
+          description: OAuth or user creation error
+          schema:
+            type: string
+      summary: Google SSO callback
+      tags:
+      - Auth
   /ping:
     get:
       description: Return "ping" and log the time in the DB

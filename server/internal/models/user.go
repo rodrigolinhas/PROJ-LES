@@ -24,7 +24,9 @@ type User struct {
 	Role           Role   `gorm:"not null;default:0"`
 	Email          string `gorm:"uniqueIndex;not null"`
 	Verified       bool   `gorm:"not null;default:false"`
-	HashedPassword string `gorm:"not null"`
+	HashedPassword string // nullable for OAuth users
+	Provider       string `gorm:"default:'local'"`
+	ProviderUserID string
 	SessionToken   string
 	CSRFToken      string
 }
@@ -95,6 +97,39 @@ func NewUser(firstName string, lastName string, role string, email string, hashe
 		Email:          email,
 		Verified:       false,
 		HashedPassword: hashedPass,
+	}
+	return &user, nil
+}
+
+// NewOAuthUser creates a User from an OAuth provider (no password required).
+func NewOAuthUser(firstName string, lastName string, email string, provider string, providerUserID string) (*User, error) {
+	firstName = strings.TrimSpace(firstName)
+	lastName = strings.TrimSpace(lastName)
+	email = strings.TrimSpace(email)
+
+	if firstName == "" {
+		firstName = "User"
+	}
+	if lastName == "" {
+		lastName = ""
+	}
+
+	ok, err := regexp.MatchString(EmailRegex, email)
+	if !ok {
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		return nil, errors.New("NewOAuthUser: Email doesnt match regex")
+	}
+
+	user := User{
+		FirstName:      firstName,
+		LastName:       lastName,
+		Role:           None,
+		Email:          email,
+		Verified:       true,
+		Provider:       provider,
+		ProviderUserID: providerUserID,
 	}
 	return &user, nil
 }

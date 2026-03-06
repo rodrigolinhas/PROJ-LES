@@ -9,6 +9,84 @@
     "host": "localhost:8080",
     "basePath": "/",
     "paths": {
+        "/auth/google": {
+            "get": {
+                "description": "Redirects the user to Google's OAuth2 consent screen for SSO login. If the user does not have an account, one will be created automatically upon callback.",
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Begin Google SSO authentication",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "OAuth provider (must be 'google')",
+                        "name": "provider",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "307": {
+                        "description": "Redirect to Google consent screen"
+                    }
+                }
+            }
+        },
+        "/auth/google/callback": {
+            "get": {
+                "description": "Handles the OAuth2 callback from Google after user consent. Exchanges the authorization code for user info, creates a new account if the user does not exist, generates session and CSRF tokens, and redirects to the frontend.",
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Google SSO callback",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization code from Google",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "OAuth state parameter",
+                        "name": "state",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Granted OAuth scopes",
+                        "name": "scope",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "307": {
+                        "description": "Redirect to frontend with session cookies set"
+                    },
+                    "400": {
+                        "description": "Missing authorization code",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "OAuth or user creation error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/ping": {
             "get": {
                 "description": "Return \"ping\" and log the time in the DB",
