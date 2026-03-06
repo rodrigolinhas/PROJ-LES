@@ -80,7 +80,7 @@ jobs:
       - name: Install Newman
         run: npm install -g newman newman-reporter-htmlextra
 
-      - name: Run Postman (health only)
+      - name: Run Postman
         env:
           BASE_URL: ${{ vars.BASE_URL }}
         run: |
