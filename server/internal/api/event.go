@@ -2,7 +2,6 @@ package api
 
 import (
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -31,8 +30,7 @@ import (
 // @Failure 	501 {object} string "Error found during event creation"
 // @Router 		/event/create [post]
 func EventCreate(c *gin.Context) {
-	//TODO: Authorize could already return the user information
-	autherr := Authorize(c)
+	user, autherr := Authorize(c)
 	if autherr != nil {
 		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
 		return
@@ -42,7 +40,6 @@ func EventCreate(c *gin.Context) {
 	theme := c.Request.FormValue("theme")
 	desc := c.Request.FormValue("description")
 	org := c.Request.FormValue("organization")
-	email := c.Request.FormValue("email")
 	start := c.Request.FormValue("startDate")
 	end := c.Request.FormValue("endDate")
 	local := c.Request.FormValue("location")
@@ -59,11 +56,8 @@ func EventCreate(c *gin.Context) {
 		return
 	}
 
-	var user models.User
-	db.DB.Where("email = ?", strings.TrimSpace(email)).Take(&user)
-
 	//TODO: This api method currently does 2 DB queries, refactor so that it only needs one
-	event, err := models.NewEvent(name, theme, desc, org, user, startt, endt, local, db.DB)
+	event, err := models.NewEvent(name, theme, desc, org, *user, startt, endt, local, db.DB)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
