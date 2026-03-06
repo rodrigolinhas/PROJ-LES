@@ -159,13 +159,9 @@ func UserLogout(c *gin.Context) {
 		return
 	}
 
-	//email := c.Request.FormValue("email")
-	//var user models.User
-	//if err := db.DB.Where("email = ?", email).First(&user).Error; err == nil {
 	user.SessionToken = ""
 	user.CSRFToken = ""
 	db.DB.Save(&user)
-	//}
 
 	//clean the tokens
 	c.SetCookie("session_token", "", -1, "/", "localhost", false, true)

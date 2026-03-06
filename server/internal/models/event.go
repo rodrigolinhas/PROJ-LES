@@ -10,7 +10,7 @@ import (
 
 type Event struct {
 	gorm.Model
-	Name			string 		`gorm:"uniqueIndex;not null"`
+	Name			string 		`gorm:"index;not null"`
 	Theme	        string		`gorm:"not null"`
 	Description		string		`gorm:"not null"`
 	Organization 	string		`gorm:"not null"`
