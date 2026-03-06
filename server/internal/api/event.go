@@ -56,8 +56,7 @@ func EventCreate(c *gin.Context) {
 		return
 	}
 
-	//TODO: This api method currently does 2 DB queries, refactor so that it only needs one
-	event, err := models.NewEvent(name, theme, desc, org, *user, startt, endt, local, db.DB)
+	event, err := models.NewEvent(name, theme, desc, org, *user, startt, endt, local)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return

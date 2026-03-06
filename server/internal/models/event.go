@@ -23,12 +23,14 @@ type Event struct {
 	Closed			bool		`gorm:"not null;default:false"`
 }
 
-// Creates an event model and validates it
+// Creates an event model and validates it.
+// - The given user parameter is expected to be a already validated model 
+//   taken from the DB;
 func NewEvent(name string, theme string, desc string, org string, owner User, 
-		      start time.Time, end time.Time, local string, db *gorm.DB) (*Event, error) {
+		      start time.Time, end time.Time, local string) (*Event, error) {
 	e := newEvent(name, theme, desc, org, owner, start, end, local)
 
-	err := e.validate(db)
+	err := e.validate()
 	if(err != nil) {
 		return nil, err
 	}
@@ -55,8 +57,8 @@ func newEvent(name string, theme string, desc string, org string, owner User,
 	return e
 }
 
-// Validates every field except the foreign key
-func (e Event) validateFields() error {
+// Validates every field
+func (e Event) validate() error {
 	if(e.Name == "" || e.Theme == "" || e.Description == "") {
 		return errors.New("Event: Empty name/theme/description")
 	}
@@ -74,28 +76,9 @@ func (e Event) validateFields() error {
 		return errors.New("Event: No location")
 	}
 
-	return nil
-}
-
-// Checks if the user is present in the database and has the proper role
-func (e Event) validateOwner(db *gorm.DB) error {
-	var res User
-	tx := db.Where("id = ?", e.Organizer.ID).Take(&res)
-	if(tx.Error != nil || tx.RowsAffected != 1) {
-		return errors.New("Event: Invalid organizer")
-	}
-	if(res.Role != EventOrganizer) {
+	if(e.Organizer.Role != EventOrganizer) {
 		return errors.New("Event: Organizer is not an event organizer")
 	}
 
 	return nil
-}
-
-// Validates everything
-func (e Event) validate(db *gorm.DB) error {
-	err := e.validateFields()
-	if err != nil {
-		return err
-	}
-	return e.validateOwner(db)
 }
