@@ -26,6 +26,9 @@ import (
 // @tag.name Auth
 // @tag.description Endpoints related with user authentication
 
+// @tag.name Event
+// @tag.description Endpoints related to event management
+
 // @host localhost:8080
 // @BasePath /
 func main() {
@@ -58,6 +61,9 @@ func setEndpoints(router *gin.Engine) {
 	//google oauth
 	router.GET("/auth/google", api.GoogleAuthBegin)
 	router.GET("/auth/google/callback", api.GoogleAuthCallback)
+  
+	//event
+	router.POST("/event/create", api.EventCreate)
 
 	// swagger handler
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swagfiles.Handler))

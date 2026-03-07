@@ -301,6 +301,10 @@ const docTemplate = `{
         {
             "description": "Endpoints related with user authentication",
             "name": "Auth"
+        },
+        {
+            "description": "Endpoints related to event management",
+            "name": "Event"
         }
     ]
 }`
