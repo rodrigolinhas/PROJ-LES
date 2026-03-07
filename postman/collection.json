@@ -225,6 +225,144 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "03 - auth via sso",
+      "item": [
+        {
+          "name": "SSO_redirect",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"SSO begin -> redirect (302/307)\", function () {\r",
+                  "  pm.expect(pm.response.code).to.be.oneOf([302, 307]);\r",
+                  "});\r",
+                  "\r",
+                  "const loc = pm.response.headers.get(\"Location\");\r",
+                  "\r",
+                  "pm.test(\"Redirect Location header exists\", function () {\r",
+                  "  pm.expect(loc).to.be.a(\"string\");\r",
+                  "  pm.expect(loc.length).to.be.greaterThan(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Redirect points to Google\", function () {\r",
+                  "  pm.expect(loc).to.match(/accounts\\.google\\.com/i);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/google",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "google"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SSO_callback",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Callback without code -> 400\", function () {\r",
+                  "  pm.expect(pm.response.code).to.equal(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message is correct\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.match(/Missing authorization code/i);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/google/callback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "google",
+                "callback"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SSO_callback_missCode",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Callback invalid code -> 500\", function () {\r",
+                  "  pm.expect(pm.response.code).to.equal(500);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Body mentions OAuth failure\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.match(/OAuth|Authorize|authorization|fetch user|Failed/i);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/google/callback?code=INVALID&state=INVALID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "google",
+                "callback"
+              ],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "INVALID"
+                },
+                {
+                  "key": "state",
+                  "value": "INVALID"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
