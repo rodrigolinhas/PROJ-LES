@@ -87,7 +87,6 @@ jobs:
           newman run postman/collection.json \
             -e postman/environment.json \
             --env-var "baseUrl=$BASE_URL" \
-            --no-follow-redirects \
             --reporters cli,htmlextra \
             --reporter-htmlextra-export newman-report.html
 
