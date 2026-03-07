@@ -184,3 +184,34 @@ func EventList(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, events)
 }
+
+//TODO: DOCS
+func EventDelete(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		return
+	}
+
+	eventID := c.Request.FormValue("eventID")
+
+	var event models.Event
+	res := db.DB.Where("ID = ?", eventID).First(&event)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "User is not the organizer of this event")
+		return
+	}
+
+	res = db.DB.Where("ID = ?", eventID).Delete(&event)
+	if res.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found during event deletion")
+		return
+	}
+
+	c.String(http.StatusOK, "Event deleted with success")
+}
