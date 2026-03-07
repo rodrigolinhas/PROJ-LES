@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -101,4 +102,57 @@ func EventPublish(c *gin.Context) {
 	event.Published = true
 	db.DB.Save(&event)
 	c.String(http.StatusOK, "Event published")
+}
+
+//TODO: DOC
+func EventList(c *gin.Context) {
+	_, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		return
+	}
+
+	//TODO: CHANGE TO ENV VARIABLES
+	limit := 20
+	limitStr := c.Request.FormValue("limit")
+	if limitStr != ""  {
+		n, err := strconv.Atoi(limitStr)
+		if err == nil {
+			limit = n
+		}
+		if limit > 50 {
+			limit = 50
+		}
+	}
+
+	offset := 0
+	offsetStr := c.Request.FormValue("offset")
+	if offsetStr != ""  {
+		n, err := strconv.Atoi(offsetStr)
+		if err == nil {
+			offset = n
+		}
+	}
+
+	filter := c.Request.FormValue("filter")
+
+	type ShortEvent struct {
+		ID uint
+		Name string
+		Theme string
+	}
+
+	var events []ShortEvent
+	res := db.DB.Model(&models.Event{}).
+				 Limit(limit).
+				 Offset(offset).
+				 Where("published = ? AND name LIKE ?", true, "%"+filter+"%").
+				 Scan(&events)
+
+	if res.RowsAffected == 0 {
+		c.String(http.StatusNotFound, "No event found")
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, events)
 }
