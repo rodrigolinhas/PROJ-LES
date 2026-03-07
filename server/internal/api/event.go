@@ -26,9 +26,9 @@ import (
 // @Param 		startDate		formData	string	true	"Date/Time at which the event starts (RFC3339/ISO8601 format)"
 // @Param 		endDate			formData	string	true	"Date/Time at which the event ends (RFC3339/ISO8601 format)"
 // @Param 		location		formData	string	true	"Location where the event takes place"
-// @Success 	201 {object} string "User login with success"
-// @Failure		401 {object} string "Invalid credentials"
-// @Failure 	501 {object} string "Error found during event creation"
+// @Success 	201 {string} string "User login with success"
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure 	500 {string} string "Error found during event creation"
 // @Router 		/event/create [post]
 func EventCreate(c *gin.Context) {
 	user, autherr := Authorize(c)
@@ -72,7 +72,21 @@ func EventCreate(c *gin.Context) {
 	c.String(http.StatusCreated, "Event created successfully")
 }
 
-//TODO: DOC
+// EventPublish
+// @Summary 	Publish event
+// @Description A user can publish an event organized by them, so that all users can view it
+// @Tags 		Event
+// @Accept		mpfd
+// @Produce 	plain
+// @Param 		email			formData	string	true	"User's email"
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		eventID			formData	string	true	"ID of the event"
+// @Success 	200 {string} string "Event published with success"
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		404 {string} string "Event not found"
+// @Failure		403 {string} string "User is not the organizer of the event"
+// @Failure		409 {string} string "Event already published"
+// @Router 		/event/publish [post]
 func EventPublish(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
@@ -85,7 +99,7 @@ func EventPublish(c *gin.Context) {
 	var event models.Event
 	res := db.DB.Where("ID = ?", id).First(&event)
 	if res.Error != nil || res.RowsAffected != 1 {
-		c.String(http.StatusInternalServerError, "Event not found")
+		c.String(http.StatusNotFound, "Event not found")
 		return
 	}
 
@@ -101,10 +115,30 @@ func EventPublish(c *gin.Context) {
 
 	event.Published = true
 	db.DB.Save(&event)
-	c.String(http.StatusOK, "Event published")
+	c.String(http.StatusOK, "Event published with success")
 }
 
-//TODO: DOC
+type ShortEvent struct {
+	ID 		uint	`example:"1"`
+	Name 	string  `example:"Event"`
+	Theme 	string  `example:"CompSci"`
+}
+
+// EventList
+// @Summary 	List events
+// @Description A user can view and filter all published events
+// @Tags 		Event
+// @Accept		mpfd
+// @Produce 	json, plain
+// @Param 		email			formData	string	true	"User's email"
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		filter			formData	string	false	"Filter the name of the events shown" 
+// @Param 		limit			formData	int		false	"Number of events shown" maximum(50) default(20)
+// @Param 		offset			formData	int		false	"Number of skip in the search" default(0)
+// @Success 	200 {array} ShortEvent
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		404 {string} string "No event found"
+// @Router 		/event/list [get]
 func EventList(c *gin.Context) {
 	_, autherr := Authorize(c)
 	if autherr != nil {
@@ -135,12 +169,6 @@ func EventList(c *gin.Context) {
 	}
 
 	filter := c.Request.FormValue("filter")
-
-	type ShortEvent struct {
-		ID uint
-		Name string
-		Theme string
-	}
 
 	var events []ShortEvent
 	res := db.DB.Model(&models.Event{}).
