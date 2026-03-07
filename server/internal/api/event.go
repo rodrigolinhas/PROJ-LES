@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 	"time"
@@ -72,6 +73,30 @@ func EventCreate(c *gin.Context) {
 	c.String(http.StatusCreated, "Event created successfully")
 }
 
+func EventEditPreface(c *gin.Context) (*models.Event, error) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		return nil, errors.New("Error sent")
+	}
+
+	eventID := c.Request.FormValue("eventID")
+
+	var event models.Event
+	res := db.DB.Where("ID = ?", eventID).First(&event)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Event not found")
+		return nil, errors.New("Error sent")
+	}
+
+	if event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "User is not the organizer of this event")
+		return nil, errors.New("Error sent")
+	}
+
+	return &event, nil
+}
+
 // EventPublish
 // @Summary 	Publish event
 // @Description A user can publish an event organized by them, so that all users can view it
@@ -88,25 +113,8 @@ func EventCreate(c *gin.Context) {
 // @Failure		409 {string} string "Event already published"
 // @Router 		/event/publish [post]
 func EventPublish(c *gin.Context) {
-	user, autherr := Authorize(c)
-	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
-		return
-	}
-
-	id := c.Request.FormValue("eventID")
-
-	var event models.Event
-	res := db.DB.Where("ID = ?", id).First(&event)
-	if res.Error != nil || res.RowsAffected != 1 {
-		c.String(http.StatusNotFound, "Event not found")
-		return
-	}
-
-	if event.OrganizerID != user.ID {
-		c.String(http.StatusForbidden, "User is not the organizer of this event")
-		return
-	}
+	event, err := EventEditPreface(c)
+	if err != nil { return }
 
 	if event.Published == true {
 		c.String(http.StatusConflict, "Event was already published")
@@ -201,27 +209,10 @@ func EventList(c *gin.Context) {
 // @Failure		500 {string} string "Error found during event deletion"
 // @Router 		/event/delete [post]
 func EventDelete(c *gin.Context) {
-	user, autherr := Authorize(c)
-	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
-		return
-	}
+	event, err := EventEditPreface(c)
+	if err != nil { return }
 
-	eventID := c.Request.FormValue("eventID")
-
-	var event models.Event
-	res := db.DB.Where("ID = ?", eventID).First(&event)
-	if res.Error != nil || res.RowsAffected != 1 {
-		c.String(http.StatusNotFound, "Event not found")
-		return
-	}
-
-	if event.OrganizerID != user.ID {
-		c.String(http.StatusForbidden, "User is not the organizer of this event")
-		return
-	}
-
-	res = db.DB.Where("ID = ?", eventID).Delete(&event)
+	res := db.DB.Where("ID = ?", event.ID).Delete(&event)
 	if res.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found during event deletion")
 		return
@@ -229,3 +220,13 @@ func EventDelete(c *gin.Context) {
 
 	c.String(http.StatusOK, "Event deleted with success")
 }
+
+//TODO: DOCS
+func EventEdit(c *gin.Context) {
+	event, err := EventEditPreface(c)
+	if err != nil { return }
+
+	//TODO: EDIT EVENT
+}
+
+//TODO: Endpoint for a user to view all of his events (published and unpublished)
