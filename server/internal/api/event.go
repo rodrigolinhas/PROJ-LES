@@ -70,3 +70,35 @@ func EventCreate(c *gin.Context) {
 
 	c.String(http.StatusCreated, "Event created successfully")
 }
+
+//TODO: DOC
+func EventPublish(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		return
+	}
+
+	id := c.Request.FormValue("eventID")
+
+	var event models.Event
+	res := db.DB.Where("ID = ?", id).First(&event)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusInternalServerError, "Event not found")
+		return
+	}
+
+	if event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "User is not the organizer of this event")
+		return
+	}
+
+	if event.Published == true {
+		c.String(http.StatusConflict, "Event was already published")
+		return
+	}
+
+	event.Published = true
+	db.DB.Save(&event)
+	c.String(http.StatusOK, "Event published")
+}

@@ -14,7 +14,7 @@ type Event struct {
 	Theme	        string		`gorm:"not null"`
 	Description		string		`gorm:"not null"`
 	Organization 	string		`gorm:"not null"`
-	OrganizerID		int			`gorm:"not null"`
+	OrganizerID		uint		`gorm:"not null"`
 	Organizer		User		`gorm:"not null"`
 	StartDate		time.Time	`gorm:"not null"`
 	EndDate			time.Time	`gorm:"not null"`
