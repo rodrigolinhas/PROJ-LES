@@ -23,9 +23,9 @@ import (
 // @Param 		role		formData	string	true	"User's role (must be a valid role)"
 // @Param 		email		formData	string	true	"User's email"
 // @Param 		pass		formData	string	true	"User's plain password (must be at least 8 characters long)"	minlength(8)
-// @Success 	201 {object} string "User registered successfully"
-// @Failure		406 {object} string "Error found on the form params"
-// @Failure		500 {object} string "Error found on user registration"
+// @Success 	201 {string} string "User registered successfully"
+// @Failure		406 {string} string "Error found on the form params"
+// @Failure		500 {string} string "Error found on user registration"
 // @Router 		/user/register [post]
 func UserRegister(c *gin.Context) {
 	fName := c.Request.FormValue("firstName")
@@ -69,10 +69,10 @@ func UserRegister(c *gin.Context) {
 // @Produce 	plain
 // @Param 		email	formData	string	true	"User's email"
 // @Param 		pass	formData	string	true	"User's password"
-// @Success 	200 {object} string "User login with success"
-// @Failure		400 {object} string "Missing email or password"
-// @Failure		401 {object} string "Invalid credentials"
-// @Failure 	500 {object} string "Error found during user login"
+// @Success 	200 {string} string "User login with success"
+// @Failure		400 {string} string "Missing email or password"
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure 	500 {string} string "Error found during user login"
 // @Router 		/user/login [post]
 func UserLogin(c *gin.Context) {
 	email := c.Request.FormValue("email")
@@ -149,8 +149,8 @@ func Authorize(c *gin.Context) (*models.User, error) {
 // @Produce     plain
 // @Param      email  formData   string true   "User's email"
 // @Param      X-CSRF-Token header	string true   "CSRF Token"
-// @Success     200 {object} string "Logged out successfully!"
-// @Failure    401 {object} string "Unauthorized"
+// @Success     200 {string} string "Logged out successfully!"
+// @Failure    401 {string} string "Unauthorized"
 // @Router     /user/logout [post]
 func UserLogout(c *gin.Context) {
 	user, err := Authorize(c)

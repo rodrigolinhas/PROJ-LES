@@ -129,7 +129,7 @@ type ShortEvent struct {
 // @Description A user can view and filter all published events
 // @Tags 		Event
 // @Accept		mpfd
-// @Produce 	json, plain
+// @Produce 	json
 // @Param 		email			formData	string	true	"User's email"
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		filter			formData	string	false	"Filter the name of the events shown" 
