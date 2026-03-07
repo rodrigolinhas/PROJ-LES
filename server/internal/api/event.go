@@ -185,7 +185,21 @@ func EventList(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, events)
 }
 
-//TODO: DOCS
+// EventDelete
+// @Summary 	Delete event
+// @Description A user can delete an event organized by them
+// @Tags 		Event
+// @Accept		mpfd
+// @Produce 	plain
+// @Param 		email			formData	string	true	"User's email"
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		eventID			formData	string	true	"ID of the event"
+// @Success 	200 {string} string "Event deleted with success"
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		404 {string} string "Event not found"
+// @Failure		403 {string} string "User is not the organizer of the event"
+// @Failure		500 {string} string "Error found during event deletion"
+// @Router 		/event/delete [post]
 func EventDelete(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
