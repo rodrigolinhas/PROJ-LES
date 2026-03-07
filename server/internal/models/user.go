@@ -110,9 +110,6 @@ func NewOAuthUser(firstName string, lastName string, email string, provider stri
 	if firstName == "" {
 		firstName = "User"
 	}
-	if lastName == "" {
-		lastName = ""
-	}
 
 	ok, err := regexp.MatchString(EmailRegex, email)
 	if !ok {
