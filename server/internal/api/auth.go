@@ -108,23 +108,24 @@ func UserLogin(c *gin.Context) {
 	c.String(http.StatusOK, "User login with success")
 }
 
-// Authorize verifies whether the user has permission to proceed
+// Authorize verifies whether the user has permission to proceed and returns
+// said model.
 // It checks:
 // 1. If the user exists (via email param).
 // 2. If the session token in the cookie matches the DB.
 // 3. If the CSRF token in the header matches the DB.
-func Authorize(c *gin.Context) error {
+func Authorize(c *gin.Context) (*models.User, error) {
 	email := c.Request.FormValue("email")
 	var user models.User
 	res := db.DB.Where("email = ?", email).First(&user)
 	if res.Error != nil {
-		return fmt.Errorf("user not found")
+		return nil, fmt.Errorf("user not found")
 	}
 
 	//validate session token
 	sessionToken, err := c.Cookie("session_token")
 	if err != nil || sessionToken == "" || sessionToken != user.SessionToken {
-		return fmt.Errorf("invalid session token")
+		return nil, fmt.Errorf("invalid session token")
 	}
 
 	//validate the CSRF token
@@ -135,10 +136,10 @@ func Authorize(c *gin.Context) error {
 	}
 
 	if csrfToken == "" || csrfToken != user.CSRFToken {
-		return fmt.Errorf("invalid CSRF token")
+		return nil, fmt.Errorf("invalid CSRF token")
 	}
 
-	return nil //auth success
+	return &user, nil //auth success
 }
 
 // UserLogout
@@ -152,18 +153,15 @@ func Authorize(c *gin.Context) error {
 // @Failure    401 {object} string "Unauthorized"
 // @Router     /user/logout [post]
 func UserLogout(c *gin.Context) {
-	if err := Authorize(c); err != nil {
+	user, err := Authorize(c)
+	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
-	email := c.Request.FormValue("email")
-	var user models.User
-	if err := db.DB.Where("email = ?", email).First(&user).Error; err == nil {
-		user.SessionToken = ""
-		user.CSRFToken = ""
-		db.DB.Save(&user)
-	}
+	user.SessionToken = ""
+	user.CSRFToken = ""
+	db.DB.Save(&user)
 
 	//clean the tokens
 	c.SetCookie("session_token", "", -1, "/", "localhost", false, true)
