@@ -80,14 +80,13 @@ jobs:
       - name: Install Newman
         run: npm install -g newman newman-reporter-htmlextra
 
-      - name: Run Postman (health only)
+      - name: Run Postman
         env:
           BASE_URL: ${{ vars.BASE_URL }}
         run: |
           newman run postman/collection.json \
             -e postman/environment.json \
             --env-var "baseUrl=$BASE_URL" \
-            --folder "01 - health" \
             --reporters cli,htmlextra \
             --reporter-htmlextra-export newman-report.html
 

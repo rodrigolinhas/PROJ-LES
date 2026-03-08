@@ -28,13 +28,7 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status 200\", function () {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Body contains 'ping'\", function () {",
-                  "  pm.expect(pm.response.text()).to.include(\"ping\");",
-                  "});"
+                  ""
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -63,36 +57,98 @@
       "name": "02 - auth",
       "item": [
         {
-          "name": "create Request",
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "firstName",
+                  "value": "{{fName}}",
+                  "type": "text",
+                  "uuid": "93aeec8b-2531-463c-8bce-e7b5ffdf7758"
+                },
+                {
+                  "key": "lastName",
+                  "value": "{{lName}}",
+                  "type": "text",
+                  "uuid": "c86f0f10-882e-4f3a-887d-df780c0fa24e"
+                },
+                {
+                  "key": "role",
+                  "value": "{{role}}",
+                  "type": "text",
+                  "uuid": "f8ea54a5-823a-4263-98bb-ef4a96267dd7"
+                },
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "fe5ac9c4-b217-4b77-b0c2-82df010a5e80"
+                },
+                {
+                  "key": "pass",
+                  "value": "{{password}}",
+                  "type": "text",
+                  "uuid": "3f4f22d5-467c-4f28-b071-0685e27d716d"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Login OK (200)\", function () {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "const bodyText = pm.response.text();",
-                  "",
-                  "// try JSON first",
-                  "let data = {};",
-                  "try { data = pm.response.json(); } catch (e) {}",
-                  "",
-                  "const token =",
-                  "  data.token ||",
-                  "  data.accessToken ||",
-                  "  data.access_token ||",
-                  "  data?.data?.token ||",
-                  "  null;",
-                  "",
-                  "pm.test(\"Token exists in awnser\", function () {",
-                  "  pm.expect(token, \"token doesnt exist in awnser\").to.not.be.null;",
-                  "});",
-                  "",
-                  "if (token) {",
-                  "  pm.environment.set(\"token\", token);",
+                  "pm.test(\"Login -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const setCookies = pm.response.headers.all()\r",
+                  "  .filter(h => h.key.toLowerCase() === \"set-cookie\")\r",
+                  "  .map(h => h.value);\r",
+                  "\r",
+                  "function getCookieValue(name) {\r",
+                  "  const row = setCookies.find(v => v.startsWith(name + \"=\"));\r",
+                  "  if (!row) return null;\r",
+                  "  return row.split(\";\")[0].substring(name.length + 1);\r",
+                  "}\r",
+                  "\r",
+                  "const csrf = getCookieValue(\"csrf_token\");\r",
+                  "pm.test(\"CSRF cookie veio no login\", function () {\r",
+                  "  pm.expect(csrf).to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "if (csrf) {\r",
+                  "  pm.environment.set(\"csrfToken\", csrf);\r",
                   "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -102,30 +158,67 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "c80fe009-1824-4fbb-9344-5904aadacce6"
+                },
+                {
+                  "key": "pass",
+                  "value": "{{password}}",
+                  "type": "text",
+                  "uuid": "ade1d20b-d44e-45da-9998-a21b71452b1e"
                 }
-              }
+              ]
             },
             "url": {
-              "raw": "{{baseUrl}}/auth/login",
+              "raw": "{{baseUrl}}/user/login",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "auth",
+                "user",
                 "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "b631f0b3-97ba-4698-9bc5-3f30059c722b"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "logout"
               ]
             }
           },
@@ -134,28 +227,68 @@
       ]
     },
     {
-      "name": "03 - users",
+      "name": "03 - auth via sso",
       "item": [
         {
-          "name": "users",
+          "name": "SSO_redirect",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
-                  "pm.test(\"is JSON response\", () => pm.response.to.be.json);",
-                  "",
-                  "pm.test(\"Returns array or {users:[...]}\", () => {",
-                  "  const data = pm.response.json();",
-                  "",
-                  "  const list =",
-                  "    Array.isArray(data) ? data :",
-                  "    Array.isArray(data.users) ? data.users :",
-                  "    Array.isArray(data.data) ? data.data :",
-                  "    null;",
-                  "",
-                  "    pm.expect(list, \"did not find a list of users\").to.not.be.null;",
+                  "pm.test(\"SSO begin -> redirect (302/307)\", function () {\r",
+                  "  pm.expect(pm.response.code).to.be.oneOf([302, 307]);\r",
+                  "});\r",
+                  "\r",
+                  "const loc = pm.response.headers.get(\"Location\");\r",
+                  "\r",
+                  "pm.test(\"Redirect Location header exists\", function () {\r",
+                  "  pm.expect(loc).to.be.a(\"string\");\r",
+                  "  pm.expect(loc.length).to.be.greaterThan(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Redirect points to Google\", function () {\r",
+                  "  pm.expect(loc).to.match(/accounts\\.google\\.com/i);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "followRedirects": false
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/google",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "google"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SSO_callback",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Callback without code -> 400\", function () {\r",
+                  "  pm.expect(pm.response.code).to.equal(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message is correct\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.match(/Missing authorization code/i);\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -168,12 +301,62 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/users",
+              "raw": "{{baseUrl}}/auth/google/callback",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "users"
+                "auth",
+                "google",
+                "callback"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SSO_callback_missCode",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Callback invalid code -> 500\", function () {\r",
+                  "  pm.expect(pm.response.code).to.equal(500);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Body mentions OAuth failure\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.match(/OAuth|Authorize|authorization|fetch user|Failed/i);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/google/callback?code=INVALID&state=INVALID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "google",
+                "callback"
+              ],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "INVALID"
+                },
+                {
+                  "key": "state",
+                  "value": "INVALID"
+                }
               ]
             }
           },
