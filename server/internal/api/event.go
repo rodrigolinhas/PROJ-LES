@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -73,7 +74,7 @@ func EventCreate(c *gin.Context) {
 	c.String(http.StatusCreated, "Event created successfully")
 }
 
-func EventEditPreface(c *gin.Context) (*models.Event, error) {
+func eventEditPreface(c *gin.Context) (*models.Event, error) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
 		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
@@ -113,7 +114,7 @@ func EventEditPreface(c *gin.Context) (*models.Event, error) {
 // @Failure		409 {string} string "Event already published"
 // @Router 		/event/publish [post]
 func EventPublish(c *gin.Context) {
-	event, err := EventEditPreface(c)
+	event, err := eventEditPreface(c)
 	if err != nil { return }
 
 	if event.Published == true {
@@ -209,7 +210,7 @@ func EventList(c *gin.Context) {
 // @Failure		500 {string} string "Error found during event deletion"
 // @Router 		/event/delete [post]
 func EventDelete(c *gin.Context) {
-	event, err := EventEditPreface(c)
+	event, err := eventEditPreface(c)
 	if err != nil { return }
 
 	res := db.DB.Where("ID = ?", event.ID).Delete(&event)
@@ -223,10 +224,73 @@ func EventDelete(c *gin.Context) {
 
 //TODO: DOCS
 func EventEdit(c *gin.Context) {
-	event, err := EventEditPreface(c)
+	event, err := eventEditPreface(c)
 	if err != nil { return }
 
-	//TODO: EDIT EVENT
+	name := c.Request.FormValue("name")
+	theme := c.Request.FormValue("theme")
+	desc := c.Request.FormValue("description")
+	org := c.Request.FormValue("organization")
+	start := c.Request.FormValue("startDate")
+	end := c.Request.FormValue("endDate")
+	local := c.Request.FormValue("location")
+
+	// Maybe there is a better way to do this?
+	name = strings.TrimSpace(name)
+	if name != "" {
+		event.Name = name
+	}
+
+	theme = strings.TrimSpace(theme)
+	if theme != "" {
+		event.Theme = theme
+	}
+
+	desc = strings.TrimSpace(desc)
+	if desc != "" {
+		event.Description = desc
+	}
+
+	org = strings.TrimSpace(org)
+	if org != "" {
+		event.Organization = org
+	}
+
+	start = strings.TrimSpace(start)
+	if start != "" {
+		startt, serr := time.Parse(time.RFC3339, start)
+		if serr != nil {
+			c.String(http.StatusInternalServerError, "Error found parsing start time: " + serr.Error())
+			return
+		}
+		event.StartDate = startt
+	}
+
+	end = strings.TrimSpace(end)
+	if end != "" {
+		endt, eerr := time.Parse(time.RFC3339, end)
+		if eerr != nil {
+			c.String(http.StatusInternalServerError, "Error found parsing end time: " + eerr.Error())
+			return
+		}
+		event.EndDate = endt
+	}
+
+	epoch := time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC)
+	if(event.StartDate.Before(epoch) || event.EndDate.Before(epoch) || event.StartDate.After(event.EndDate)) {
+		c.String(http.StatusInternalServerError, "Invalid start/end time")
+		return
+	}
+
+	local = strings.TrimSpace(local)
+	if local != "" {
+		event.Location = local
+	}
+
+	db.DB.Save(&event)
+	c.String(http.StatusAccepted, "Event edited successfully")
 }
 
 //TODO: Endpoint for a user to view all of his events (published and unpublished)
+
+//TODO: Endpoint for event information (published or their own)
