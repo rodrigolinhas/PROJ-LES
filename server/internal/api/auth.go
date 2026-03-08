@@ -85,7 +85,18 @@ func UserLogin(c *gin.Context) {
 
 	var user models.User
 	res := db.DB.Where("email = ?", email).First(&user)
-	if res.Error != nil || !utils.CheckPasswordHash(pass, user.HashedPassword) {
+	if res.Error != nil {
+		c.String(http.StatusUnauthorized, "Invalid credentials")
+		return
+	}
+
+	// Block password login for OAuth-only accounts
+	if user.Provider != "" && user.Provider != "local" {
+		c.String(http.StatusUnauthorized, "This account uses SSO login ("+user.Provider+")")
+		return
+	}
+
+	if !utils.CheckPasswordHash(pass, user.HashedPassword) {
 		c.String(http.StatusUnauthorized, "Invalid credentials")
 		return
 	}
