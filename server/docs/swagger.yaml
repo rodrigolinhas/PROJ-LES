@@ -6,76 +6,62 @@ info:
   title: Scientific Event Manager API
   version: "0.1"
 paths:
-  /event/create:
-    post:
-      consumes:
-      - multipart/form-data
-      description: While the user is logged in, creates an event and registers it
-        in the database
+  /auth/google:
+    get:
+      description: Redirects the user to Google's OAuth2 consent screen for SSO login.
+        If the user does not have an account, one will be created automatically upon
+        callback.
       parameters:
-      - description: User's email
-        in: formData
-        name: email
-        required: true
-        type: string
-      - description: User's CSRF Token
-        in: header
-        name: X-CSRF-Token
-        required: true
-        type: string
-      - description: Event name
-        in: formData
-        name: name
-        required: true
-        type: string
-      - description: Event theme
-        in: formData
-        name: theme
-        required: true
-        type: string
-      - description: Event description
-        in: formData
-        name: description
-        required: true
-        type: string
-      - description: Organization responsable for the event
-        in: formData
-        name: organization
-        required: true
-        type: string
-      - description: Date/Time at which the event starts (RFC3339/ISO8601 format)
-        in: formData
-        name: startDate
-        required: true
-        type: string
-      - description: Date/Time at which the event ends (RFC3339/ISO8601 format)
-        in: formData
-        name: endDate
-        required: true
-        type: string
-      - description: Location where the event takes place
-        in: formData
-        name: location
+      - description: OAuth provider (must be 'google')
+        in: query
+        name: provider
         required: true
         type: string
       produces:
-      - text/plain
+      - text/html
       responses:
-        "201":
-          description: User login with success
-          schema:
-            type: string
-        "401":
-          description: Invalid credentials
-          schema:
-            type: string
-        "501":
-          description: Error found during event creation
-          schema:
-            type: string
-      summary: Create event
+        "307":
+          description: Redirect to Google consent screen
+      summary: Begin Google SSO authentication
       tags:
-      - Event
+      - Auth
+  /auth/google/callback:
+    get:
+      description: Handles the OAuth2 callback from Google after user consent. Exchanges
+        the authorization code for user info, creates a new account if the user does
+        not exist, generates session and CSRF tokens, and redirects to the frontend.
+      parameters:
+      - description: Authorization code from Google
+        in: query
+        name: code
+        required: true
+        type: string
+      - description: OAuth state parameter
+        in: query
+        name: state
+        required: true
+        type: string
+      - description: Granted OAuth scopes
+        in: query
+        name: scope
+        required: true
+        type: string
+      produces:
+      - text/html
+      responses:
+        "307":
+          description: Redirect to frontend with session cookies set
+        "400":
+          description: Missing authorization code
+          schema:
+            type: string
+        "500":
+          description: OAuth or user creation error
+          schema:
+            type: string
+      summary: Google SSO callback
+      tags:
+      - Auth
   /ping:
     get:
       description: Return "ping" and log the time in the DB

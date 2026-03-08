@@ -32,6 +32,7 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
+	api.InitGoogleAuth()
 	db.ConnectDB()
 	fmt.Println("Database Connected")
 
@@ -57,6 +58,10 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/user/login", api.UserLogin)
 	router.POST("/user/logout", api.UserLogout)
 
+	//google oauth
+	router.GET("/auth/google", api.GoogleAuthBegin)
+	router.GET("/auth/google/callback", api.GoogleAuthCallback)
+  
 	//event
 	router.POST("/event/create", api.EventCreate)
 
