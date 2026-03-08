@@ -291,6 +291,52 @@ func EventEdit(c *gin.Context) {
 	c.String(http.StatusAccepted, "Event edited successfully")
 }
 
-//TODO: Endpoint for a user to view all of his events (published and unpublished)
+//TODO: DOCS
+func EventMyList(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		return
+	}
+
+	//TODO: (Refactor) unify behaviour with EventList()
+	//TODO: CHANGE TO ENV VARIABLES
+	limit := 20
+	limitStr := c.Request.FormValue("limit")
+	if limitStr != ""  {
+		n, err := strconv.Atoi(limitStr)
+		if err == nil {
+			limit = n
+		}
+		if limit > 50 {
+			limit = 50
+		}
+	}
+
+	offset := 0
+	offsetStr := c.Request.FormValue("offset")
+	if offsetStr != ""  {
+		n, err := strconv.Atoi(offsetStr)
+		if err == nil {
+			offset = n
+		}
+	}
+
+	filter := c.Request.FormValue("filter")
+
+	var events []ShortEvent
+	res := db.DB.Model(&models.Event{}).
+				 Limit(limit).
+				 Offset(offset).
+				 Where("organizer_id = ? AND name LIKE ?", user.ID, "%"+filter+"%").
+				 Scan(&events)
+
+	if res.RowsAffected == 0 {
+		c.String(http.StatusNotFound, "No event found")
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, events)
+}
 
 //TODO: Endpoint for event information (published or their own)

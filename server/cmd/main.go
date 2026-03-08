@@ -61,6 +61,7 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/event/create", api.EventCreate)
 	router.POST("/event/publish", api.EventPublish)
 	router.GET("/event/list", api.EventList)
+	router.GET("/event/my", api.EventMyList)
 	router.POST("/event/delete", api.EventDelete)
 	router.POST("/event/edit", api.EventEdit)
 
