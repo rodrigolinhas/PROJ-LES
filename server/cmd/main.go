@@ -64,6 +64,7 @@ func setEndpoints(router *gin.Engine) {
 	router.GET("/event/my", api.EventMyList)
 	router.POST("/event/delete", api.EventDelete)
 	router.POST("/event/edit", api.EventEdit)
+	router.GET("/event/view/:id", api.EventView)
 
 	// swagger handler
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swagfiles.Handler))

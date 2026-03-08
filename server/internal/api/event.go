@@ -13,6 +13,26 @@ import (
 	"LES/server/internal/models"
 )
 
+type ShortEvent struct {
+	ID 		uint	`example:"1"`
+	Name 	string  `example:"Event"`
+	Theme 	string  `example:"CompSci"`
+}
+
+type LongEvent struct {
+	ID				uint
+	Name			string 
+	Theme	        string
+	Description		string
+	Organization 	string
+	OrganizerID		uint
+	StartDate		time.Time
+	EndDate			time.Time
+	Location		string	
+	Published		bool
+	Closed			bool
+}
+
 // EventCreate
 // @Summary 	Create event
 // @Description While the user is logged in, creates an event and registers it in the database
@@ -125,12 +145,6 @@ func EventPublish(c *gin.Context) {
 	event.Published = true
 	db.DB.Save(&event)
 	c.String(http.StatusOK, "Event published with success")
-}
-
-type ShortEvent struct {
-	ID 		uint	`example:"1"`
-	Name 	string  `example:"Event"`
-	Theme 	string  `example:"CompSci"`
 }
 
 // EventList
@@ -288,7 +302,7 @@ func EventEdit(c *gin.Context) {
 	}
 
 	db.DB.Save(&event)
-	c.String(http.StatusAccepted, "Event edited successfully")
+	c.String(http.StatusOK, "Event edited successfully")
 }
 
 //TODO: DOCS
@@ -339,4 +353,27 @@ func EventMyList(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, events)
 }
 
-//TODO: Endpoint for event information (published or their own)
+//TODO: DOCS
+func EventView(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		return
+	}
+
+	eventID := c.Param("id")
+
+	var event LongEvent
+	res := db.DB.Model(&models.Event{}).Where("ID = ?", eventID).Scan(&event)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if event.Published == false && event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "Event was not published yet and the user is not the orgaziner")
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, event)
+}
