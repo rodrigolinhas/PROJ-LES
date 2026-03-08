@@ -20,17 +20,17 @@ type ShortEvent struct {
 }
 
 type LongEvent struct {
-	ID				uint
-	Name			string 
-	Theme	        string
-	Description		string
-	Organization 	string
-	OrganizerID		uint
-	StartDate		time.Time
-	EndDate			time.Time
-	Location		string	
-	Published		bool
-	Closed			bool
+	ID				uint		`example:"1"`
+	Name			string 		`example:"Event"`
+	Theme	        string		`example:"CompSci"`
+	Description		string		`example:"Event's description."`
+	Organization 	string		`example:"Org"`
+	OrganizerID		uint		`example:"2"`
+	StartDate		time.Time	`example:"2026-03-07T12:00:00Z"`
+	EndDate			time.Time	`example:"2026-03-07T20:00:00Z"`
+	Location		string		`example:"Place"`
+	Published		bool		`example:"true"`
+	Closed			bool		`example:"false"`
 }
 
 // EventCreate
@@ -48,7 +48,7 @@ type LongEvent struct {
 // @Param 		startDate		formData	string	true	"Date/Time at which the event starts (RFC3339/ISO8601 format)"
 // @Param 		endDate			formData	string	true	"Date/Time at which the event ends (RFC3339/ISO8601 format)"
 // @Param 		location		formData	string	true	"Location where the event takes place"
-// @Success 	201 {string} string "User login with success"
+// @Success 	201 {string} string "Event created with success"
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure 	500 {string} string "Error found during event creation"
 // @Router 		/event/create [post]
@@ -236,7 +236,26 @@ func EventDelete(c *gin.Context) {
 	c.String(http.StatusOK, "Event deleted with success")
 }
 
-//TODO: DOCS
+// EventEdit
+// @Summary 	Edit event
+// @Description A user can edit one of their events
+// @Tags 		Event
+// @Accept		mpfd
+// @Produce 	plain
+// @Param 		email			formData	string	true	"User's email"
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		eventID			formData	string	true	"ID of the event"
+// @Param 		name			formData	string	false	"Event name"
+// @Param 		theme			formData	string	false	"Event theme"
+// @Param 		description		formData	string	false	"Event description"
+// @Param 		organization	formData	string	false	"Organization responsable for the event"
+// @Param 		startDate		formData	string	false	"Date/Time at which the event starts (RFC3339/ISO8601 format)"
+// @Param 		endDate			formData	string	false	"Date/Time at which the event ends (RFC3339/ISO8601 format)"
+// @Param 		location		formData	string	false	"Location where the event takes place"
+// @Success 	201 {string} string "Event edited with success"
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure 	500 {string} string "Error found during event editing"
+// @Router 		/event/edit [post]
 func EventEdit(c *gin.Context) {
 	event, err := eventEditPreface(c)
 	if err != nil { return }
@@ -305,7 +324,21 @@ func EventEdit(c *gin.Context) {
 	c.String(http.StatusOK, "Event edited successfully")
 }
 
-//TODO: DOCS
+// EventMyList
+// @Summary 	List the user's event
+// @Description A user can view and filter all of their events
+// @Tags 		Event
+// @Accept		mpfd
+// @Produce 	json
+// @Param 		email			formData	string	true	"User's email"
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		filter			formData	string	false	"Filter the name of the events shown" 
+// @Param 		limit			formData	int		false	"Number of events shown" maximum(50) default(20)
+// @Param 		offset			formData	int		false	"Number of skip in the search" default(0)
+// @Success 	200 {array} ShortEvent
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		404 {string} string "No event found"
+// @Router 		/event/my [get]
 func EventMyList(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
@@ -353,7 +386,19 @@ func EventMyList(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, events)
 }
 
-//TODO: DOCS
+// EventView
+// @Summary 	View event information
+// @Description A user can view the information of an event that they own or was published 
+// @Tags 		Event
+// @Accept		mpfd
+// @Produce 	json
+// @Param 		email			formData	string	true	"User's email"
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		id				path		string	true	"ID of the event"
+// @Success 	200 {object} LongEvent
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		404 {string} string "No event found"
+// @Router 		/event/view/:id [get]
 func EventView(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
