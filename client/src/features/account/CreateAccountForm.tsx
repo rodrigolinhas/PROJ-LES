@@ -70,7 +70,7 @@ export default function CreateAccountForm() {
                 <h2 style={{ color: "green" }}>
                     Account created successfully!
                 </h2>
-                <Link to={"/"}>
+                <Link to={"/user/login"}>
                     Go to login page
                 </Link>
             </div>
@@ -137,7 +137,7 @@ export default function CreateAccountForm() {
 
                 <p>
                     Already have an account?{" "}
-                    <Link to={"/"}>Login to your account</Link>
+                    <Link to={"/user/login"}>Login to your account</Link>
                 </p>
 
                 <p className = {isError ? "error" : "success"}> {message} </p>
