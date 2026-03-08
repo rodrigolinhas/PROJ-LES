@@ -75,8 +75,11 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "307": {
-                        "description": "Redirect to frontend with session cookies set"
+                    "201": {
+                        "description": "Event created with success",
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     "400": {
                         "description": "Missing authorization code",
@@ -85,7 +88,455 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "OAuth or user creation error",
+                        "description": "Error found during event creation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/delete": {
+            "post": {
+                "description": "A user can delete an event organized by them",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Delete event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "eventID",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event deleted with success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not the organizer of the event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found during event deletion",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/edit": {
+            "post": {
+                "description": "A user can edit one of their events",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Edit event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "eventID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Event name",
+                        "name": "name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Event theme",
+                        "name": "theme",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Event description",
+                        "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Organization responsable for the event",
+                        "name": "organization",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Date/Time at which the event starts (RFC3339/ISO8601 format)",
+                        "name": "startDate",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Date/Time at which the event ends (RFC3339/ISO8601 format)",
+                        "name": "endDate",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Location where the event takes place",
+                        "name": "location",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Event edited with success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found during event editing",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/list": {
+            "get": {
+                "description": "A user can view and filter all published events",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "List events",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter the name of the events shown",
+                        "name": "filter",
+                        "in": "formData"
+                    },
+                    {
+                        "maximum": 50,
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Number of events shown",
+                        "name": "limit",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Number of skip in the search",
+                        "name": "offset",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.ShortEvent"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "No event found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/my": {
+            "get": {
+                "description": "A user can view and filter all of their events",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "List the user's event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter the name of the events shown",
+                        "name": "filter",
+                        "in": "formData"
+                    },
+                    {
+                        "maximum": 50,
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Number of events shown",
+                        "name": "limit",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Number of skip in the search",
+                        "name": "offset",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.ShortEvent"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "No event found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/publish": {
+            "post": {
+                "description": "A user can publish an event organized by them, so that all users can view it",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Publish event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "eventID",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event published with success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not the organizer of the event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Event already published",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/view/:id": {
+            "get": {
+                "description": "A user can view the information of an event that they own or was published",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "View event information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.LongEvent"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "No event found",
                         "schema": {
                             "type": "string"
                         }
@@ -285,6 +736,74 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.LongEvent": {
+            "type": "object",
+            "properties": {
+                "closed": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Event's description."
+                },
+                "endDate": {
+                    "type": "string",
+                    "example": "2026-03-07T20:00:00Z"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "location": {
+                    "type": "string",
+                    "example": "Place"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Event"
+                },
+                "organization": {
+                    "type": "string",
+                    "example": "Org"
+                },
+                "organizerID": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "published": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "startDate": {
+                    "type": "string",
+                    "example": "2026-03-07T12:00:00Z"
+                },
+                "theme": {
+                    "type": "string",
+                    "example": "CompSci"
+                }
+            }
+        },
+        "api.ShortEvent": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Event"
+                },
+                "theme": {
+                    "type": "string",
+                    "example": "CompSci"
                 }
             }
         }
