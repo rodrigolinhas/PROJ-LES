@@ -42,7 +42,7 @@ func main() {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"},
 		AllowMethods:     []string{"POST", "GET", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "X-CSRF-Token"},
 		AllowCredentials: true,
 	}))
 	setEndpoints(router)
@@ -61,7 +61,7 @@ func setEndpoints(router *gin.Engine) {
 	//google oauth
 	router.GET("/auth/google", api.GoogleAuthBegin)
 	router.GET("/auth/google/callback", api.GoogleAuthCallback)
-  
+
 	//event
 	router.POST("/event/create", api.EventCreate)
 	router.POST("/event/publish", api.EventPublish)
