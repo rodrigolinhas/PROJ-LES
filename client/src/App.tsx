@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-import CreateAccountPage from "./features/account/CreateAccountPage";
-import AccountAuthPage from "./features/account/AccountAuthPage";
-import HomePage from "./features/home/HomePage";
-import LandingPage from "./features/landing/LandingPage";
+import CreateAccountPage from "./features/pages/CreateAccountPage";
+import AccountAuthPage from "./features/pages/AccountAuthPage";
+import HomePage from "./features/pages/HomePage.tsx";
+import LandingPage from "./features/pages/LandingPage.tsx";
+import CreateEventPage from "./features/pages/CreateEventPage";
 
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 
@@ -17,6 +18,7 @@ function App() {
 
                 <Route element={<ProtectedRoutes />}>
                     <Route path="/home" element={<HomePage />}/>
+                    <Route path="/event/create" element={<CreateEventPage />}/>
                 </Route>
             </Routes>
         </BrowserRouter>
