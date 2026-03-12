@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PublishEventButton from "../components/PublishEventButton.tsx";
+import DeleteEventButton from '../components/DeleteEventButton.tsx';
 
 function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -204,6 +205,7 @@ export default function EditEventForm(props: any) {
                 </p>
                 <hr/>
                 <PublishEventButton eventID={eventID} published={published}/>
+                <DeleteEventButton eventID={eventID}/>
             </form>
         );
     }

@@ -13,12 +13,11 @@ When doing another pass on this component make sure to ask the user to confirm
 before doing this action
 */
 
-export default function PublishEventButton(props: any) {
+export default function DeleteEventButton(props: any) {
     let eventID: number = props.eventID
-    let published: boolean = props.published
 
-    const [title, setTitle] = useState("Publish Event");
-    const [done, setDone] = useState(published);
+    const [title, setTitle] = useState("Delete Event");
+    const [done, setDone] = useState(false);
 
     async function handleClick() {
         const email = localStorage.getItem("userEmail") || "";
@@ -29,7 +28,7 @@ export default function PublishEventButton(props: any) {
         formData.append("eventID", eventID.toString());
 
         try {
-            const response = await fetch("http://localhost:8080/event/publish", {
+            const response = await fetch("http://localhost:8080/event/delete", {
                 method: "POST", 
                 body: formData,
                 headers: {
@@ -39,7 +38,7 @@ export default function PublishEventButton(props: any) {
             });
 
             if(response.status === 200) {
-                setTitle("Event Published!");
+                setTitle("Event Deleted!");
                 setDone(true)
             }
             else {
