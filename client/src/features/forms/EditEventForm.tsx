@@ -15,7 +15,7 @@ async function loadEventInfo(id: number): Promise<LongEvent> {
     formData.append("email", email);
 
     const res = await fetch(`http://localhost:8080/event/view/${id}`, {
-        method: "POST",
+        method: "POST", //TODO: HTTP GET Requests can't have a body, so the backend needs to be refactored
         body: formData,
         headers: {
             "X-CSRF-Token": csrfToken
@@ -62,12 +62,11 @@ export default function EditEventForm(props: any) {
     const [endDate, setEndDate] = useState("");
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
-    const [eventCreated, setEventCreated] = useState(false);
+    const [eventEdited, setEventEdited] = useState(false);
     const [eventLoaded, setEventLoaded] = useState(false);
 
     function loadEventState(event: LongEvent) {
         let start = new Date(event.StartDate)
-        console.log(start.toString())
         setName(event.Name)
         setTheme(event.Theme)
         setDescription(event.Description)
@@ -75,8 +74,6 @@ export default function EditEventForm(props: any) {
         setLocation(event.Location)
         setStartDate(start.toString())
         setEndDate(event.EndDate)
-        console.log(event.StartDate)
-        console.log(startDate)
     }
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -87,6 +84,7 @@ export default function EditEventForm(props: any) {
         const formData = new FormData();
 
         formData.append("email", email);
+        formData.append("eventID", eventID.toString());
         formData.append("name", name);
         formData.append("theme", theme);
         formData.append("description", description);
@@ -96,8 +94,8 @@ export default function EditEventForm(props: any) {
         formData.append("endDate", new Date(endDate).toISOString());
 
         try {
-            const response = await fetch("http://localhost:8080/event/create", {
-                method: "POST", //TODO: HTTP GET Requests can't have a body, so the backend needs to be refactored
+            const response = await fetch("http://localhost:8080/event/edit", {
+                method: "POST", 
                 body: formData,
                 headers: {
                     "X-CSRF-Token": csrfToken
@@ -105,22 +103,22 @@ export default function EditEventForm(props: any) {
                 credentials: "include"
             });
 
-            if(response.status === 201) {
-                setMessage("Event Created Successfully!");
+            if(response.status === 200) {
+                setMessage("Event Edited Successfully!");
                 setIsError(false);
-                setEventCreated(true);
+                setEventEdited(true);
             }
             else {
                 const errorText = await response.text();
                 setMessage(errorText);
                 setIsError(true);
-                setEventCreated(false);
+                setEventEdited(false);
             }
         }
         catch(error) {
             setMessage("Server error");
             setIsError(true);
-            setEventCreated(false);
+            setEventEdited(false);
         }
     }
 
@@ -132,10 +130,10 @@ export default function EditEventForm(props: any) {
         )
     }
 
-    if (eventCreated) {
+    if (eventEdited) {
         return (
             <div style={{ textAlign: "center", margin: "100px" }}>
-                <h2 style={{ color: "green" }}>Event created with success!</h2>
+                <h2 style={{ color: "green" }}>Event edited successfully!</h2>
                 <Link to ="/home">Go back to Home</Link>
             </div>
         );
@@ -197,7 +195,7 @@ export default function EditEventForm(props: any) {
                     onChange={(e) => setEndDate(e.target.value)}
                     required
                 />
-                <button type = "submit">Create Event</button>
+                <button type = "submit">Edit Event</button>
                 <p className={isError ? "error" : "success"}>
                     {message}
                 </p>
