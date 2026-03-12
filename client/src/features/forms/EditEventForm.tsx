@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import PublishEventButton from "../components/PublishEventButton.tsx";
 
 function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -60,6 +61,7 @@ export default function EditEventForm(props: any) {
     const [location, setLocation] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [published, setPublished] = useState(false);
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
     const [eventEdited, setEventEdited] = useState(false);
@@ -74,6 +76,7 @@ export default function EditEventForm(props: any) {
         setLocation(event.Location)
         setStartDate(start.toString())
         setEndDate(event.EndDate)
+        setPublished(event.Published)
     }
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -199,6 +202,8 @@ export default function EditEventForm(props: any) {
                 <p className={isError ? "error" : "success"}>
                     {message}
                 </p>
+                <hr/>
+                <PublishEventButton eventID={eventID} published={published}/>
             </form>
         );
     }
