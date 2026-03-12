@@ -47,3 +47,5 @@ dev.db
 .idea
 
 .env
+
+.dist
