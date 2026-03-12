@@ -15,9 +15,9 @@ before doing this action
 
 export default function DeleteEventButton(props: any) {
     let eventID: number = props.eventID
+    let setEventDeleted = props.setEventDeleted
 
     const [title, setTitle] = useState("Delete Event");
-    const [done, setDone] = useState(false);
 
     async function handleClick() {
         const email = localStorage.getItem("userEmail") || "";
@@ -39,7 +39,7 @@ export default function DeleteEventButton(props: any) {
 
             if(response.status === 200) {
                 setTitle("Event Deleted!");
-                setDone(true)
+                setEventDeleted(true)
             }
             else {
                 const errorText = await response.text();
@@ -56,7 +56,6 @@ export default function DeleteEventButton(props: any) {
             <button
                 type='button'
                 onClick={handleClick}
-                disabled={done}
             >
             {title}
             </button>

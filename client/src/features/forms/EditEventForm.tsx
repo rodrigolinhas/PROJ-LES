@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import PublishEventButton from "../components/PublishEventButton.tsx";
 import DeleteEventButton from '../components/DeleteEventButton.tsx';
+import { Link } from 'react-router-dom';
 
 function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -65,8 +65,8 @@ export default function EditEventForm(props: any) {
     const [published, setPublished] = useState(false);
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
-    const [eventEdited, setEventEdited] = useState(false);
     const [eventLoaded, setEventLoaded] = useState(false);
+    const [eventDeleted, setEventDeleted] = useState(false);
 
     function loadEventState(event: LongEvent) {
         let start = new Date(event.StartDate)
@@ -110,19 +110,16 @@ export default function EditEventForm(props: any) {
             if(response.status === 200) {
                 setMessage("Event Edited Successfully!");
                 setIsError(false);
-                setEventEdited(true);
             }
             else {
                 const errorText = await response.text();
                 setMessage(errorText);
                 setIsError(true);
-                setEventEdited(false);
             }
         }
         catch(error) {
             setMessage("Server error");
             setIsError(true);
-            setEventEdited(false);
         }
     }
 
@@ -134,15 +131,16 @@ export default function EditEventForm(props: any) {
         )
     }
 
-    if (eventEdited) {
+    if(eventDeleted) {
         return (
             <div style={{ textAlign: "center", margin: "100px" }}>
-                <h2 style={{ color: "green" }}>Event edited successfully!</h2>
+                <h2 style={{ color: "green" }}>Event deleted successfully!</h2>
                 <Link to ="/home">Go back to Home</Link>
             </div>
-        );
+        ); 
     }
-    else {
+    else 
+    {
         return (
             <form onSubmit={handleSubmit}>
                 <h2>Edit Event</h2>
@@ -195,7 +193,7 @@ export default function EditEventForm(props: any) {
                 <label className="required">End Date</label>
                 <input
                     type="datetime-local"
-                    value={(new Date(endDate)).toISOString().slice(0, -1)}
+                    value={(new Date(endDate)).toISOString().slice(0, -1)} //TODO: do this in a clean way
                     onChange={(e) => setEndDate(e.target.value)}
                     required
                 />
@@ -205,7 +203,7 @@ export default function EditEventForm(props: any) {
                 </p>
                 <hr/>
                 <PublishEventButton eventID={eventID} published={published}/>
-                <DeleteEventButton eventID={eventID}/>
+                <DeleteEventButton eventID={eventID} setEventDeleted={setEventDeleted}/>
             </form>
         );
     }
