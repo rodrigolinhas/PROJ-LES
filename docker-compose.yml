@@ -1,0 +1,32 @@
+# All services (client + server) go here
+services:
+  frontend:
+    build: ./client
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  backend:
+    build: ./server
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    # Volumes link files/folders from your machine into the container.
+    # Without volumes, all data inside a container is lost when it stops.
+    volumes:
+      # Bind mount: links .env from your machine to /app/.env in the container
+      # :ro = read-only (container can read it but not modify it)
+      # Needed because godotenv.Load("../.env") looks for this file
+      - ./.env:/app/.env:ro
+      # Named volume: Docker manages a persistent folder for /app/cmd
+      # This is where the SQLite database (dev.db) is stored.
+      # Without this, the database would be lost on every restart.
+      - sqlite_data:/app/cmd
+    restart: unless-stopped
+
+# Declare named volumes so Docker creates and manages them
+volumes:
+  sqlite_data:
