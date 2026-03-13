@@ -1,0 +1,4 @@
+# Same thought process as the .gitignore file (server side)
+
+vendor
+dev.db

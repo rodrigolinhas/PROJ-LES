@@ -1,0 +1,6 @@
+# Same thought process as the .gitignore file (client side)
+
+node_modules
+npm-debug.log
+dist
+build
