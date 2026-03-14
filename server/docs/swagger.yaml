@@ -118,11 +118,6 @@ paths:
       description: While the user is logged in, creates an event and registers it
         in the database
       parameters:
-      - description: User's email
-        in: formData
-        name: email
-        required: true
-        type: string
       - description: User's CSRF Token
         in: header
         name: X-CSRF-Token
@@ -187,11 +182,6 @@ paths:
       - multipart/form-data
       description: A user can delete an event organized by them
       parameters:
-      - description: User's email
-        in: formData
-        name: email
-        required: true
-        type: string
       - description: User's CSRF Token
         in: header
         name: X-CSRF-Token
@@ -234,11 +224,6 @@ paths:
       - multipart/form-data
       description: A user can edit one of their events
       parameters:
-      - description: User's email
-        in: formData
-        name: email
-        required: true
-        type: string
       - description: User's CSRF Token
         in: header
         name: X-CSRF-Token
@@ -280,7 +265,7 @@ paths:
       produces:
       - text/plain
       responses:
-        "201":
+        "200":
           description: Event edited with success
           schema:
             type: string
@@ -298,32 +283,27 @@ paths:
   /event/list:
     get:
       consumes:
-      - multipart/form-data
+      - text/plain
       description: A user can view and filter all published events
       parameters:
-      - description: User's email
-        in: formData
-        name: email
-        required: true
-        type: string
       - description: User's CSRF Token
         in: header
         name: X-CSRF-Token
         required: true
         type: string
       - description: Filter the name of the events shown
-        in: formData
+        in: query
         name: filter
         type: string
       - default: 20
         description: Number of events shown
-        in: formData
+        in: query
         maximum: 50
         name: limit
         type: integer
       - default: 0
         description: Number of skip in the search
-        in: formData
+        in: query
         name: offset
         type: integer
       produces:
@@ -349,32 +329,27 @@ paths:
   /event/my:
     get:
       consumes:
-      - multipart/form-data
+      - text/plain
       description: A user can view and filter all of their events
       parameters:
-      - description: User's email
-        in: formData
-        name: email
-        required: true
-        type: string
       - description: User's CSRF Token
         in: header
         name: X-CSRF-Token
         required: true
         type: string
       - description: Filter the name of the events shown
-        in: formData
+        in: query
         name: filter
         type: string
       - default: 20
         description: Number of events shown
-        in: formData
+        in: query
         maximum: 50
         name: limit
         type: integer
       - default: 0
         description: Number of skip in the search
-        in: formData
+        in: query
         name: offset
         type: integer
       produces:
@@ -404,11 +379,6 @@ paths:
       description: A user can publish an event organized by them, so that all users
         can view it
       parameters:
-      - description: User's email
-        in: formData
-        name: email
-        required: true
-        type: string
       - description: User's CSRF Token
         in: header
         name: X-CSRF-Token
@@ -448,15 +418,10 @@ paths:
   /event/view/:id:
     get:
       consumes:
-      - multipart/form-data
+      - text/plain
       description: A user can view the information of an event that they own or was
         published
       parameters:
-      - description: User's email
-        in: formData
-        name: email
-        required: true
-        type: string
       - description: User's CSRF Token
         in: header
         name: X-CSRF-Token
@@ -541,11 +506,6 @@ paths:
     post:
       description: Logs out the user, clears cookies and resets tokens in DB
       parameters:
-      - description: User's email
-        in: formData
-        name: email
-        required: true
-        type: string
       - description: CSRF Token
         in: header
         name: X-CSRF-Token

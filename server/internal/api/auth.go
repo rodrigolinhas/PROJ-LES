@@ -104,6 +104,10 @@ func UserLogin(c *gin.Context) {
 	sessionToken := utils.GenerateToken(32)
 	csrfToken := utils.GenerateToken(32)
 
+	//set a email cookie
+	c.SetCookie("user_email", user.Email, 24*60*60,
+		"/", "localhost", false, true)
+
 	//set a session cookie
 	c.SetCookie("session_token", sessionToken, 24*60*60,
 		"/", "localhost", false, true)
@@ -122,11 +126,15 @@ func UserLogin(c *gin.Context) {
 // Authorize verifies whether the user has permission to proceed and returns
 // said model.
 // It checks:
-// 1. If the user exists (via email param).
+// 1. If the user exists (via email cookie).
 // 2. If the session token in the cookie matches the DB.
 // 3. If the CSRF token in the header matches the DB.
 func Authorize(c *gin.Context) (*models.User, error) {
-	email := c.Request.FormValue("email")
+	email, err := c.Cookie("user_email")
+	if err != nil || email == "" {
+		return nil, fmt.Errorf("no credentials found")
+	}
+
 	var user models.User
 	res := db.DB.Where("email = ?", email).First(&user)
 	if res.Error != nil {
@@ -158,7 +166,6 @@ func Authorize(c *gin.Context) (*models.User, error) {
 // @Description Logs out the user, clears cookies and resets tokens in DB
 // @Tags       User, Auth
 // @Produce     plain
-// @Param      email  formData   string true   "User's email"
 // @Param      X-CSRF-Token header	string true   "CSRF Token"
 // @Success     200 {string} string "Logged out successfully!"
 // @Failure    401 {string} string "Unauthorized"
@@ -175,6 +182,7 @@ func UserLogout(c *gin.Context) {
 	db.DB.Save(&user)
 
 	//clean the tokens
+	c.SetCookie("user_email", "", -1, "/", "localhost", false, true)
 	c.SetCookie("session_token", "", -1, "/", "localhost", false, true)
 	c.SetCookie("csrf_token", "", -1, "/", "localhost", false, false)
 

@@ -39,7 +39,6 @@ type LongEvent struct {
 // @Tags 		Event
 // @Accept		mpfd
 // @Produce 	plain
-// @Param 		email			formData	string	true	"User's email"
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		name			formData	string	true	"Event name"
 // @Param 		theme			formData	string	true	"Event theme"
@@ -124,7 +123,6 @@ func eventEditPreface(c *gin.Context) (*models.Event, error) {
 // @Tags 		Event
 // @Accept		mpfd
 // @Produce 	plain
-// @Param 		email			formData	string	true	"User's email"
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		eventID			formData	string	true	"ID of the event"
 // @Success 	200 {string} string "Event published with success"
@@ -151,13 +149,12 @@ func EventPublish(c *gin.Context) {
 // @Summary 	List events
 // @Description A user can view and filter all published events
 // @Tags 		Event
-// @Accept		mpfd
+// @Accept		plain
 // @Produce 	json
-// @Param 		email			formData	string	true	"User's email"
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
-// @Param 		filter			formData	string	false	"Filter the name of the events shown" 
-// @Param 		limit			formData	int		false	"Number of events shown" maximum(50) default(20)
-// @Param 		offset			formData	int		false	"Number of skip in the search" default(0)
+// @Param 		filter			query		string	false	"Filter the name of the events shown" 
+// @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
+// @Param 		offset			query		int		false	"Number of skip in the search" default(0)
 // @Success 	200 {array} ShortEvent
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "No event found"
@@ -171,7 +168,7 @@ func EventList(c *gin.Context) {
 
 	//TODO: CHANGE TO ENV VARIABLES
 	limit := 20
-	limitStr := c.Request.FormValue("limit")
+	limitStr := c.DefaultQuery("limit", "")
 	if limitStr != ""  {
 		n, err := strconv.Atoi(limitStr)
 		if err == nil {
@@ -183,7 +180,7 @@ func EventList(c *gin.Context) {
 	}
 
 	offset := 0
-	offsetStr := c.Request.FormValue("offset")
+	offsetStr := c.DefaultQuery("offset", "")
 	if offsetStr != ""  {
 		n, err := strconv.Atoi(offsetStr)
 		if err == nil {
@@ -191,7 +188,7 @@ func EventList(c *gin.Context) {
 		}
 	}
 
-	filter := c.Request.FormValue("filter")
+	filter := c.DefaultQuery("filter", "")
 
 	var events []ShortEvent
 	res := db.DB.Model(&models.Event{}).
@@ -214,7 +211,6 @@ func EventList(c *gin.Context) {
 // @Tags 		Event
 // @Accept		mpfd
 // @Produce 	plain
-// @Param 		email			formData	string	true	"User's email"
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		eventID			formData	string	true	"ID of the event"
 // @Success 	200 {string} string "Event deleted with success"
@@ -242,7 +238,6 @@ func EventDelete(c *gin.Context) {
 // @Tags 		Event
 // @Accept		mpfd
 // @Produce 	plain
-// @Param 		email			formData	string	true	"User's email"
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		eventID			formData	string	true	"ID of the event"
 // @Param 		name			formData	string	false	"Event name"
@@ -328,13 +323,12 @@ func EventEdit(c *gin.Context) {
 // @Summary 	List the user's event
 // @Description A user can view and filter all of their events
 // @Tags 		Event
-// @Accept		mpfd
+// @Accept		plain
 // @Produce 	json
-// @Param 		email			formData	string	true	"User's email"
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
-// @Param 		filter			formData	string	false	"Filter the name of the events shown" 
-// @Param 		limit			formData	int		false	"Number of events shown" maximum(50) default(20)
-// @Param 		offset			formData	int		false	"Number of skip in the search" default(0)
+// @Param 		filter			query		string	false	"Filter the name of the events shown" 
+// @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
+// @Param 		offset			query		int		false	"Number of skip in the search" default(0)
 // @Success 	200 {array} ShortEvent
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "No event found"
@@ -349,7 +343,7 @@ func EventMyList(c *gin.Context) {
 	//TODO: (Refactor) unify behaviour with EventList()
 	//TODO: CHANGE TO ENV VARIABLES
 	limit := 20
-	limitStr := c.Request.FormValue("limit")
+	limitStr := c.DefaultQuery("limit", "")
 	if limitStr != ""  {
 		n, err := strconv.Atoi(limitStr)
 		if err == nil {
@@ -361,7 +355,7 @@ func EventMyList(c *gin.Context) {
 	}
 
 	offset := 0
-	offsetStr := c.Request.FormValue("offset")
+	offsetStr := c.DefaultQuery("offset", "")
 	if offsetStr != ""  {
 		n, err := strconv.Atoi(offsetStr)
 		if err == nil {
@@ -369,7 +363,7 @@ func EventMyList(c *gin.Context) {
 		}
 	}
 
-	filter := c.Request.FormValue("filter")
+	filter := c.DefaultQuery("filter", "")
 
 	var events []ShortEvent
 	res := db.DB.Model(&models.Event{}).
@@ -390,9 +384,8 @@ func EventMyList(c *gin.Context) {
 // @Summary 	View event information
 // @Description A user can view the information of an event that they own or was published 
 // @Tags 		Event
-// @Accept		mpfd
+// @Accept		plain
 // @Produce 	json
-// @Param 		email			formData	string	true	"User's email"
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		id				path		string	true	"ID of the event"
 // @Success 	200 {object} LongEvent
