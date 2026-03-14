@@ -15,6 +15,7 @@ type EventRegistration struct {
 	RegistrationType 	string			//represents registration type and tier
 	DiscountCodeID		uint
 	DiscountCode		DiscountCode
+	Confirmed			bool			`gorm:"not null;default:false"` //represents whether the enrollment has already been paid or not
 	CreatedAt 			time.Time
   	UpdatedAt 			time.Time
   	DeletedAt 			gorm.DeletedAt 	`gorm:"index"`
@@ -45,6 +46,7 @@ func NewEventRegistration(user User, event Event, discount DiscountCode, regType
 		Event: event,
 		DiscountCode: discount,
 		RegistrationType: regType,
+		Confirmed: false,
 	}
 
 	return res, nil
