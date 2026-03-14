@@ -252,7 +252,7 @@ func EventDelete(c *gin.Context) {
 // @Param 		startDate		formData	string	false	"Date/Time at which the event starts (RFC3339/ISO8601 format)"
 // @Param 		endDate			formData	string	false	"Date/Time at which the event ends (RFC3339/ISO8601 format)"
 // @Param 		location		formData	string	false	"Location where the event takes place"
-// @Success 	201 {string} string "Event edited with success"
+// @Success 	200 {string} string "Event edited with success"
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure 	500 {string} string "Error found during event editing"
 // @Router 		/event/edit [post]

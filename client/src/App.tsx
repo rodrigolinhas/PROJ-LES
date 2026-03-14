@@ -7,6 +7,7 @@ import LandingPage from "./features/pages/LandingPage.tsx";
 import CreateEventPage from "./features/pages/CreateEventPage";
 import AuthSuccessPage from "./features/pages/AuthSuccessPage.tsx";
 
+import EditEventPage from "./features/pages/EditEventPage";
 
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 
@@ -22,6 +23,7 @@ function App() {
                 <Route element={<ProtectedRoutes />}>
                     <Route path="/home" element={<HomePage />}/>
                     <Route path="/event/create" element={<CreateEventPage />}/>
+                    <Route path="/event/edit/:id" element={<EditEventPage />}/>
                 </Route>
             </Routes>
         </BrowserRouter>
