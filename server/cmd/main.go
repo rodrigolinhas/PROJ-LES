@@ -71,6 +71,10 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/event/edit", api.EventEdit)
 	router.POST("/event/view/:id", api.EventView) //TODO: HTTP GET Requests can't have a body
 
+	//event registration
+	router.POST("/event/register", api.EventRegister)
+	router.POST("/event/pay", api.EventPay)
+
 	// swagger handler
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swagfiles.Handler))
 }

@@ -22,6 +22,8 @@ func ConnectDB() {
 		&models.Ping{}, 
 		&models.User{}, 
 		&models.Event{},
+		&models.DiscountCode{},
+		&models.EventRegistration{},
 	)
 
 	if err != nil {

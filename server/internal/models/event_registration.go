@@ -14,8 +14,9 @@ type EventRegistration struct {
 	Event				Event			`gorm:"not null"`
 	RegistrationType 	string			//represents registration type and tier
 	DiscountCodeID		uint
-	DiscountCode		DiscountCode
+	DiscountCode		*DiscountCode
 	Confirmed			bool			`gorm:"not null;default:false"` //represents whether the enrollment has already been paid or not
+	PayToken			string
 	CreatedAt 			time.Time
   	UpdatedAt 			time.Time
   	DeletedAt 			gorm.DeletedAt 	`gorm:"index"`
@@ -30,15 +31,17 @@ incomplete and needs to be finished once registration types and tiers are
 to be implemented.
 */
 
-func NewEventRegistration(user User, event Event, discount DiscountCode, regType string) (*EventRegistration, error) {
-	if (user == event.Organizer) {
+func NewEventRegistration(user User, event Event, discount *DiscountCode, regType string) (*EventRegistration, error) {
+	if (user == event.Organizer || (user.ID != 0 && user.ID == event.OrganizerID)) {
 		return nil, errors.New("EventRegistration: An organizer can't enroll in their own event")
 	}
 
 	//TODO: check if regType is valid registration type/tier for the event
 
-	if (!discount.IsActive || discount.UsesCount >= discount.MaxUses) {
-		return nil, errors.New("EventRegistration: Inactive discount code")
+	if (discount != nil) {
+		if (!discount.IsActive || discount.UsesCount >= discount.MaxUses) {
+			return nil, errors.New("EventRegistration: Inactive discount code")
+		}
 	}
 
 	res := &EventRegistration{
