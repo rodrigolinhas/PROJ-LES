@@ -417,6 +417,86 @@
       "name": "04 - event",
       "item": [
         {
+          "name": "event_login_forTestsEvents",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Login -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const setCookies = pm.response.headers.all()\r",
+                  "  .filter(h => h.key.toLowerCase() === \"set-cookie\")\r",
+                  "  .map(h => h.value);\r",
+                  "\r",
+                  "function getCookieValue(name) {\r",
+                  "  const row = setCookies.find(v => v.startsWith(name + \"=\"));\r",
+                  "  if (!row) return null;\r",
+                  "  return row.split(\";\")[0].substring(name.length + 1);\r",
+                  "}\r",
+                  "\r",
+                  "const csrf = getCookieValue(\"csrf_token\");\r",
+                  "pm.test(\"CSRF cookie veio no login\", function () {\r",
+                  "  pm.expect(csrf).to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "if (csrf) {\r",
+                  "  pm.environment.set(\"csrfToken\", csrf);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "c80fe009-1824-4fbb-9344-5904aadacce6"
+                },
+                {
+                  "key": "pass",
+                  "value": "{{password}}",
+                  "type": "text",
+                  "uuid": "ade1d20b-d44e-45da-9998-a21b71452b1e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "create_event",
           "event": [
             {
