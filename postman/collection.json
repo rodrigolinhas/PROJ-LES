@@ -58,6 +58,36 @@
       "item": [
         {
           "name": "register",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Register -> 201\", function () {\r",
+                  "  pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Register -> success message\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"User registered successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
@@ -191,6 +221,25 @@
         },
         {
           "name": "logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"UserLogout -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"UserLogout -> success message\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Log out with success\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -356,6 +405,632 @@
                 {
                   "key": "state",
                   "value": "INVALID"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - event",
+      "item": [
+        {
+          "name": "create_event",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Create Event -> 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Create Event -> success message\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.include(\"Event created successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "d8b7e788-4986-439b-8db5-e7622485d3f1"
+                },
+                {
+                  "key": "name",
+                  "value": "{{event_name}}",
+                  "type": "text",
+                  "uuid": "0c7e60bc-46f3-4a28-a9f1-7b96e1170ff0"
+                },
+                {
+                  "key": "theme",
+                  "value": "{{event_theme}}",
+                  "type": "text",
+                  "uuid": "6cd3f22d-2a1e-4bbf-8575-23c818fb242e"
+                },
+                {
+                  "key": "description",
+                  "value": "{{event_description}}",
+                  "type": "text",
+                  "uuid": "dcf0b5e1-ed16-4161-8edc-ea442e167cc6"
+                },
+                {
+                  "key": "organization",
+                  "value": "{{event_organization}}",
+                  "type": "text",
+                  "uuid": "1410ba6d-97e8-48cd-b24b-fe96968032c6"
+                },
+                {
+                  "key": "startDate",
+                  "value": "{{event_start}}",
+                  "type": "text",
+                  "uuid": "69d3681d-47c0-4b83-9771-c8a4ec1e5e79"
+                },
+                {
+                  "key": "endDate",
+                  "value": "{{event_end}}",
+                  "type": "text",
+                  "uuid": "4bb507f1-e956-4e50-8f24-1763fd6adf0f"
+                },
+                {
+                  "key": "location",
+                  "value": "{{event_location}}",
+                  "type": "text",
+                  "uuid": "9a9314cf-ea43-4c19-9c9b-1fd7c64bccea"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_my",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"My Events -> 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const data = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"My Events -> returns array\", function () {\r",
+                  "    pm.expect(data).to.be.an(\"array\");\r",
+                  "    pm.expect(data.length).to.be.greaterThan(0);\r",
+                  "});\r",
+                  "\r",
+                  "const createdEvent = data.find(e => e.Name === pm.environment.get(\"event_name\"));\r",
+                  "\r",
+                  "pm.test(\"Created event found in my events\", function () {\r",
+                  "    pm.expect(createdEvent).to.exist;\r",
+                  "});\r",
+                  "\r",
+                  "if (createdEvent) {\r",
+                  "    pm.environment.set(\"event_id\", createdEvent.ID);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "dfa7b427-e2f5-4271-b3c0-b8fb134ff3d9"
+                },
+                {
+                  "key": "filter",
+                  "value": "{{event_name}}",
+                  "type": "text",
+                  "uuid": "6a60d56a-cb7b-4aff-a419-62d1321ebe4d"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "type": "text",
+                  "uuid": "53e954c1-0da3-4227-a5bd-19e03534f9b2"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "type": "text",
+                  "uuid": "932a6133-1d2f-4f71-aced-742ebf706426"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/my",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "my"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_view",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"View Event -> 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const eventData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"View Event -> correct event\", function () {\r",
+                  "    pm.expect(eventData.ID).to.eql(Number(pm.environment.get(\"event_id\")));\r",
+                  "    pm.expect(eventData.Name).to.eql(pm.environment.get(\"event_name\"));\r",
+                  "    pm.expect(eventData.Theme).to.eql(pm.environment.get(\"event_theme\"));\r",
+                  "    pm.expect(eventData.Published).to.eql(false);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}?email={{email}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "{{email}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_edit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Edit Event -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Edit Event -> success message\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event edited successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "8a4563db-12f5-4cb5-ae02-32341a6432f8"
+                },
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "4bae8272-c5d4-4d5a-b202-5ba986e1c6ba"
+                },
+                {
+                  "key": "name",
+                  "value": "{{event_name_edited}}",
+                  "type": "text",
+                  "uuid": "ebb7af57-cbc5-49ad-a11c-a28f71b902a4"
+                },
+                {
+                  "key": "theme",
+                  "value": "{{event_theme_edit}}",
+                  "type": "text",
+                  "uuid": "a26aea9b-6874-4d5f-bcbd-8992f15abd45"
+                },
+                {
+                  "key": "location",
+                  "value": "{{event_location_edited}}",
+                  "type": "text",
+                  "uuid": "7a21a21a-1c82-4f7b-9d17-f58b43e753d9"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/edit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "edit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_view_after_edit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"View Event -> 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const eventData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"View Event -> correct event\", function () {\r",
+                  "    pm.expect(eventData.ID).to.eql(Number(pm.environment.get(\"event_id\")));\r",
+                  "    pm.expect(eventData.Name).to.eql(pm.environment.get(\"event_name_edited\"));\r",
+                  "    pm.expect(eventData.Theme).to.eql(pm.environment.get(\"event_theme_edit\"));\r",
+                  "    pm.expect(eventData.Published).to.eql(false);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}?email={{email}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "{{email}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_publish",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Publish Event -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Publish Event -> success message\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event published with success\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "f3b8e95c-96fa-47f0-89ca-b5f9a3062190"
+                },
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "060f908c-d780-48e2-94ee-513363045f9b"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "publish"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_list_publishEvents",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Event List -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const data = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Published event appears in public list\", function () {\r",
+                  "  pm.expect(data).to.be.an(\"array\");\r",
+                  "  const publishedEvent = data.find(e => e.ID === Number(pm.environment.get(\"eventID\")));\r",
+                  "  pm.expect(publishedEvent).to.exist;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "478887e9-3b7b-49a8-ac05-0d832003a2f4"
+                },
+                {
+                  "key": "filter",
+                  "value": "{{event_name_edited}}",
+                  "type": "text",
+                  "uuid": "832aff63-f14b-467b-9fc9-73ae7e9fb010"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "type": "text",
+                  "uuid": "0d5e2a20-256d-474e-976e-080f85773237"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "type": "text",
+                  "uuid": "e5c256e2-ed90-4143-b508-61f4f4c14274"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Delete Event -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Delete Event -> success message\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event deleted with success\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "9fadf7fa-367e-4e15-9121-5b4d4c73c8d6"
+                },
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "d25b0328-4e83-42f2-9b0c-4d40d856b074"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/delete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "delete"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_view_after_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deleted event can no longer be viewed\", function () {\r",
+                  "  pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Deleted event -> not found\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event not found\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}?email={{email}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "{{email}}"
                 }
               ]
             }
