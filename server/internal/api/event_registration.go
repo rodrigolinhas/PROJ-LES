@@ -77,7 +77,7 @@ func EventRegister(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.IndentedJSON(http.StatusOK, gin.H{
 		"payToken": reg.PayToken,
 	})
 }
@@ -99,9 +99,15 @@ func EventPay(c *gin.Context) {
 		return
 	}
 
+	if reg.Confirmed == true {
+		c.String(http.StatusConflict, "Registration has already been paid")
+		return
+	}
+
 	//DUMMY FUNCTION FOR EVENT REGISTRATION PAYMENT PROCESSING
 
 	reg.Confirmed = true
+	reg.PayToken = ""
 	db.DB.Save(reg)
 
 	c.String(http.StatusOK, "Event registration payed successfully")
