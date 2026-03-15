@@ -180,3 +180,32 @@ func UserLogout(c *gin.Context) {
 
 	c.String(http.StatusOK, "Log out with success")
 }
+
+// UserMe
+// @Summary     Get current user
+// @Description Returns the currently logged in user based on the session token
+// @Tags        User, Auth
+// @Produce     json
+// @Success     200 {object} map[string]string "User info"
+// @Failure     401 {string} string "Unauthorized"
+// @Router      /user/me [get]
+func UserMe(c *gin.Context) {
+	sessionToken, err := c.Cookie("session_token")
+	if err != nil || sessionToken == "" {
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	var user models.User
+	res := db.DB.Where("session_token = ?", sessionToken).First(&user)
+	if res.Error != nil {
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"email":     user.Email,
+		"firstName": user.FirstName,
+		"lastName":  user.LastName,
+	})
+}

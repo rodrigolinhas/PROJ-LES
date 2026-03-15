@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import GoogleIcon from "../../assets/icons/google-svgrepo-com.svg";
+
 
 export default function AccountAuthForm() {
     const [email, setEmail] = useState("");
@@ -68,11 +70,15 @@ export default function AccountAuthForm() {
             <button type="submit">Login</button>
 
             <h3>Other login options:</h3>
-            <button type={"button"} onClick={() => {
-                setMessage("Logged in with Gmail");
-                setIsError(false);
-            }}>
-                Login with Gmail
+            <button
+                type="button"
+                onClick={() => {
+                    window.location.href = "http://localhost:8080/auth/google?provider=google";
+                }}
+                style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}
+            >
+                <img src={GoogleIcon} alt="Google logo" width="20" height="20" />
+                Login with Google
             </button>
 
 

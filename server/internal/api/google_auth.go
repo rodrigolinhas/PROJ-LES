@@ -46,6 +46,15 @@ func InitGoogleAuth() {
 			"email", "profile",
 		),
 	)
+
+	// Force Google to always show the account selection/consent screen
+	// FOR DEMO PURPOSES ONLY
+	provider, err := goth.GetProvider("google")
+	if err == nil {
+		googleProvider := provider.(*google.Provider)
+		googleProvider.SetPrompt("select_account")
+	}
+
 }
 
 // GoogleAuthBegin
