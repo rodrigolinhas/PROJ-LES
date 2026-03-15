@@ -12,6 +12,25 @@ import (
 	"LES/server/internal/utils"
 )
 
+type PayTokenJSON struct {
+	PayToken string
+}
+
+// EventRegister
+// @Summary 	Enroll in a event
+// @Description A user can enroll in a event, if said enrollment expects payment, a payToken will be given.
+// @Tags 		Event
+// @Accept		mpfd
+// @Produce 	json
+// @Param 		email			formData	string	true	"User's email"
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		eventID			formData	string	true	"ID of the event"
+// @Param 		discountCode	formData	string	false	"Discount code"
+// @Success 	200 {object} PayTokenJSON
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		404 {string} string "Event / Discount code not found"
+// @Failure 	500 {string} string "Error found during event enrollment"
+// @Router 		/event/register [post]
 func EventRegister(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
@@ -82,6 +101,22 @@ func EventRegister(c *gin.Context) {
 	})
 }
 
+// EventPay
+// @Summary 	Pay event enrollment fee
+// @Description Dummy endpoint for paying the fee for enrolling in a event
+// @Tags 		Event, Dev
+// @Accept		mpfd
+// @Produce 	plain
+// @Param 		email			formData	string	true	"User's email"
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		eventID			formData	string	true	"ID of the event"
+// @Param 		PayToken		formData	string	true	"PayToken given during event enrollment"
+// @Success 	200 {string} string "Event registration payed successfully"
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		404 {string} string "Registration not found"
+// @Failure		409 {string} string "Registration has already been paid"
+// @Failure 	500 {string} string "Error found during event payment confirmation"
+// @Router 		/event/pay [post]
 func EventPay(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
@@ -108,7 +143,11 @@ func EventPay(c *gin.Context) {
 
 	reg.Confirmed = true
 	reg.PayToken = ""
-	db.DB.Save(reg)
+	res = db.DB.Save(reg)
+	if res.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found during event payment confirmation in the DB")
+		return
+	}
 
 	c.String(http.StatusOK, "Event registration payed successfully")
 }

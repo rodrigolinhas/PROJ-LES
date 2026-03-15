@@ -342,7 +342,7 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Event edited with success",
                         "schema": {
                             "type": "string"
@@ -513,6 +513,84 @@ const docTemplate = `{
                 }
             }
         },
+        "/event/pay": {
+            "post": {
+                "description": "Dummy endpoint for paying the fee for enrolling in a event",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Event",
+                    "Dev"
+                ],
+                "summary": "Pay event enrollment fee",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "eventID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "PayToken given during event enrollment",
+                        "name": "PayToken",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event registration payed successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Registration not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Registration has already been paid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found during event payment confirmation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/event/publish": {
             "post": {
                 "description": "A user can publish an event organized by them, so that all users can view it",
@@ -576,6 +654,76 @@ const docTemplate = `{
                     },
                     "409": {
                         "description": "Event already published",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/register": {
+            "post": {
+                "description": "A user can enroll in a event, if said enrollment expects payment, a payToken will be given.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Enroll in a event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's email",
+                        "name": "email",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "eventID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Discount code",
+                        "name": "discountCode",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.PayTokenJSON"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event / Discount code not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found during event enrollment",
                         "schema": {
                             "type": "string"
                         }
@@ -884,6 +1032,14 @@ const docTemplate = `{
                 "theme": {
                     "type": "string",
                     "example": "CompSci"
+                }
+            }
+        },
+        "api.PayTokenJSON": {
+            "type": "object",
+            "properties": {
+                "payToken": {
+                    "type": "string"
                 }
             }
         },
