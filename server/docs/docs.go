@@ -380,7 +380,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "default": 0,
-                        "description": "Number of skip in the search",
+                        "description": "Number of events to skip in the search",
                         "name": "offset",
                         "in": "query"
                     }
@@ -448,7 +448,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "default": 0,
-                        "description": "Number of skip in the search",
+                        "description": "Number of events to skip in the search",
                         "name": "offset",
                         "in": "query"
                     }
@@ -478,6 +478,80 @@ const docTemplate = `{
                 }
             }
         },
+        "/event/my/enroll": {
+            "get": {
+                "description": "A user can view and filter all events that they enrolled in",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "List the user's enrolled event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter the name of the events shown",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 50,
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Number of events shown",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Number of events to skip in the search",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.ShortEventEnroll"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "No event found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found on query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/event/pay": {
             "post": {
                 "description": "Dummy endpoint for paying the fee for enrolling in a event",
@@ -493,13 +567,6 @@ const docTemplate = `{
                 ],
                 "summary": "Pay event enrollment fee",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User's email",
-                        "name": "email",
-                        "in": "formData",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "User's CSRF Token",
@@ -633,13 +700,6 @@ const docTemplate = `{
                 ],
                 "summary": "Enroll in a event",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User's email",
-                        "name": "email",
-                        "in": "formData",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "User's CSRF Token",
@@ -854,6 +914,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/me": {
+            "get": {
+                "description": "Returns the currently logged in user based on the session token",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User",
+                    "Auth"
+                ],
+                "summary": "Get current user",
+                "responses": {
+                    "200": {
+                        "description": "User info",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/register": {
             "post": {
                 "description": "Registers an user on the DB",
@@ -990,6 +1080,27 @@ const docTemplate = `{
         "api.ShortEvent": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Event"
+                },
+                "theme": {
+                    "type": "string",
+                    "example": "CompSci"
+                }
+            }
+        },
+        "api.ShortEventEnroll": {
+            "type": "object",
+            "properties": {
+                "confirmed": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
