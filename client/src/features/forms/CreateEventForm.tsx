@@ -22,11 +22,9 @@ export default function CreateEventForm() {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        const email = localStorage.getItem("userEmail") || "";
         const csrfToken = getCookie("csrf_token") || "";
         const formData = new FormData();
 
-        formData.append("email", email);
         formData.append("name", name);
         formData.append("theme", theme);
         formData.append("description", description);
