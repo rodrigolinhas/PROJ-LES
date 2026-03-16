@@ -34,13 +34,85 @@
 		},
 		{
 			"key": "role",
-			"value": "Student",
+			"value": "EventOrganizer",
 			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "event_name",
+			"value": "Dummy",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "event_theme",
+			"value": "Ballons",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "event_description",
+			"value": "Event for tests that ballons are the description and its form org...BLA, BLA!",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "event_organization",
+			"value": "org.org",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "event_start",
+			"value": "2026-03-07T12:00:00Z",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "event_end",
+			"value": "2026-03-07T20:00:00Z",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "event_location",
+			"value": "Faro",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "event_name_edited",
+			"value": "Dummy2",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "event_theme_edit",
+			"value": "Ballons2",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "event_location_edited",
+			"value": "Olhão",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "csrfToken",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "event_id",
+			"value": "",
+			"type": "any",
 			"enabled": true
 		}
 	],
 	"color": null,
 	"_postman_variable_scope": "environment",
-	"_postman_exported_at": "2026-03-05T23:39:03.308Z",
-	"_postman_exported_using": "Postman/12.0.3"
+	"_postman_exported_at": "2026-03-14T19:08:48.698Z",
+	"_postman_exported_using": "Postman/12.0.8"
 }

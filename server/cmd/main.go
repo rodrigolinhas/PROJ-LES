@@ -57,6 +57,7 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/user/register", api.UserRegister)
 	router.POST("/user/login", api.UserLogin)
 	router.POST("/user/logout", api.UserLogout)
+	router.GET("/user/me", api.UserMe)
 
 	//google oauth
 	router.GET("/auth/google", api.GoogleAuthBegin)
@@ -69,7 +70,7 @@ func setEndpoints(router *gin.Engine) {
 	router.GET("/event/my", api.EventMyList)
 	router.POST("/event/delete", api.EventDelete)
 	router.POST("/event/edit", api.EventEdit)
-	router.POST("/event/view/:id", api.EventView) //TODO: HTTP GET Requests can't have a body
+	router.GET("/event/view/:id", api.EventView)
 
 	//event registration
 	router.POST("/event/register", api.EventRegister)

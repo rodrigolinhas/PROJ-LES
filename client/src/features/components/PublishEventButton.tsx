@@ -21,11 +21,9 @@ export default function PublishEventButton(props: any) {
     const [done, setDone] = useState(published);
 
     async function handleClick() {
-        const email = localStorage.getItem("userEmail") || "";
         const csrfToken = getCookie("csrf_token") || "";
         const formData = new FormData();
 
-        formData.append("email", email);
         formData.append("eventID", eventID.toString());
 
         try {

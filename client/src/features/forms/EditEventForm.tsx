@@ -10,15 +10,10 @@ function getCookie(name: string) {
 }
 
 async function loadEventInfo(id: number): Promise<LongEvent> {
-    const email = localStorage.getItem("userEmail") || "";
     const csrfToken = getCookie("csrf_token") || "";
-    const formData = new FormData();
-
-    formData.append("email", email);
 
     const res = await fetch(`http://localhost:8080/event/view/${id}`, {
-        method: "POST", //TODO: HTTP GET Requests can't have a body, so the backend needs to be refactored
-        body: formData,
+        method: "GET",
         headers: {
             "X-CSRF-Token": csrfToken
         },
@@ -83,11 +78,9 @@ export default function EditEventForm(props: any) {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        const email = localStorage.getItem("userEmail") || "";
         const csrfToken = getCookie("csrf_token") || "";
         const formData = new FormData();
 
-        formData.append("email", email);
         formData.append("eventID", eventID.toString());
         formData.append("name", name);
         formData.append("theme", theme);

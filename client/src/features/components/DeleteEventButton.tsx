@@ -20,11 +20,9 @@ export default function DeleteEventButton(props: any) {
     const [title, setTitle] = useState("Delete Event");
 
     async function handleClick() {
-        const email = localStorage.getItem("userEmail") || "";
         const csrfToken = getCookie("csrf_token") || "";
         const formData = new FormData();
 
-        formData.append("email", email);
         formData.append("eventID", eventID.toString());
 
         try {

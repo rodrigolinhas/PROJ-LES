@@ -109,13 +109,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "User's email",
-                        "name": "email",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "User's CSRF Token",
                         "name": "X-CSRF-Token",
                         "in": "header",
@@ -209,13 +202,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "User's email",
-                        "name": "email",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "User's CSRF Token",
                         "name": "X-CSRF-Token",
                         "in": "header",
@@ -277,13 +263,6 @@ const docTemplate = `{
                 ],
                 "summary": "Edit event",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User's email",
-                        "name": "email",
-                        "in": "formData",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "User's CSRF Token",
@@ -367,7 +346,7 @@ const docTemplate = `{
             "get": {
                 "description": "A user can view and filter all published events",
                 "consumes": [
-                    "multipart/form-data"
+                    "text/plain"
                 ],
                 "produces": [
                     "application/json"
@@ -379,13 +358,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "User's email",
-                        "name": "email",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "User's CSRF Token",
                         "name": "X-CSRF-Token",
                         "in": "header",
@@ -395,7 +367,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Filter the name of the events shown",
                         "name": "filter",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "maximum": 50,
@@ -403,14 +375,14 @@ const docTemplate = `{
                         "default": 20,
                         "description": "Number of events shown",
                         "name": "limit",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "default": 0,
                         "description": "Number of skip in the search",
                         "name": "offset",
-                        "in": "formData"
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -442,7 +414,7 @@ const docTemplate = `{
             "get": {
                 "description": "A user can view and filter all of their events",
                 "consumes": [
-                    "multipart/form-data"
+                    "text/plain"
                 ],
                 "produces": [
                     "application/json"
@@ -454,13 +426,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "User's email",
-                        "name": "email",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "User's CSRF Token",
                         "name": "X-CSRF-Token",
                         "in": "header",
@@ -470,7 +435,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Filter the name of the events shown",
                         "name": "filter",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "maximum": 50,
@@ -478,14 +443,14 @@ const docTemplate = `{
                         "default": 20,
                         "description": "Number of events shown",
                         "name": "limit",
-                        "in": "formData"
+                        "in": "query"
                     },
                     {
                         "type": "integer",
                         "default": 0,
                         "description": "Number of skip in the search",
                         "name": "offset",
-                        "in": "formData"
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -605,13 +570,6 @@ const docTemplate = `{
                 ],
                 "summary": "Publish event",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User's email",
-                        "name": "email",
-                        "in": "formData",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "User's CSRF Token",
@@ -735,7 +693,7 @@ const docTemplate = `{
             "get": {
                 "description": "A user can view the information of an event that they own or was published",
                 "consumes": [
-                    "multipart/form-data"
+                    "text/plain"
                 ],
                 "produces": [
                     "application/json"
@@ -745,13 +703,6 @@ const docTemplate = `{
                 ],
                 "summary": "View event information",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User's email",
-                        "name": "email",
-                        "in": "formData",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "User's CSRF Token",
@@ -879,13 +830,6 @@ const docTemplate = `{
                 ],
                 "summary": "User logout",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User's email",
-                        "name": "email",
-                        "in": "formData",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "CSRF Token",
