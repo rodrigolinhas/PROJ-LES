@@ -3,7 +3,9 @@ package api
 import (
 	db "LES/server/internal/database"
 	"LES/server/internal/utils"
+	"LES/server/internal/models"
 	"net/http"
+	"regexp"
 
 	"github.com/gin-gonic/gin"
 )
@@ -66,6 +68,11 @@ func UserInfoEdit(c *gin.Context) {
 		user.LastName = lastName
 	}
 	if email != "" {
+		ok, _ := regexp.MatchString(models.EmailRegex, email)
+		if !ok {
+			c.String(http.StatusInternalServerError, "Invalid Email")
+			return
+		}
 		user.Email = email
 	}
 	if password != "" {
