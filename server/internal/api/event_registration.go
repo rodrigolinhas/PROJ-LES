@@ -22,7 +22,6 @@ type PayTokenJSON struct {
 // @Tags 		Event
 // @Accept		mpfd
 // @Produce 	json
-// @Param 		email			formData	string	true	"User's email"
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		eventID			formData	string	true	"ID of the event"
 // @Param 		discountCode	formData	string	false	"Discount code"
@@ -107,7 +106,6 @@ func EventRegister(c *gin.Context) {
 // @Tags 		Event, Dev
 // @Accept		mpfd
 // @Produce 	plain
-// @Param 		email			formData	string	true	"User's email"
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		eventID			formData	string	true	"ID of the event"
 // @Param 		PayToken		formData	string	true	"PayToken given during event enrollment"

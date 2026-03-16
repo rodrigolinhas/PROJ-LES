@@ -117,6 +117,41 @@ func eventEditPreface(c *gin.Context) (*models.Event, error) {
 	return &event, nil
 }
 
+// returns user, limit, offset, filter, error
+func eventListPreface(c *gin.Context) (*models.User, int, int, string, error) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		return nil, 0, 0, "", errors.New("Error sent")
+	}
+
+	//TODO: CHANGE TO ENV VARIABLES
+	limit := 20
+	limitStr := c.DefaultQuery("limit", "")
+	if limitStr != ""  {
+		n, err := strconv.Atoi(limitStr)
+		if err == nil {
+			limit = n
+		}
+		if limit > 50 {
+			limit = 50
+		}
+	}
+
+	offset := 0
+	offsetStr := c.DefaultQuery("offset", "")
+	if offsetStr != ""  {
+		n, err := strconv.Atoi(offsetStr)
+		if err == nil {
+			offset = n
+		}
+	}
+
+	filter := c.DefaultQuery("filter", "")
+
+	return user, limit, offset, filter, nil
+}
+
 // EventPublish
 // @Summary 	Publish event
 // @Description A user can publish an event organized by them, so that all users can view it
@@ -160,35 +195,8 @@ func EventPublish(c *gin.Context) {
 // @Failure		404 {string} string "No event found"
 // @Router 		/event/list [get]
 func EventList(c *gin.Context) {
-	_, autherr := Authorize(c)
-	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
-		return
-	}
-
-	//TODO: CHANGE TO ENV VARIABLES
-	limit := 20
-	limitStr := c.DefaultQuery("limit", "")
-	if limitStr != ""  {
-		n, err := strconv.Atoi(limitStr)
-		if err == nil {
-			limit = n
-		}
-		if limit > 50 {
-			limit = 50
-		}
-	}
-
-	offset := 0
-	offsetStr := c.DefaultQuery("offset", "")
-	if offsetStr != ""  {
-		n, err := strconv.Atoi(offsetStr)
-		if err == nil {
-			offset = n
-		}
-	}
-
-	filter := c.DefaultQuery("filter", "")
+	_, limit, offset, filter, err := eventListPreface(c)
+	if err != nil { return }
 
 	var events []ShortEvent
 	res := db.DB.Model(&models.Event{}).
@@ -334,36 +342,8 @@ func EventEdit(c *gin.Context) {
 // @Failure		404 {string} string "No event found"
 // @Router 		/event/my [get]
 func EventMyList(c *gin.Context) {
-	user, autherr := Authorize(c)
-	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
-		return
-	}
-
-	//TODO: (Refactor) unify behaviour with EventList()
-	//TODO: CHANGE TO ENV VARIABLES
-	limit := 20
-	limitStr := c.DefaultQuery("limit", "")
-	if limitStr != ""  {
-		n, err := strconv.Atoi(limitStr)
-		if err == nil {
-			limit = n
-		}
-		if limit > 50 {
-			limit = 50
-		}
-	}
-
-	offset := 0
-	offsetStr := c.DefaultQuery("offset", "")
-	if offsetStr != ""  {
-		n, err := strconv.Atoi(offsetStr)
-		if err == nil {
-			offset = n
-		}
-	}
-
-	filter := c.DefaultQuery("filter", "")
+	user, limit, offset, filter, err := eventListPreface(c)
+	if err != nil { return }
 
 	var events []ShortEvent
 	res := db.DB.Model(&models.Event{}).
