@@ -13,7 +13,6 @@ import (
 // @Description Returns the authenticated user's information
 // @Tags        User
 // @Produce     json
-// @Param       email formData string true "User email"
 // @Param       X-CSRF-Token header string true "CSRF Token"
 // @Success     200 {object} map[string]string
 // @Failure     401 {string} string "Unauthorized"
@@ -39,7 +38,6 @@ func UserInfoView(c *gin.Context) {
 // @Tags        User
 // @Accept      mpfd
 // @Produce     plain
-// @Param       email formData string false "New email"
 // @Param       firstName formData string false "New first name"
 // @Param       lastName formData string false "New last name"
 // @Param       password formData string false "New password (must be at least 8 characters)"
