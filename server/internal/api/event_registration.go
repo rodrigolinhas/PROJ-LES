@@ -156,6 +156,21 @@ type ShortEventEnroll struct {
 	Confirmed bool `example:"true"`
 }
 
+// EventRegistrationList
+// @Summary 	List the user's enrolled event
+// @Description A user can view and filter all events that they enrolled in
+// @Tags 		Event
+// @Accept		plain
+// @Produce 	json
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		filter			query		string	false	"Filter the name of the events shown" 
+// @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
+// @Param 		offset			query		int		false	"Number of events to skip in the search" default(0)
+// @Success 	200 {array} ShortEventEnroll
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		404 {string} string "No event found"
+// @Failure		500 {string} string "Error found on query"
+// @Router 		/event/my/enroll [get]
 func EventRegistrationList(c *gin.Context) {
 	user, limit, offset, filter, err := eventListPreface(c)
 	if err != nil { return }

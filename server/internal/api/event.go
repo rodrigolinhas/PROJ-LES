@@ -189,7 +189,7 @@ func EventPublish(c *gin.Context) {
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		filter			query		string	false	"Filter the name of the events shown" 
 // @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
-// @Param 		offset			query		int		false	"Number of skip in the search" default(0)
+// @Param 		offset			query		int		false	"Number of events to skip in the search" default(0)
 // @Success 	200 {array} ShortEvent
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "No event found"
@@ -336,7 +336,7 @@ func EventEdit(c *gin.Context) {
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		filter			query		string	false	"Filter the name of the events shown" 
 // @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
-// @Param 		offset			query		int		false	"Number of skip in the search" default(0)
+// @Param 		offset			query		int		false	"Number of events to skip in the search" default(0)
 // @Success 	200 {array} ShortEvent
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "No event found"
