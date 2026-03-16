@@ -46,6 +46,7 @@ func EventRegister(c *gin.Context) {
 	res := db.DB.Where("ID = ?", eventID).First(&event)
 	if res.Error != nil || res.RowsAffected != 1 {
 		c.String(http.StatusNotFound, "Event not found")
+		return
 	}
 
 	var discount *models.DiscountCode
@@ -148,4 +149,36 @@ func EventPay(c *gin.Context) {
 	}
 
 	c.String(http.StatusOK, "Event registration payed successfully")
+}
+
+type ShortEventEnroll struct {
+	ShortEvent
+	Confirmed bool `example:"true"`
+}
+
+func EventRegistrationList(c *gin.Context) {
+	user, limit, offset, filter, err := eventListPreface(c)
+	if err != nil { return }
+
+	var events []ShortEventEnroll
+	sub := db.DB.Model(&models.EventRegistration{}).
+				 Where("user_id = ?", user.ID).
+				 Select("event_id, confirmed")
+	res := db.DB.Table("events").
+				 Joins("RIGHT JOIN (?) ON id = event_id", sub).
+				 Limit(limit).
+				 Offset(offset).
+				 Where("name LIKE ?", "%"+filter+"%").
+				 Scan(&events)
+
+	if res.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found on query")
+		return
+	}
+	if res.RowsAffected == 0 {
+		c.String(http.StatusNotFound, "No event found")
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, events)
 }
