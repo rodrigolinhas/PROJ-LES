@@ -57,11 +57,14 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/user/register", api.UserRegister)
 	router.POST("/user/login", api.UserLogin)
 	router.POST("/user/logout", api.UserLogout)
-	router.GET("/user/me", api.UserMe)
 
 	//google oauth
 	router.GET("/auth/google", api.GoogleAuthBegin)
 	router.GET("/auth/google/callback", api.GoogleAuthCallback)
+
+	//user
+	router.GET("/user/me", api.UserMe)
+	router.POST("/user/account/edit", api.UserInfoEdit)
 
 	//event
 	router.POST("/event/create", api.EventCreate)
