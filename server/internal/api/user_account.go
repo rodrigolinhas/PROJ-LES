@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// UserInfoView
+// UserMe
 // @Summary     View user account information
 // @Description Returns the authenticated user's information
 // @Tags        User
@@ -18,8 +18,8 @@ import (
 // @Param       X-CSRF-Token header string true "CSRF Token"
 // @Success     200 {object} map[string]string
 // @Failure     401 {string} string "Unauthorized"
-// @Router      /user/account/info [get]
-func UserInfoView(c *gin.Context) {
+// @Router      /user/account/me [get]
+func UserMe(c *gin.Context) {
 	user, err := Authorize(c)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
