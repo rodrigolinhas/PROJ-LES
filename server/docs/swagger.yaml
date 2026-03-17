@@ -36,8 +36,28 @@ definitions:
         example: CompSci
         type: string
     type: object
+  api.PayTokenJSON:
+    properties:
+      payToken:
+        type: string
+    type: object
   api.ShortEvent:
     properties:
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Event
+        type: string
+      theme:
+        example: CompSci
+        type: string
+    type: object
+  api.ShortEventEnroll:
+    properties:
+      confirmed:
+        example: true
+        type: boolean
       id:
         example: 1
         type: integer
@@ -302,7 +322,7 @@ paths:
         name: limit
         type: integer
       - default: 0
-        description: Number of skip in the search
+        description: Number of events to skip in the search
         in: query
         name: offset
         type: integer
@@ -348,7 +368,7 @@ paths:
         name: limit
         type: integer
       - default: 0
-        description: Number of skip in the search
+        description: Number of events to skip in the search
         in: query
         name: offset
         type: integer
@@ -372,6 +392,104 @@ paths:
       summary: List the user's event
       tags:
       - Event
+  /event/my/enroll:
+    get:
+      consumes:
+      - text/plain
+      description: A user can view and filter all events that they enrolled in
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: Filter the name of the events shown
+        in: query
+        name: filter
+        type: string
+      - default: 20
+        description: Number of events shown
+        in: query
+        maximum: 50
+        name: limit
+        type: integer
+      - default: 0
+        description: Number of events to skip in the search
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.ShortEventEnroll'
+            type: array
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "404":
+          description: No event found
+          schema:
+            type: string
+        "500":
+          description: Error found on query
+          schema:
+            type: string
+      summary: List the user's enrolled event
+      tags:
+      - Event
+  /event/pay:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Dummy endpoint for paying the fee for enrolling in a event
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: formData
+        name: eventID
+        required: true
+        type: string
+      - description: PayToken given during event enrollment
+        in: formData
+        name: PayToken
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Event registration payed successfully
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "404":
+          description: Registration not found
+          schema:
+            type: string
+        "409":
+          description: Registration has already been paid
+          schema:
+            type: string
+        "500":
+          description: Error found during event payment confirmation
+          schema:
+            type: string
+      summary: Pay event enrollment fee
+      tags:
+      - Event
+      - Dev
   /event/publish:
     post:
       consumes:
@@ -413,6 +531,49 @@ paths:
           schema:
             type: string
       summary: Publish event
+      tags:
+      - Event
+  /event/register:
+    post:
+      consumes:
+      - multipart/form-data
+      description: A user can enroll in a event, if said enrollment expects payment,
+        a payToken will be given.
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: formData
+        name: eventID
+        required: true
+        type: string
+      - description: Discount code
+        in: formData
+        name: discountCode
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.PayTokenJSON'
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "404":
+          description: Event / Discount code not found
+          schema:
+            type: string
+        "500":
+          description: Error found during event enrollment
+          schema:
+            type: string
+      summary: Enroll in a event
       tags:
       - Event
   /event/view/:id:
