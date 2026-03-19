@@ -1,9 +1,9 @@
-Only for code that is shared bettewn features (CAREFUL WITH THE ORAGNIZATION)
+Only for code that is shared between features (CAREFUL WITH THE ORGANIZATION)
 
 e.g:
 
-   ├── components/
-   ├── hooks/
-   ├── utils/
-   ├── types/
-   └── constants/
+├── components/    → UI components reused between features (e.g. Button.tsx, Modal.tsx, Spinner.tsx, InputField.tsx)
+├── hooks/         → Custom shared hooks (e.g. useAuth.ts - verifies if the user is logged in)
+├── utils/         → Generic utility functions (e.g. formatDate.ts, handleApiError.ts)
+├── types/         → Shared TypeScript types (e.g. User.ts, Event.ts)
+└── constants/     → Global constants (e.g. API_BASE_URL, ROUTES)
