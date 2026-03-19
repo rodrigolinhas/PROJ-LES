@@ -1063,7 +1063,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/event/view/{{event_id}}?email={{email}}",
+              "raw": "{{baseUrl}}/event/view/{{event_id}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1071,12 +1071,6 @@
                 "event",
                 "view",
                 "{{event_id}}"
-              ],
-              "query": [
-                {
-                  "key": "email",
-                  "value": "{{email}}"
-                }
               ]
             }
           },
