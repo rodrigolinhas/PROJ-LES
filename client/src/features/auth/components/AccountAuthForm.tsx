@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import GoogleIcon from "../../assets/icons/google-svgrepo-com.svg";
+import GoogleIcon from "../../../assets/icons/google-svgrepo-com.svg";
 
 
 export default function AccountAuthForm() {

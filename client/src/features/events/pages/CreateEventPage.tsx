@@ -1,4 +1,4 @@
-import CreateEventForm from "../forms/CreateEventForm.tsx";
+import CreateEventForm from "../components/CreateEventForm.tsx";
 
 export default function CreateEventPage() {
     return (
