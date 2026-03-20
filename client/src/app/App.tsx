@@ -1,15 +1,15 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-import CreateAccountPage from "./features/pages/CreateAccountPage";
-import AccountAuthPage from "./features/pages/AccountAuthPage";
-import HomePage from "./features/pages/HomePage.tsx";
-import LandingPage from "./features/pages/LandingPage.tsx";
-import CreateEventPage from "./features/pages/CreateEventPage";
-import AuthSuccessPage from "./features/pages/AuthSuccessPage.tsx";
+import CreateAccountPage from "../features/auth/pages/CreateAccountPage";
+import AccountAuthPage from "../features/auth/pages/AccountAuthPage";
+import HomePage from "../features/home/pages/HomePage.tsx";
+import LandingPage from "../features/landing/pages/LandingPage.tsx";
+import CreateEventPage from "../features/events/pages/CreateEventPage";
+import AuthSuccessPage from "../features/auth/pages/AuthSuccessPage.tsx";
 
-import EditEventPage from "./features/pages/EditEventPage";
+import EditEventPage from "../features/events/pages/EditEventPage";
 
-import ProtectedRoutes from "./utils/ProtectedRoutes";
+import ProtectedRoutes from "./router/ProtectedRoutes";
 
 function App() {
     return (

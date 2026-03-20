@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import EditEventForm from "../forms/EditEventForm.tsx";
+import EditEventForm from "../components/EditEventForm.tsx";
 
 export default function EditEventPage() {
     const { id } = useParams()

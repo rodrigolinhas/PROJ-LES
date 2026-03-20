@@ -1,4 +1,4 @@
-import CreateAccountForm from "../forms/CreateAccountForm.tsx";
+import CreateAccountForm from "../components/CreateAccountForm.tsx";
 
 export default function CreateAccountPage() {
     return (

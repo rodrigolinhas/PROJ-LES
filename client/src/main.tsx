@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App';
-import './index.css'
+import App from './app/App';
+import './styles/index.css'
 
 /*
 // Since there are no other components, we define a simple App here

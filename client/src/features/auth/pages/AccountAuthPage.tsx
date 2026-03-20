@@ -1,4 +1,4 @@
-import AccountAuthForm from "../forms/AccountAuthForm.tsx";
+import AccountAuthForm from "../components/AccountAuthForm.tsx";
 
 export default function AccountAuthPage() {
     return (
