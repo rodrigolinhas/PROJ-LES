@@ -161,8 +161,14 @@
                   "}\r",
                   "\r",
                   "const csrf = getCookieValue(\"csrf_token\");\r",
+                  "const userEmailCookie = getCookieValue(\"user_email\");\r",
+                  "\r",
                   "pm.test(\"CSRF cookie veio no login\", function () {\r",
                   "  pm.expect(csrf).to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"user_email cookie veio no login\", function () {\r",
+                  "  pm.expect(userEmailCookie).to.not.be.null;\r",
                   "});\r",
                   "\r",
                   "if (csrf) {\r",
@@ -251,14 +257,7 @@
             ],
             "body": {
               "mode": "urlencoded",
-              "urlencoded": [
-                {
-                  "key": "email",
-                  "value": "{{email}}",
-                  "type": "text",
-                  "uuid": "b631f0b3-97ba-4698-9bc5-3f30059c722b"
-                }
-              ]
+              "urlencoded": []
             },
             "url": {
               "raw": "{{baseUrl}}/user/logout",
@@ -630,9 +629,6 @@
               }
             }
           ],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "method": "GET",
             "header": [
@@ -642,43 +638,31 @@
                 "type": "text"
               }
             ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "email",
-                  "value": "{{email}}",
-                  "type": "text",
-                  "uuid": "dfa7b427-e2f5-4271-b3c0-b8fb134ff3d9"
-                },
-                {
-                  "key": "filter",
-                  "value": "{{event_name}}",
-                  "type": "text",
-                  "uuid": "6a60d56a-cb7b-4aff-a419-62d1321ebe4d"
-                },
-                {
-                  "key": "limit",
-                  "value": "20",
-                  "type": "text",
-                  "uuid": "53e954c1-0da3-4227-a5bd-19e03534f9b2"
-                },
-                {
-                  "key": "offset",
-                  "value": "0",
-                  "type": "text",
-                  "uuid": "932a6133-1d2f-4f71-aced-742ebf706426"
-                }
-              ]
-            },
             "url": {
-              "raw": "{{baseUrl}}/event/my",
+              "raw": "{{baseUrl}}/event/my?filter={{event_name}}&limit=20&offset=0",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "event",
                 "my"
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "{{event_name}}",
+                  "type": "text"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "type": "text"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "type": "text"
+                }
               ]
             }
           },
@@ -711,7 +695,7 @@
             }
           ],
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
                 "key": "X-CSRF-Token",
@@ -720,7 +704,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/event/view/{{event_id}}?email={{email}}",
+              "raw": "{{baseUrl}}/event/view/{{event_id}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -728,12 +712,6 @@
                 "event",
                 "view",
                 "{{event_id}}"
-              ],
-              "query": [
-                {
-                  "key": "email",
-                  "value": "{{email}}"
-                }
               ]
             }
           },
@@ -844,7 +822,7 @@
             }
           ],
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
                 "key": "X-CSRF-Token",
@@ -853,7 +831,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/event/view/{{event_id}}?email={{email}}",
+              "raw": "{{baseUrl}}/event/view/{{event_id}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -861,12 +839,6 @@
                 "event",
                 "view",
                 "{{event_id}}"
-              ],
-              "query": [
-                {
-                  "key": "email",
-                  "value": "{{email}}"
-                }
               ]
             }
           },
@@ -961,9 +933,6 @@
               }
             }
           ],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
           "request": {
             "method": "GET",
             "header": [
@@ -973,43 +942,31 @@
                 "type": "text"
               }
             ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "email",
-                  "value": "{{email}}",
-                  "type": "text",
-                  "uuid": "478887e9-3b7b-49a8-ac05-0d832003a2f4"
-                },
-                {
-                  "key": "filter",
-                  "value": "{{event_name_edited}}",
-                  "type": "text",
-                  "uuid": "832aff63-f14b-467b-9fc9-73ae7e9fb010"
-                },
-                {
-                  "key": "limit",
-                  "value": "20",
-                  "type": "text",
-                  "uuid": "0d5e2a20-256d-474e-976e-080f85773237"
-                },
-                {
-                  "key": "offset",
-                  "value": "0",
-                  "type": "text",
-                  "uuid": "e5c256e2-ed90-4143-b508-61f4f4c14274"
-                }
-              ]
-            },
             "url": {
-              "raw": "{{baseUrl}}/event/list",
+              "raw": "{{baseUrl}}/event/list?filter={{event_name_edited}}&limit=20&offset=0",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "event",
                 "list"
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "{{event_name_edited}}",
+                  "type": "text"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "type": "text"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "type": "text"
+                }
               ]
             }
           },
@@ -1097,7 +1054,7 @@
             }
           ],
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
               {
                 "key": "X-CSRF-Token",
@@ -1106,7 +1063,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/event/view/{{event_id}}?email={{email}}",
+              "raw": "{{baseUrl}}/event/view/{{event_id}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1114,12 +1071,6 @@
                 "event",
                 "view",
                 "{{event_id}}"
-              ],
-              "query": [
-                {
-                  "key": "email",
-                  "value": "{{email}}"
-                }
               ]
             }
           },

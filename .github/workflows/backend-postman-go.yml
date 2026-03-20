@@ -1,4 +1,4 @@
-name: Backend run + Postman Tests
+name: Backend run + Postman Tests + Go tests
 
 on:
   push:
@@ -8,17 +8,41 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-backend:
+  go-tests:
+    name: Go build and test
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.25.x"
+          cache-dependency-path: server/go.sum
+
+      - name: Build
+        working-directory: server
+        run: go build -v ./...
+
+      - name: Test
+        working-directory: server
+        run: go test -v ./...
+
+  postman-tests:
+    name: Backend run + Postman tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.x"
+          cache-dependency-path: server/go.sum
 
       #1) start backend (server)
       - name: Start backend
@@ -73,7 +97,7 @@ jobs:
 
       #2) run Postman tests (with Newman)
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20"
 
@@ -92,7 +116,7 @@ jobs:
 
       - name: Upload artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ci-artifacts
           path: |
