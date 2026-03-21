@@ -79,6 +79,9 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/event/register", api.EventRegister)
 	router.POST("/event/pay", api.EventPay)
 	router.GET("/event/my/enroll", api.EventRegistrationList)
+	
+	//registration types
+	router.POST("/event/regtype/create", api.RegistrationTypeCreate)
 
 	// swagger handler
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swagfiles.Handler))

@@ -19,6 +19,7 @@ type Event struct {
 	StartDate		time.Time	`gorm:"not null"`
 	EndDate			time.Time	`gorm:"not null"`
 	Location		string		`gorm:"not null"`
+	RegTypes		[]RegistrationType 
 	Published		bool		`gorm:"not null;default:false"`
 	Closed			bool		`gorm:"not null;default:false"`
 }
@@ -50,6 +51,7 @@ func newEvent(name string, theme string, desc string, org string, owner User,
 		StartDate: 		start.Truncate(time.Minute),
 		EndDate: 		end.Truncate(time.Minute),
 		Location: 		strings.TrimSpace(local), 
+		RegTypes: 		[]RegistrationType{},
 		Published: 		false,
 		Closed: 		false,
 	}
