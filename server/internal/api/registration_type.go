@@ -12,12 +12,11 @@ import (
 	"LES/server/internal/models"
 )
 
-//TODO: Add examples
 type RegistrationType struct {
-	ID				uint
-	Name			string 		
-	Description		string		
-	Price	        float64	
+	ID				uint	`example:"1"`
+	Name			string 	`example:"Pass"`
+	Description		string	`example:"Pass Description"`
+	Price	        float64	`example:"7.5"`
 }
 
 func regTypePreface(c *gin.Context) (*models.Event, error) {
@@ -32,6 +31,25 @@ func regTypePreface(c *gin.Context) (*models.Event, error) {
 	return event, nil
 }
 
+// RegistrationTypeCreate
+// @Summary 	Create a Registration Type of an event
+// @Description An event organizer can create a registration type for one of their unpublished events
+// @Tags 		Event
+// @Accept		mpfd
+// @Produce 	json
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		eventID			formData	string	true	"ID of the event"
+// @Param 		name			formData	string	true	"Name of the registration type"
+// @Param 		description		formData	string	true	"Description of the registration type"
+// @Param 		price			formData	number	true	"Price of the registration type"
+// @Success 	200 {string} string "Event Registration Type added successfully"
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		404 {string} string "Event not found"
+// @Failure		403 {string} string "User is not the orgaziner of the event"
+// @Failure		400 {string} string "Can't parse the price"
+// @Failure		409 {string} string "Can't add a registration type to a published event"
+// @Failure 	500 {string} string "Error found during registration type creation"
+// @Router 		/event/regtype/create [post]
 func RegistrationTypeCreate(c *gin.Context) {
 	event, err := regTypePreface(c)
 	if err != nil { return }
@@ -81,6 +99,26 @@ func RegistrationTypeCreate(c *gin.Context) {
 	c.String(http.StatusOK, "Event Registration Type added successfully")
 }
 
+// RegistrationTypeEdit
+// @Summary 	Edit a Registration Type of an event
+// @Description An event organizer can edit a registration type for one of their unpublished events
+// @Tags 		Event
+// @Accept		mpfd
+// @Produce 	json
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		eventID			formData	string	true	"ID of the event"
+// @Param 		regTypeID		formData	string	true	"ID of the registration type"
+// @Param 		name			formData	string	false	"Name of the registration type"
+// @Param 		description		formData	string	false	"Description of the registration type"
+// @Param 		price			formData	number	false	"Price of the registration type"
+// @Success 	200 {string} string "Event Registration Type edited successfully"
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		404 {string} string "Event not found"
+// @Failure		403 {string} string "User is not the orgaziner of the event"
+// @Failure		400 {string} string "Can't parse the price"
+// @Failure		409 {string} string "Can't edit the registration type of a published event"
+// @Failure 	500 {string} string "Error found during registration type creation"
+// @Router 		/event/regtype/edit [post]
 func RegistrationTypeEdit(c *gin.Context) {
 	event, err := regTypePreface(c)
 	if err != nil { return }
@@ -108,7 +146,6 @@ func RegistrationTypeEdit(c *gin.Context) {
 	}
 
 	if name != "" {
-		//TODO: unify behaviour
 		arr := []models.RegistrationType{}
 		dberr := db.DB.Where("event_id = ? AND name = ?", event.ID, name).
 					Find(&arr)
@@ -144,6 +181,19 @@ func RegistrationTypeEdit(c *gin.Context) {
 	c.String(http.StatusOK, "Event Registration Type edited successfully")
 }
 
+// RegistrationTypeList
+// @Summary 	List the registration types of an event
+// @Description A user can view the registration types of an event that they own or was published 
+// @Tags 		Event
+// @Accept		plain
+// @Produce 	json
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		id				path		string	true	"ID of the event"
+// @Success 	200 {array} RegistrationType 
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		403 {string} string "Event was not published yet and the user is not the orgaziner"
+// @Failure		404 {string} string "Event/Registration Type not found"
+// @Router 		/event/view/:id/regtypes [get]
 func RegistrationTypeList(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
@@ -178,6 +228,22 @@ func RegistrationTypeList(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, regtypes)
 }
 
+// RegistrationTypeDelete
+// @Summary 	Delete a Registration Type of an event
+// @Description An event organizer can delete a registration type for one of their unpublished events
+// @Tags 		Event
+// @Accept		mpfd
+// @Produce 	json
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		eventID			formData	string	true	"ID of the event"
+// @Param 		regTypeID		formData	string	true	"ID of the registration type"
+// @Success 	200 {string} string "Event Registration Type deleted successfully"
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		404 {string} string "Event not found"
+// @Failure		403 {string} string "User is not the orgaziner of the event"
+// @Failure		409 {string} string "Can't delete the registration type of a published event"
+// @Failure 	500 {string} string "Error found during registration type deletion"
+// @Router 		/event/regtype/delete [post]
 func RegistrationTypeDelete(c *gin.Context) {
 	event, err := regTypePreface(c)
 	if err != nil { return }
@@ -199,7 +265,3 @@ func RegistrationTypeDelete(c *gin.Context) {
 
 	c.String(http.StatusOK, "Event Registration Type deleted successfully")
 }
-
-//TODO: Documentations
-
-//TODO: Remaining TODOs
