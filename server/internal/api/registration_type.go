@@ -12,6 +12,14 @@ import (
 	"LES/server/internal/models"
 )
 
+//TODO: Add examples
+type RegistrationType struct {
+	ID				uint
+	Name			string 		
+	Description		string		
+	Price	        float64	
+}
+
 func regTypePreface(c *gin.Context) (*models.Event, error) {
 	event, err := eventEditPreface(c)
 	if err != nil { return nil, errors.New("Error sent") }
@@ -134,4 +142,38 @@ func RegistrationTypeEdit(c *gin.Context) {
 	}
 
 	c.String(http.StatusOK, "Event Registration Type edited successfully")
+}
+
+func RegistrationTypeList(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		return
+	}
+
+	eventID := c.Param("id")
+
+	var event models.Event
+	res := db.DB.Model(&models.Event{}).Where("ID = ?", eventID).Take(&event)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if event.Published == false && event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "Event was not published yet and the user is not the orgaziner")
+		return
+	}
+
+	var regtypes []RegistrationType
+	err := db.DB.Model(&models.RegistrationType{}).
+					Where("event_id = ?", event.ID).
+					Scan(&regtypes)
+
+	if err.RowsAffected == 0 {
+		c.String(http.StatusNotFound, "This event doesn't have registration types")
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, regtypes)
 }
