@@ -177,3 +177,31 @@ func RegistrationTypeList(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, regtypes)
 }
+
+func RegistrationTypeDelete(c *gin.Context) {
+	event, err := regTypePreface(c)
+	if err != nil { return }
+
+	regtypeID := c.Request.FormValue("regTypeID")
+
+	regType := models.RegistrationType{}
+	find := db.DB.Where("id = ? AND event_id = ?", regtypeID, event.ID).Take(&regType)
+	if find.RowsAffected != 1 && find.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found in DB")
+		return
+	}
+
+	res := db.DB.Delete(&regType)
+	if res.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found in DB")
+		return
+	}
+
+	c.String(http.StatusOK, "Event Registration Type deleted successfully")
+}
+
+//TODO: Refactor event registration
+
+//TODO: Documentations
+
+//TODO: Remaining TODOs
