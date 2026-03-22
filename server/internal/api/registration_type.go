@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -10,8 +11,20 @@ import (
 	"LES/server/internal/models"
 )
 
-func RegistrationTypeCreate(c *gin.Context) {
+func regTypePreface(c *gin.Context) (*models.Event, error) {
 	event, err := eventEditPreface(c)
+	if err != nil { return nil, errors.New("Error sent") }
+
+	if event.Published == true {
+		c.String(http.StatusConflict, "Can't add/edit/remove a registration type of a published event")	
+		return nil, errors.New("Error sent")
+	}
+
+	return event, nil
+}
+
+func RegistrationTypeCreate(c *gin.Context) {
+	event, err := regTypePreface(c)
 	if err != nil { return }
 
 	name := c.Request.FormValue("name")
@@ -35,15 +48,24 @@ func RegistrationTypeCreate(c *gin.Context) {
 		return
 	}
 
+	arr := []models.RegistrationType{}
+	dberr := db.DB.Where("event_id = ? AND name = ?", event.ID, regType.Name).
+				Find(&arr)
+	if dberr.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found in DB")
+		return
+	}
+	if dberr.RowsAffected != 0 {
+		c.String(http.StatusInternalServerError, "There is a registration type with the same name for this event")
+		return
+	}
+
 	event.RegTypes = append(event.RegTypes, *regType)
 	res := db.DB.Save(&event)
 	if res.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found in DB")
 		return
 	}
-	
-	//TODO: check if there are regtype of the same event, with the same name
-	//TODO: dissallow adding regtypes to events that are already published
 
 	c.String(http.StatusOK, "Event Registration Type added successfully")
 }
