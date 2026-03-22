@@ -200,8 +200,6 @@ func RegistrationTypeDelete(c *gin.Context) {
 	c.String(http.StatusOK, "Event Registration Type deleted successfully")
 }
 
-//TODO: Refactor event registration
-
 //TODO: Documentations
 
 //TODO: Remaining TODOs
