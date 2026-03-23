@@ -19,9 +19,10 @@ func ConnectDB() {
 
 	// Migrate tables
 	err = database.AutoMigrate(
-		&models.Ping{}, 
-		&models.User{}, 
+		&models.Ping{},
+		&models.User{},
 		&models.Event{},
+		&models.EventActivity{},
 		&models.DiscountCode{},
 		&models.EventRegistration{},
 	)
