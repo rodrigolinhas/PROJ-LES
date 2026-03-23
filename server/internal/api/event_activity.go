@@ -87,13 +87,23 @@ func EventActivityCreate(c *gin.Context) {
 // @Failure		404 {string} string "No activity found"
 // @Router 		/event/activity/list [get]
 func EventActivityList(c *gin.Context) {
-	_, err := Authorize(c)
+	user, err := Authorize(c)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
 	eventID := c.Query("eventID")
+
+	var event models.Event
+	if err := db.DB.First(&event, eventID).Error; err != nil {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if !event.Published && event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "You can't view activities of this event (need to be the event organizer)")
+	}
 
 	var activities []models.EventActivity
 	db.DB.Where("event_id = ?", eventID).Find(&activities)
@@ -194,7 +204,7 @@ func EventActivityDelete(c *gin.Context) {
 // @Failure 	404 {string} string "Activity not found"
 // @Router 		/event/activity/view/:id [get]
 func EventActivityView(c *gin.Context) {
-	_, err := Authorize(c)
+	user, err := Authorize(c)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
@@ -203,9 +213,19 @@ func EventActivityView(c *gin.Context) {
 	id := c.Param("id")
 
 	var activity models.EventActivity
-
 	if err := db.DB.First(&activity, id).Error; err != nil {
 		c.String(http.StatusNotFound, "Activity not found")
+		return
+	}
+
+	var event models.Event
+	if err := db.DB.First(&event, activity.EventID).Error; err != nil {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if !event.Published && event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "You can't view this activity (need to be the event organizer)")
 		return
 	}
 
