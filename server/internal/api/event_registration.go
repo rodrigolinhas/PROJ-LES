@@ -38,14 +38,25 @@ func EventRegister(c *gin.Context) {
 	}
 
 	eventID := c.Request.FormValue("eventID")
+	regTypeID := c.Request.FormValue("regTypeID")
 	discountCode := c.Request.FormValue("discountCode")
-	
-	//TODO: Take in consideration the registration type and tier
 
 	var event models.Event
-	res := db.DB.Where("ID = ?", eventID).First(&event)
+	res := db.DB.Where("ID = ?", eventID).Preload("RegTypes").First(&event)
 	if res.Error != nil || res.RowsAffected != 1 {
 		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if event.Published == false {
+		c.String(http.StatusConflict, "Can't enroll in a unpublished event")
+		return
+	}
+
+	var regType models.RegistrationType
+	res = db.DB.Where("ID = ? AND event_id = ?", regTypeID, eventID).First(&regType)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Registration Type not found")
 		return
 	}
 
@@ -55,21 +66,24 @@ func EventRegister(c *gin.Context) {
 		discount = nil
 	} else  {
 		fmt.Println(discountCode)
-		res = db.DB.Where("code = ?", discountCode).First(discount)
+		res = db.DB.Where("code = ?", discountCode).First(&discount)
 		if res.Error != nil {
 			c.String(http.StatusNotFound, "Discount code not found")
 			return
 		}
 	}
 
-	reg, err := models.NewEventRegistration(*user, event, discount, "")
+	reg, err := models.NewEventRegistration(*user, event, discount, regType)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	//TODO: if event enrollment cost for that tier is free, ignore payToken and set Confirmed to true
-	reg.PayToken = utils.GenerateToken(32)
+	if regType.Price == 0 {
+		reg.Confirmed = true
+	} else {
+		reg.PayToken = utils.GenerateToken(32)
+	}
 
 	trans := db.DB.Transaction(func(tx *gorm.DB) error {	
 		err := tx.Create(reg)
