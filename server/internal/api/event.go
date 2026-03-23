@@ -370,6 +370,7 @@ func EventMyList(c *gin.Context) {
 // @Param 		id				path		string	true	"ID of the event"
 // @Success 	200 {object} LongEvent
 // @Failure		401 {string} string "Invalid credentials"
+// @Failure		403 {string} string "Event was not published yet and the user is not the orgaziner"
 // @Failure		404 {string} string "No event found"
 // @Router 		/event/view/:id [get]
 func EventView(c *gin.Context) {

@@ -18,7 +18,7 @@ import (
 // @Param       X-CSRF-Token header string true "CSRF Token"
 // @Success     200 {object} map[string]string
 // @Failure     401 {string} string "Unauthorized"
-// @Router      /user/account/me [get]
+// @Router      /user/me [get]
 func UserMe(c *gin.Context) {
 	user, err := Authorize(c)
 	if err != nil {
