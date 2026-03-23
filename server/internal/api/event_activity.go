@@ -82,7 +82,7 @@ func EventActivityCreate(c *gin.Context) {
 // @Produce 	json
 // @Param 		X-CSRF-Token 	header 		string 	true 	"User's CSRF Token"
 // @Param 		eventID 		query 		string 	true 	"Event ID"
-// @Success 	200 {array} models.EventActivity
+// @Success 	200 {array} object
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "No activity found"
 // @Router 		/event/activity/list [get]
@@ -189,7 +189,7 @@ func EventActivityDelete(c *gin.Context) {
 // @Produce 	json
 // @Param 		X-CSRF-Token 	header 		string 	true 	"CSRF Token"
 // @Param 		id 				path		string  true    "Activity ID"
-// @Success 	200 {object} models.EventActivity
+// @Success 	200 {object} object
 // @Failure 	401 {string} string "Unauthorized"
 // @Failure 	404 {string} string "Activity not found"
 // @Router 		/event/activity/view/:id [get]
