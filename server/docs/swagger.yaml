@@ -41,6 +41,21 @@ definitions:
       payToken:
         type: string
     type: object
+  api.RegistrationType:
+    properties:
+      description:
+        example: Pass Description
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Pass
+        type: string
+      price:
+        example: 7.5
+        type: number
+    type: object
   api.ShortEvent:
     properties:
       id:
@@ -757,6 +772,192 @@ paths:
       summary: Enroll in a event
       tags:
       - Event
+  /event/regtype/create:
+    post:
+      consumes:
+      - multipart/form-data
+      description: An event organizer can create a registration type for one of their
+        unpublished events
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: formData
+        name: eventID
+        required: true
+        type: string
+      - description: Name of the registration type
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Description of the registration type
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Price of the registration type
+        in: formData
+        name: price
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Event Registration Type added successfully
+          schema:
+            type: string
+        "400":
+          description: Can't parse the price
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: User is not the orgaziner of the event
+          schema:
+            type: string
+        "404":
+          description: Event not found
+          schema:
+            type: string
+        "409":
+          description: Can't add a registration type to a published event
+          schema:
+            type: string
+        "500":
+          description: Error found during registration type creation
+          schema:
+            type: string
+      summary: Create a Registration Type of an event
+      tags:
+      - Event
+  /event/regtype/delete:
+    post:
+      consumes:
+      - multipart/form-data
+      description: An event organizer can delete a registration type for one of their
+        unpublished events
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: formData
+        name: eventID
+        required: true
+        type: string
+      - description: ID of the registration type
+        in: formData
+        name: regTypeID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Event Registration Type deleted successfully
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: User is not the orgaziner of the event
+          schema:
+            type: string
+        "404":
+          description: Event not found
+          schema:
+            type: string
+        "409":
+          description: Can't delete the registration type of a published event
+          schema:
+            type: string
+        "500":
+          description: Error found during registration type deletion
+          schema:
+            type: string
+      summary: Delete a Registration Type of an event
+      tags:
+      - Event
+  /event/regtype/edit:
+    post:
+      consumes:
+      - multipart/form-data
+      description: An event organizer can edit a registration type for one of their
+        unpublished events
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: formData
+        name: eventID
+        required: true
+        type: string
+      - description: ID of the registration type
+        in: formData
+        name: regTypeID
+        required: true
+        type: string
+      - description: Name of the registration type
+        in: formData
+        name: name
+        type: string
+      - description: Description of the registration type
+        in: formData
+        name: description
+        type: string
+      - description: Price of the registration type
+        in: formData
+        name: price
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Event Registration Type edited successfully
+          schema:
+            type: string
+        "400":
+          description: Can't parse the price
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: User is not the orgaziner of the event
+          schema:
+            type: string
+        "404":
+          description: Event not found
+          schema:
+            type: string
+        "409":
+          description: Can't edit the registration type of a published event
+          schema:
+            type: string
+        "500":
+          description: Error found during registration type creation
+          schema:
+            type: string
+      summary: Edit a Registration Type of an event
+      tags:
+      - Event
   /event/view/:id:
     get:
       consumes:
@@ -785,11 +986,56 @@ paths:
           description: Invalid credentials
           schema:
             type: string
+        "403":
+          description: Event was not published yet and the user is not the orgaziner
+          schema:
+            type: string
         "404":
           description: No event found
           schema:
             type: string
       summary: View event information
+      tags:
+      - Event
+  /event/view/:id/regtypes:
+    get:
+      consumes:
+      - text/plain
+      description: A user can view the registration types of an event that they own
+        or was published
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.RegistrationType'
+            type: array
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: Event was not published yet and the user is not the orgaziner
+          schema:
+            type: string
+        "404":
+          description: Event/Registration Type not found
+          schema:
+            type: string
+      summary: List the registration types of an event
       tags:
       - Event
   /ping:

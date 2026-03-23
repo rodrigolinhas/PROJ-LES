@@ -1018,6 +1018,270 @@ const docTemplate = `{
                 }
             }
         },
+        "/event/regtype/create": {
+            "post": {
+                "description": "An event organizer can create a registration type for one of their unpublished events",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Create a Registration Type of an event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "eventID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name of the registration type",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description of the registration type",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Price of the registration type",
+                        "name": "price",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event Registration Type added successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Can't parse the price",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not the orgaziner of the event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Can't add a registration type to a published event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found during registration type creation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/regtype/delete": {
+            "post": {
+                "description": "An event organizer can delete a registration type for one of their unpublished events",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Delete a Registration Type of an event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "eventID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the registration type",
+                        "name": "regTypeID",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event Registration Type deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not the orgaziner of the event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Can't delete the registration type of a published event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found during registration type deletion",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/regtype/edit": {
+            "post": {
+                "description": "An event organizer can edit a registration type for one of their unpublished events",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Edit a Registration Type of an event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "New first name",
+                        "name": "firstName",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the registration type",
+                        "name": "regTypeID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name of the registration type",
+                        "name": "name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description of the registration type",
+                        "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "number",
+                        "description": "Price of the registration type",
+                        "name": "price",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Event Registration Type edited successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Can't parse the price",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not the orgaziner of the event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Can't edit the registration type of a published event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found during registration type creation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/event/view/:id": {
             "get": {
                 "description": "A user can view the information of an event that they own or was published",
@@ -1060,6 +1324,12 @@ const docTemplate = `{
                             "type": "string"
                         }
                     },
+                    "403": {
+                        "description": "Event was not published yet and the user is not the orgaziner",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "404": {
                         "description": "No event found",
                         "schema": {
@@ -1069,7 +1339,67 @@ const docTemplate = `{
                 }
             }
         },
-        "/ping": {
+        "/event/view/:id/regtypes": {
+            "get": {
+                "description": "A user can view the registration types of an event that they own or was published",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "List the registration types of an event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.RegistrationType"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Event was not published yet and the user is not the orgaziner",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event/Registration Type not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/account/me": {
             "get": {
                 "description": "Return \"ping\" and log the time in the DB",
                 "produces": [
@@ -1105,24 +1435,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "New first name",
-                        "name": "firstName",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "New last name",
-                        "name": "lastName",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "New password (must be at least 8 characters)",
-                        "name": "password",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
                         "description": "CSRF Token",
                         "name": "X-CSRF-Token",
                         "in": "header",
@@ -1150,44 +1462,6 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Error updating user",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/account/me": {
-            "get": {
-                "description": "Returns the authenticated user's information",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "View user account information",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "CSRF Token",
-                        "name": "X-CSRF-Token",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
@@ -1419,6 +1693,27 @@ const docTemplate = `{
             "properties": {
                 "payToken": {
                     "type": "string"
+                }
+            }
+        },
+        "api.RegistrationType": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Pass Description"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Pass"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 7.5
                 }
             }
         },

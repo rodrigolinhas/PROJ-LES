@@ -25,6 +25,7 @@ func ConnectDB() {
 		&models.EventActivity{},
 		&models.DiscountCode{},
 		&models.EventRegistration{},
+		&models.RegistrationType{},
 	)
 
 	if err != nil {
