@@ -1096,31 +1096,6 @@ paths:
       summary: Edit user account information
       tags:
       - User
-  /user/account/me:
-    get:
-      description: Returns the authenticated user's information
-      parameters:
-      - description: CSRF Token
-        in: header
-        name: X-CSRF-Token
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-      summary: View user account information
-      tags:
-      - User
   /user/login:
     post:
       consumes:
@@ -1184,6 +1159,31 @@ paths:
       tags:
       - User
       - Auth
+  /user/me:
+    get:
+      description: Returns the authenticated user's information
+      parameters:
+      - description: CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: View user account information
+      tags:
+      - User
   /user/register:
     post:
       consumes:

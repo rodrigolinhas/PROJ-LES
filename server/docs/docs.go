@@ -1206,9 +1206,17 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "New first name",
-                        "name": "firstName",
-                        "in": "formData"
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "eventID",
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "string",
@@ -1399,7 +1407,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/account/me": {
+        "/ping": {
             "get": {
                 "description": "Return \"ping\" and log the time in the DB",
                 "produces": [
@@ -1433,6 +1441,24 @@ const docTemplate = `{
                 ],
                 "summary": "Edit user account information",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "New first name",
+                        "name": "firstName",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "New last name",
+                        "name": "lastName",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "New password (must be at least 8 characters)",
+                        "name": "password",
+                        "in": "formData"
+                    },
                     {
                         "type": "string",
                         "description": "CSRF Token",
@@ -1552,6 +1578,44 @@ const docTemplate = `{
                         "description": "Logged out successfully!",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/me": {
+            "get": {
+                "description": "Returns the authenticated user's information",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "View user account information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "401": {
