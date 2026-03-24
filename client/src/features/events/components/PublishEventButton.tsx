@@ -1,3 +1,4 @@
+import { envHostBackend } from '@/shared/utils/env';
 import { useState } from 'react';
 
 function getCookie(name: string) {
@@ -27,7 +28,7 @@ export default function PublishEventButton(props: any) {
         formData.append("eventID", eventID.toString());
 
         try {
-            const response = await fetch("http://localhost:8080/event/publish", {
+            const response = await fetch("http://" + envHostBackend() + "/event/publish", {
                 method: "POST", 
                 body: formData,
                 headers: {

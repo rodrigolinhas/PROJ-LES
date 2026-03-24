@@ -1,3 +1,4 @@
+import { envHostBackend } from "@/shared/utils/env";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -7,7 +8,7 @@ export default function AuthSuccessPage() {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await fetch("http://localhost:8080/user/me", {
+                const response = await fetch("http://" + envHostBackend() + "/user/me", {
                     method: "GET",
                     credentials: "include",
                 });

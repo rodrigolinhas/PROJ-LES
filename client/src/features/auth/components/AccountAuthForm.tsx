@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import GoogleIcon from "../../../assets/icons/google-svgrepo-com.svg";
+import { envHostBackend } from "@/shared/utils/env";
 
 
 export default function AccountAuthForm() {
@@ -21,7 +22,7 @@ export default function AccountAuthForm() {
             formData.append("email", email);
             formData.append("pass", pass);
 
-            const response = await fetch("http://localhost:8080/user/login", {
+            const response = await fetch("http://" + envHostBackend() + "/user/login", {
                 method: "POST",
                 body: formData,
                 credentials: "include",
@@ -73,7 +74,7 @@ export default function AccountAuthForm() {
             <button
                 type="button"
                 onClick={() => {
-                    window.location.href = "http://localhost:8080/auth/google?provider=google";
+                    window.location.href = "http://" + envHostBackend() + "/auth/google?provider=google";
                 }}
                 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}
             >

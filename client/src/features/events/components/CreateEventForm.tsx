@@ -1,3 +1,4 @@
+import { envHostBackend } from '@/shared/utils/env';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -34,7 +35,7 @@ export default function CreateEventForm() {
         formData.append("endDate", new Date(endDate).toISOString());
 
         try {
-            const response = await fetch("http://localhost:8080/event/create", {
+            const response = await fetch("http://" + envHostBackend() + "/event/create", {
                 method: "POST",
                 body: formData,
                 headers: {
