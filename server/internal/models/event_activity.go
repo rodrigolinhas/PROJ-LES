@@ -42,7 +42,7 @@ func newEventActivity(name string, description string, startDate time.Time, endD
 // Validates every field
 func (a EventActivity) validate() error {
 	if a.Name == "" || a.Description == "" {
-		return errors.New("Event: Empty name/description")
+		return errors.New("EventActivity: Empty name/description")
 	}
 	epoch := time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC)
 	if a.StartDate.Before(epoch) || a.EndDate.Before(epoch) || a.StartDate.After(a.EndDate) {
