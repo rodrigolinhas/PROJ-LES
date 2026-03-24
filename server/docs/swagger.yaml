@@ -146,6 +146,187 @@ paths:
       summary: Google SSO callback
       tags:
       - Auth
+  /event/activity/create:
+    post:
+      consumes:
+      - multipart/form-data
+      description: While the user is logged in, creates an activity associated with
+        an event and registers it in the database
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: Activity name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Activity description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Event ID of the associated event
+        in: formData
+        name: eventID
+        required: true
+        type: string
+      - description: Date/Time at which the activity starts (RFC3339/ISO8601 format)
+        in: formData
+        name: startDate
+        required: true
+        type: string
+      - description: Date/Time at which the activity ends (RFC3339/ISO8601 format)
+        in: formData
+        name: endDate
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "201":
+          description: Activity created with success
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "500":
+          description: Error found during activity creation
+          schema:
+            type: string
+      summary: Create activity
+      tags:
+      - EventActivity
+  /event/activity/delete:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: Activity ID
+        in: formData
+        name: activityID
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Deleted
+          schema:
+            type: string
+      summary: Delete activity
+      tags:
+      - EventActivity
+  /event/activity/edit:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: Activity ID
+        in: formData
+        name: activityID
+        required: true
+        type: string
+      - description: Name
+        in: formData
+        name: name
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Updated
+          schema:
+            type: string
+      summary: Edit activity
+      tags:
+      - EventActivity
+  /event/activity/list:
+    get:
+      consumes:
+      - text/plain
+      description: A user can view all the event's activities
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: Event ID
+        in: query
+        name: eventID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: object
+            type: array
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "404":
+          description: No activity found
+          schema:
+            type: string
+      summary: List activities of an event
+      tags:
+      - EventActivity
+  /event/activity/view/:id:
+    get:
+      description: View details of a specific activity
+      parameters:
+      - description: CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: Activity ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "404":
+          description: Activity not found
+          schema:
+            type: string
+      summary: View activity
+      tags:
+      - EventActivity
   /event/create:
     post:
       consumes:
@@ -915,6 +1096,31 @@ paths:
       summary: Edit user account information
       tags:
       - User
+  /user/account/me:
+    get:
+      description: Returns the authenticated user's information
+      parameters:
+      - description: CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: View user account information
+      tags:
+      - User
   /user/login:
     post:
       consumes:
@@ -978,31 +1184,6 @@ paths:
       tags:
       - User
       - Auth
-  /user/me:
-    get:
-      description: Returns the authenticated user's information
-      parameters:
-      - description: CSRF Token
-        in: header
-        name: X-CSRF-Token
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-      summary: View user account information
-      tags:
-      - User
   /user/register:
     post:
       consumes:
