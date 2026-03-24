@@ -1,11 +1,11 @@
-export function envHostBackend() {
-    let url: string | undefined = process.env.HOST_URL
+export function envHostBackend(): string {
+    let url: string | undefined = import.meta.env.HOST_URL
     if (url == undefined || url === "") {
         url = "localhost"
     }
-    let port: string | undefined = process.env.HOST_PORT_BACKEND
-    if (port == undefined || url === "") {
+    let port: string | undefined = import.meta.env.HOST_PORT_BACKEND
+    if (port == undefined || port === "") {
         port = "8080"
     }
-    return url + ":" + port
+    return (url + ":" + port)
 }

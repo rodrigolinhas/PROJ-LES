@@ -47,7 +47,7 @@ func main() {
 
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{utils.EnvHostFrontend()},
+		AllowOrigins:     []string{"http://" + utils.EnvHostFrontend()},
 		AllowMethods:     []string{"POST", "GET", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "X-CSRF-Token"},
 		AllowCredentials: true,
