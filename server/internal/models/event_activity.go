@@ -46,7 +46,7 @@ func (a EventActivity) validate() error {
 	}
 	epoch := time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC)
 	if a.StartDate.Before(epoch) || a.EndDate.Before(epoch) || a.StartDate.After(a.EndDate) {
-		return errors.New("Event: Invalid date")
+		return errors.New("EventActivity: Invalid date")
 	}
 	return nil
 }
