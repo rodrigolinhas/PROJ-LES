@@ -1,3 +1,4 @@
+import { envHostBackend } from "@/shared/utils/env";
 import { useState } from "react";
 import {Link} from "react-router-dom";
 
@@ -40,7 +41,7 @@ export default function CreateAccountForm() {
         formData.append("pass", pass);
 
         try {
-            const response = await fetch("http://localhost:8080/user/register", {
+            const response = await fetch("http://" + envHostBackend() + "/user/register", {
                 method: "POST",
                 body: formData,
             });

@@ -104,17 +104,19 @@ func UserLogin(c *gin.Context) {
 	sessionToken := utils.GenerateToken(32)
 	csrfToken := utils.GenerateToken(32)
 
+	host := utils.EnvHostUrl()
+
 	//set a email cookie
 	c.SetCookie("user_email", user.Email, 24*60*60,
-		"/", "localhost", false, true)
+		"/", host, false, true)
 
 	//set a session cookie
 	c.SetCookie("session_token", sessionToken, 24*60*60,
-		"/", "localhost", false, true)
+		"/", host, false, true)
 
 	//set CSRF token in a cookie
 	c.SetCookie("csrf_token", csrfToken, 24*60*60,
-		"/", "localhost", false, false)
+		"/", host, false, false)
 
 	user.SessionToken = sessionToken
 	user.CSRFToken = csrfToken
@@ -181,10 +183,11 @@ func UserLogout(c *gin.Context) {
 	user.CSRFToken = ""
 	db.DB.Save(&user)
 
+	host := utils.EnvHostUrl()
 	//clean the tokens
-	c.SetCookie("user_email", "", -1, "/", "localhost", false, true)
-	c.SetCookie("session_token", "", -1, "/", "localhost", false, true)
-	c.SetCookie("csrf_token", "", -1, "/", "localhost", false, false)
+	c.SetCookie("user_email", "", -1, "/", host, false, true)
+	c.SetCookie("session_token", "", -1, "/", host, false, true)
+	c.SetCookie("csrf_token", "", -1, "/", host, false, false)
 
 	c.String(http.StatusOK, "Log out with success")
 }

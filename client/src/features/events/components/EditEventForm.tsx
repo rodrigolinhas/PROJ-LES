@@ -2,6 +2,7 @@ import { useState } from 'react';
 import PublishEventButton from "../components/PublishEventButton.tsx";
 import DeleteEventButton from '../components/DeleteEventButton.tsx';
 import { Link } from 'react-router-dom';
+import { envHostBackend } from '@/shared/utils/env.ts';
 
 function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -12,7 +13,7 @@ function getCookie(name: string) {
 async function loadEventInfo(id: number): Promise<LongEvent> {
     const csrfToken = getCookie("csrf_token") || "";
 
-    const res = await fetch(`http://localhost:8080/event/view/${id}`, {
+    const res = await fetch(`http://${envHostBackend()}/event/view/${id}`, {
         method: "GET",
         headers: {
             "X-CSRF-Token": csrfToken
@@ -91,7 +92,7 @@ export default function EditEventForm(props: any) {
         formData.append("endDate", new Date(endDate).toISOString());
 
         try {
-            const response = await fetch("http://localhost:8080/event/edit", {
+            const response = await fetch("http://" + envHostBackend() + "/event/edit", {
                 method: "POST", 
                 body: formData,
                 headers: {

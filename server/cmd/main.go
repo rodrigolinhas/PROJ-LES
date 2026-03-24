@@ -5,12 +5,14 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	swagfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"LES/server/docs"
 	"LES/server/internal/api"
 	db "LES/server/internal/database"
+	"LES/server/internal/utils"
 )
 
 // @title Scientific Event Manager API
@@ -32,6 +34,11 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
+	err := godotenv.Load("../.env")
+	if err != nil {
+		fmt.Println("Warning: could not load .env file:", err)
+	}
+
 	api.InitGoogleAuth()
 	db.ConnectDB()
 	fmt.Println("Database Connected")
@@ -40,7 +47,7 @@ func main() {
 
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowOrigins:     []string{"http://" + utils.EnvHostFrontend()},
 		AllowMethods:     []string{"POST", "GET", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "X-CSRF-Token"},
 		AllowCredentials: true,
