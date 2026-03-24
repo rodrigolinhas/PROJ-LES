@@ -7,7 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/sessions"
-	"github.com/joho/godotenv"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/google"
@@ -20,11 +19,6 @@ import (
 // InitGoogleAuth loads env vars and registers the Google OAuth provider.
 // Must be called before the router starts.
 func InitGoogleAuth() {
-	err := godotenv.Load("../.env")
-	if err != nil {
-		fmt.Println("Warning: could not load .env file:", err)
-	}
-
 	key := os.Getenv("SESSION_SECRET")
 	if key == "" {
 		key = "default-session-secret"
@@ -42,7 +36,7 @@ func InitGoogleAuth() {
 		google.New(
 			os.Getenv("GOOGLE_CLIENT_ID"),
 			os.Getenv("GOOGLE_CLIENT_SECRET"),
-			"http://localhost:8080/auth/google/callback",
+			"http://" + utils.EnvHostBackend() + "/auth/google/callback",
 			"email", "profile",
 		),
 	)
@@ -163,14 +157,14 @@ func GoogleAuthCallback(c *gin.Context) {
 	csrfToken := utils.GenerateToken(32)
 
 	c.SetCookie("session_token", sessionToken, 24*60*60,
-		"/", "localhost", false, true)
+		"/", utils.EnvHostUrl(), false, true)
 	c.SetCookie("csrf_token", csrfToken, 24*60*60,
-		"/", "localhost", false, false)
+		"/", utils.EnvHostUrl(), false, false)
 
 	user.SessionToken = sessionToken
 	user.CSRFToken = csrfToken
 	db.DB.Save(&user)
 
 	// Redirect to frontend success page
-	c.Redirect(http.StatusTemporaryRedirect, "http://localhost:5173/auth/success")
+	c.Redirect(http.StatusTemporaryRedirect, "http://" + utils.EnvHostFrontend() + "/auth/success")
 }
