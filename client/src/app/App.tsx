@@ -9,6 +9,11 @@ import AuthSuccessPage from "../features/auth/pages/AuthSuccessPage";
 import EditEventPage from "../features/events/pages/EditEventPage";
 import MyEventsPage from "../features/events/pages/MyEventsPage";
 
+import ListActivitiesPage from "../features/events/activities/pages/ListActivitiesPage.tsx";
+import ViewActivityPage from "../features/events/activities/pages/ViewActivityPage.tsx";
+import EditActivityPage from "../features/events/activities/pages/EditActivityPage.tsx";
+import CreateActivityPage from "../features/events/activities/pages/CreateActivityPage.tsx";
+
 import ProtectedRoutes from "./router/ProtectedRoutes";
 
 function App() {
@@ -25,6 +30,11 @@ function App() {
                     <Route path="/events" element={<MyEventsPage />}/>
                     <Route path="/event/create" element={<CreateEventPage />}/>
                     <Route path="/event/edit/:id" element={<EditEventPage />}/>
+
+                    <Route path="/event/activity/list" element={<ListActivitiesPage />}/>
+                    <Route path="/event/activity/view" element={<ViewActivityPage />}/>
+                    <Route path="/event/activity/edit" element={<EditActivityPage />}/>
+                    <Route path="/event/activity/create" element={<CreateActivityPage />}/>
                 </Route>
             </Routes>
         </BrowserRouter>
