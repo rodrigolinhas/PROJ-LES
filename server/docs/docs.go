@@ -1455,6 +1455,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "New email",
+                        "name": "email",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
                         "description": "New password (must be at least 8 characters)",
                         "name": "password",
                         "in": "formData"

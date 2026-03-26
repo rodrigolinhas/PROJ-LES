@@ -1065,6 +1065,10 @@ paths:
         in: formData
         name: lastName
         type: string
+      - description: New email
+        in: formData
+        name: email
+        type: string
       - description: New password (must be at least 8 characters)
         in: formData
         name: password
