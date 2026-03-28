@@ -133,6 +133,7 @@ func UserLogin(c *gin.Context) {
 // 3. If the CSRF token in the header matches the DB.
 func Authorize(c *gin.Context) (*models.User, error) {
 	email, err := c.Cookie("user_email")
+	fmt.Printf("[AUTH DEBUG] user_email cookie: '%s', err: %v\n", email, err)
 	if err != nil || email == "" {
 		return nil, fmt.Errorf("no credentials found")
 	}
@@ -145,6 +146,7 @@ func Authorize(c *gin.Context) (*models.User, error) {
 
 	//validate session token
 	sessionToken, err := c.Cookie("session_token")
+	fmt.Printf("[AUTH DEBUG] session_token cookie present: %v, matches DB: %v\n", sessionToken != "", sessionToken == user.SessionToken)
 	if err != nil || sessionToken == "" || sessionToken != user.SessionToken {
 		return nil, fmt.Errorf("invalid session token")
 	}
@@ -156,6 +158,7 @@ func Authorize(c *gin.Context) (*models.User, error) {
 		csrfToken = decodedCsrf
 	}
 
+	fmt.Printf("[AUTH DEBUG] X-CSRF-Token header: '%s', matches DB: %v\n", csrfToken, csrfToken == user.CSRFToken)
 	if csrfToken == "" || csrfToken != user.CSRFToken {
 		return nil, fmt.Errorf("invalid CSRF token")
 	}
