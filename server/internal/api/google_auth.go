@@ -167,6 +167,8 @@ func GoogleAuthCallback(c *gin.Context) {
 	user.CSRFToken = csrfToken
 	db.DB.Save(&user)
 
-	// Redirect to frontend success page
-	c.Redirect(http.StatusTemporaryRedirect, "http://"+utils.EnvHostFrontend()+"/auth/success")
+	// Redirect to frontend success page, passing email so the SPA can store it
+	// without needing an authenticated API call (avoids cross-origin CSRF issues)
+	c.Redirect(http.StatusTemporaryRedirect,
+		"http://"+utils.EnvHostFrontend()+"/auth/success?email="+user.Email)
 }
