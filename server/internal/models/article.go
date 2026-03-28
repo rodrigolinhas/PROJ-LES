@@ -18,9 +18,10 @@ type Article struct {
 	URL				string 			`gorm:"not null"`
 	ActivityID		uint 			`gorm:"not null"`
 	Activity		EventActivity 	`gorm:"not null"`
-	// Tags			[]Tags
+	//TODO: Tags
 }
 
+//TODO: Test this function
 func NewArticle(title string, author User, publisher string, url string) (*Article, error){
 	title = strings.TrimSpace(title)
 	publisher = strings.TrimSpace(publisher)
@@ -37,10 +38,41 @@ func NewArticle(title string, author User, publisher string, url string) (*Artic
 	if url == "" {
 		return nil, errors.New("Article: No URL")
 	}
+	
 	return &Article{
 		Title: title,
 		FirstAuthor: author,
 		Publisher: publisher,
 		URL: url,
 	}, nil
+}
+
+//TODO: Test this method
+func (this *Article) AddCoAuthor(author User) error {
+	if author == this.FirstAuthor {
+		return errors.New("This user is already the first author")
+	}
+
+	for _, v := range this.CoAuthors {
+		if author == v {
+			return errors.New("This user is already a co-author")
+		}
+	}
+
+	this.CoAuthors = append(this.CoAuthors, author)
+	return nil
+}
+
+//TODO: Test this method
+// Adds co-authors to an article, and returns the number of authors added
+// successfully.
+func (this *Article) AddCoAuthors(authors []User) int {
+	count := 0
+	for _, v := range authors {
+		err := this.AddCoAuthor(v)
+		if err == nil {
+			count++
+		}
+	}
+	return count
 }
