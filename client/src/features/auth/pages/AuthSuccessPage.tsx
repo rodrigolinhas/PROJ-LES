@@ -1,4 +1,5 @@
 import { envHostBackend } from "@/shared/utils/env";
+import { getCookie } from "@/shared/utils/getCookie";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -8,9 +9,13 @@ export default function AuthSuccessPage() {
     useEffect(() => {
         const fetchUser = async () => {
             try {
+                const csrfToken = getCookie("csrf_token");
                 const response = await fetch("http://" + envHostBackend() + "/user/me", {
                     method: "GET",
                     credentials: "include",
+                    headers: {
+                        "X-CSRF-Token": csrfToken,
+                    },
                 });
 
                 if (response.status === 200) {
