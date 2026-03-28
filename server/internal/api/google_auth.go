@@ -156,6 +156,8 @@ func GoogleAuthCallback(c *gin.Context) {
 	sessionToken := utils.GenerateToken(32)
 	csrfToken := utils.GenerateToken(32)
 
+	c.SetCookie("user_email", user.Email, 24*60*60,
+		"/", utils.EnvHostUrl(), false, true)
 	c.SetCookie("session_token", sessionToken, 24*60*60,
 		"/", utils.EnvHostUrl(), false, true)
 	c.SetCookie("csrf_token", csrfToken, 24*60*60,
