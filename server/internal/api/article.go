@@ -101,7 +101,10 @@ func ArticleCreate(c *gin.Context) {
 
 	article.AddCoAuthors(coAuthors)
 
-	act.Articles = append(act.Articles, *article)
+	aerr = act.AddArticle(*article)
+	if aerr != nil {
+		c.String(http.StatusInternalServerError, aerr.Error())
+	}
 	
 	dberr = db.DB.Save(act)
 	if dberr.Error != nil {
