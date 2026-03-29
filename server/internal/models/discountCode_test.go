@@ -1,6 +1,6 @@
 /*
-user_test.go defines the automated tests to confirm the behavior,
-initialization, and validation logic of the User model.
+DiscountCode_test.go defines the automated tests to confirm the behavior,
+initialization, and validation logic of the DiscountCode model.
 */
 package models
 

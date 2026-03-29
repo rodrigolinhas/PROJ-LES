@@ -9,21 +9,21 @@ import (
 
 type Article struct {
 	gorm.Model
-	Title 				string 			`gorm:"not null"`
-	FirstAuthor			User 			`gorm:"not null"`
-	FirstAuthorID		uint 			`gorm:"not null"`
-	CoAuthors			[]User 			`gorm:"many2many:article_coauthors"`
-	Publisher 			string 			`gorm:"not null"`
-	DOI					string 			
-	ISBN				string 			
-	URL					string 			`gorm:"not null"`
-	EventActivity		EventActivity 	`gorm:"not null"`
-	EventActivityID		uint 			`gorm:"not null"`
-	//TODO: Tags
+	Title           string `gorm:"not null"`
+	FirstAuthor     User   `gorm:"not null"`
+	FirstAuthorID   uint   `gorm:"not null"`
+	CoAuthors       []User `gorm:"many2many:article_coauthors"`
+	Publisher       string `gorm:"not null"`
+	DOI             string
+	ISBN            string
+	URL             string        `gorm:"not null"`
+	EventActivity   EventActivity `gorm:"not null"`
+	EventActivityID uint          `gorm:"not null"`
+	Tag             []Tag         `gorm:"many2many:article_tag"`
 }
 
-//TODO: Test this function
-func NewArticle(title string, author User, publisher string, url string) (*Article, error){
+// TODO: Test this function
+func NewArticle(title string, author User, publisher string, url string) (*Article, error) {
 	title = strings.TrimSpace(title)
 	publisher = strings.TrimSpace(publisher)
 	url = strings.TrimSpace(url)
@@ -39,16 +39,16 @@ func NewArticle(title string, author User, publisher string, url string) (*Artic
 	if url == "" {
 		return nil, errors.New("Article: No URL")
 	}
-	
+
 	return &Article{
-		Title: title,
+		Title:       title,
 		FirstAuthor: author,
-		Publisher: publisher,
-		URL: url,
+		Publisher:   publisher,
+		URL:         url,
 	}, nil
 }
 
-//TODO: Test this method
+// TODO: Test this method
 func (this *Article) AddCoAuthor(author User) error {
 	if author == this.FirstAuthor {
 		return errors.New("This user is already the first author")
@@ -64,7 +64,7 @@ func (this *Article) AddCoAuthor(author User) error {
 	return nil
 }
 
-//TODO: Test this method
+// TODO: Test this method
 // Adds co-authors to an article, and returns the number of authors added
 // successfully.
 func (this *Article) AddCoAuthors(authors []User) int {
