@@ -9,6 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type EventActivity struct {
+	Name        string    
+	Description string    
+	StartDate   time.Time 
+	EndDate     time.Time 
+	EventID     uint      
+	Event       models.Event    
+}
+
 // EventActivityCreate
 // @Summary     Create activity
 // @Description While the user is logged in, creates an activity associated with an event and registers it in the database

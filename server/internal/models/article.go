@@ -9,15 +9,16 @@ import (
 
 type Article struct {
 	gorm.Model
-	Title 			string 			`gorm:"not null"`
-	FirstAuthor		User 			`gorm:"not null"`
-	CoAuthors		[]User 			
-	Publisher 		string 			`gorm:"not null"`
-	DOI				string 			
-	ISBN			string 			
-	URL				string 			`gorm:"not null"`
-	ActivityID		uint 			`gorm:"not null"`
-	Activity		EventActivity 	`gorm:"not null"`
+	Title 				string 			`gorm:"not null"`
+	FirstAuthor			User 			`gorm:"not null"`
+	FirstAuthorID		uint 			`gorm:"not null"`
+	CoAuthors			[]User 			`gorm:"many2many:article_coauthors"`
+	Publisher 			string 			`gorm:"not null"`
+	DOI					string 			
+	ISBN				string 			
+	URL					string 			`gorm:"not null"`
+	EventActivity		EventActivity 	`gorm:"not null"`
+	EventActivityID		uint 			`gorm:"not null"`
 	//TODO: Tags
 }
 
