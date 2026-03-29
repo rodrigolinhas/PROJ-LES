@@ -9,6 +9,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ArticleCreate
+// @Summary     Create article
+// @Description While the user is logged in, creates an article and associates it to an event activity
+// @Tags        Article
+// @Accept      mpfd
+// @Produce 	plain
+// @Param 		X-CSRF-Token 	header		string	true	"User's CSRF Token"
+// @Param 		eventID 		formData 	string 	true 	"ID of the associated event"
+// @Param 		activityID 		formData 	string 	true 	"ID of the associated activity"
+// @Param       title           formData 	string  true    "Title of the article"
+// @Param       firstAuthorID   formData 	string  true    "ID of the article's first author"
+// @Param       coAuthorsID	    formData 	string  false   "The IDs of the co-authors, separated by commas"
+// @Param       publisher 	    formData 	string  true    "Publisher of the article"
+// @Param       doi             formData 	string  false   "Article's DOI"
+// @Param       isbn            formData 	string  false   "Article's ISBN"
+// @Param       url             formData 	string  true    "URL where the article is accessible"
+// @Success     201 {string} string "Article created successfully"
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure 	404 {string} string "User/event/activity not found"
+// @Failure 	400 {string} string "The activity does not belong to the event"
+// @Failure 	500 {string} string "Error found during article creation"
+// @Router 		/article/create [post]
 func ArticleCreate(c *gin.Context) {
 	event, err := eventEditPreface(c)
 	if err != nil {
@@ -87,6 +109,6 @@ func ArticleCreate(c *gin.Context) {
 		return
 	}
 
-	c.String(http.StatusOK, "Article created successfully")
+	c.String(http.StatusCreated, "Article created successfully")
 	return
 }

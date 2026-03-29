@@ -31,6 +31,12 @@ import (
 // @tag.name Event
 // @tag.description Endpoints related to event management
 
+// @tag.name EventActivity
+// @tag.description Endpoints related to event activity management
+
+// @tag.name Article
+// @tag.description Endpoints related to article management
+
 // @host localhost:8080
 // @BasePath /
 func main() {
