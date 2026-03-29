@@ -14,8 +14,6 @@ type EventActivity struct {
 	Description string    
 	StartDate   time.Time 
 	EndDate     time.Time 
-	EventID     uint      
-	Event       models.Event    
 }
 
 // EventActivityCreate
@@ -91,7 +89,7 @@ func EventActivityCreate(c *gin.Context) {
 // @Produce 	json
 // @Param 		X-CSRF-Token 	header 		string 	true 	"User's CSRF Token"
 // @Param 		eventID 		query 		string 	true 	"Event ID"
-// @Success 	200 {array} object
+// @Success 	200 {array} EventActivity
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "No activity found"
 // @Router 		/event/activity/list [get]
@@ -114,8 +112,8 @@ func EventActivityList(c *gin.Context) {
 		c.String(http.StatusForbidden, "You can't view activities of this event (need to be the event organizer)")
 	}
 
-	var activities []models.EventActivity
-	db.DB.Where("event_id = ?", eventID).Find(&activities)
+	var activities []EventActivity
+	db.DB.Model(&models.EventActivity{}).Where("event_id = ?", eventID).Scan(&activities)
 
 	c.JSON(http.StatusOK, activities)
 }
