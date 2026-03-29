@@ -101,3 +101,38 @@ func TestActivityBeforeEpoch(t *testing.T) {
 
 	assert.NotNil(t, err)
 }
+
+func TestActivityAddArticle(t *testing.T) {
+	a, _ := NewEventActivity(
+		"Activity",
+		"Description",
+		time.Date(2026, time.March, 20, 10, 0, 0, 0, time.UTC),
+		time.Date(2026, time.March, 20, 12, 0, 0, 0, time.UTC),
+		*exEvent,
+	)
+
+	art, _ := NewArticle("title", *exampleUser, "pub", "url")
+
+	err := a.AddArticle(*art)
+
+	assert.Nil(t, err)
+	assert.Contains(t, a.Articles, *art)
+}
+
+func TestActivityAddArticleDuplicate(t *testing.T) {
+	a, _ := NewEventActivity(
+		"Activity",
+		"Description",
+		time.Date(2026, time.March, 20, 10, 0, 0, 0, time.UTC),
+		time.Date(2026, time.March, 20, 12, 0, 0, 0, time.UTC),
+		*exEvent,
+	)
+
+	art, _ := NewArticle("title", *exampleUser, "pub", "url")
+	art2, _ := NewArticle("title", *exampleUser, "pub", "url")
+
+	a.AddArticle(*art)
+	err := a.AddArticle(*art2)
+
+	assert.NotNil(t, err)
+}

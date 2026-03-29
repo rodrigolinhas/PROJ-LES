@@ -53,7 +53,7 @@ func (a EventActivity) validate() error {
 }
 
 //TODO: Test this method
-func (a EventActivity) AddArticle(article Article) error {
+func (a *EventActivity) AddArticle(article Article) error {
 	for _, v := range a.Articles {
 		if article.Title == v.Title {
 			return errors.New("This article is already in this activity")
