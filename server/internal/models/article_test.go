@@ -2,6 +2,7 @@ package models
 
 import (
 	"testing"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -128,4 +129,52 @@ func TestCoAuthors6(t *testing.T) {
 	coauthors := []User{}
 	res := art.AddCoAuthors(coauthors)
 	assert.Equal(t, 0, res)
+}
+
+func TestArticle_AddTag1(t *testing.T) {
+	user := *exampleUser
+	art, _ := NewArticle("title", user, "pub", "url")
+	tag, _ := NewTag("Artificial Intelligence", "AI", "topic")
+
+	err := art.AddTag(*tag)
+
+	assert.Nil(t, err)
+	assert.Len(t, art.Tags, 1)
+	assert.Equal(t, "AI", art.Tags[0].Code)
+}
+
+func TestArticle_AddTag2(t *testing.T) {
+	user := *exampleUser
+	art, _ := NewArticle("title", user, "pub", "url")
+	tag, _ := NewTag("Artificial Intelligence", "AI", "topic")
+
+	_ = art.AddTag(*tag)
+	err := art.AddTag(*tag)
+
+	assert.EqualError(t, err, "this tag is already associated with the article")
+	assert.Len(t, art.Tags, 1)
+}
+
+func TestArticle_AddTags1(t *testing.T) {
+	user := *exampleUser
+	art, _ := NewArticle("title", user, "pub", "url")
+	tag1, _ := NewTag("Artificial Intelligence", "AI", "topic")
+	tag2, _ := NewTag("Healthcare", "HEALTHCARE", "application_domain")
+
+	count := art.AddTags([]Tag{*tag1, *tag2})
+
+	assert.Equal(t, 2, count)
+	assert.Len(t, art.Tags, 2)
+}
+
+func TestArticle_AddTags2(t *testing.T) {
+	user := *exampleUser
+	art, _ := NewArticle("title", user, "pub", "url")
+	tag1, _ := NewTag("Artificial Intelligence", "AI", "topic")
+	tag2, _ := NewTag("Artificial Intelligence", "AI", "topic")
+
+	count := art.AddTags([]Tag{*tag1, *tag2})
+
+	assert.Equal(t, 1, count)
+	assert.Len(t, art.Tags, 1)
 }
