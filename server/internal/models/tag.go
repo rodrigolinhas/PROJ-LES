@@ -30,8 +30,8 @@ var TagCategoryMap = map[string]TagCategory{
 type Tag struct {
 	gorm.Model
 
-	Name     string      `gorm:"not null;uniqueIndex"`
-	Code     string      `gorm:"not null"`
+	Name     string      `gorm:"not null"`
+	Code     string      `gorm:"not null;uniqueIndex"`
 	Category TagCategory `gorm:"not null"`
 	IsActive bool        `gorm:"not null;default:true"`
 	Articles []Article   `gorm:"many2many:article_tags;"`
