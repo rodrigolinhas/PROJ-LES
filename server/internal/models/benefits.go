@@ -37,7 +37,18 @@ var DefaultBenefits = []string{
 	"Booth Space",
 }
 
-// NewBenefit creates and returns a new Benefit instance, validating that the name is not empty.
+// IsValidBenefit checks if the given benefit name is within the DefaultBenefits list.
+func IsValidBenefit(name string) bool {
+	for _, b := range DefaultBenefits {
+		if b == name {
+			return true
+		}
+	}
+	return false
+}
+
+// NewBenefit creates and returns a new Benefit instance, validating that the name is not empty
+// and belongs to the predefined list of benefits.
 //
 // Parameters:
 //
@@ -52,11 +63,47 @@ func NewBenefit(name string) (*Benefit, error) {
 		return nil, errors.New("Benefit: empty name")
 	}
 
+	if !IsValidBenefit(name) {
+		return nil, errors.New("Benefit: invalid benefit name")
+	}
+
 	benefit := &Benefit{
 		Name: name,
 	}
 
 	return benefit, nil
+}
+
+// ParseBenefits takes a comma-separated string of benefits, processes each one,
+// and returns a slice of Benefit structs. It returns an error if any benefit is invalid.
+//
+// Parameters:
+//
+//	benefitsStr: The comma-separated string of benefits (e.g. "Gala Dinner, Lunch").
+//
+// Returns:
+//
+//	A slice of Benefits, or an error if validation fails for any item.
+func ParseBenefits(benefitsStr string) ([]Benefit, error) {
+	benefitsStr = strings.TrimSpace(benefitsStr)
+	if benefitsStr == "" {
+		return []Benefit{}, nil
+	}
+
+	parts := strings.Split(benefitsStr, ",")
+	var benefits []Benefit
+
+	for _, part := range parts {
+		b, err := NewBenefit(part)
+		if err != nil {
+			return nil, err
+		}
+		if b != nil {
+			benefits = append(benefits, *b)
+		}
+	}
+
+	return benefits, nil
 }
 
 // SeedBenefits populates the database with the predefined DefaultBenefits.
