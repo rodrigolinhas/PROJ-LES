@@ -10,6 +10,7 @@ import (
 )
 
 type EventActivity struct {
+	ID			uint
 	Name        string    
 	Description string    
 	StartDate   time.Time 

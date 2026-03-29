@@ -1834,6 +1834,9 @@ const docTemplate = `{
                 "endDate": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 },
