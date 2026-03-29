@@ -14,6 +14,7 @@ type EventActivity struct {
 	Description string    `gorm:"not null"`
 	StartDate   time.Time `gorm:"not null"`
 	EndDate     time.Time `gorm:"not null"`
+	Articles 	[]Article
 	EventID     uint      `gorm:"not null"`
 	Event       Event     `gorm:"not null"`
 }
@@ -48,5 +49,17 @@ func (a EventActivity) validate() error {
 	if a.StartDate.Before(epoch) || a.EndDate.Before(epoch) || a.StartDate.After(a.EndDate) {
 		return errors.New("EventActivity: Invalid date")
 	}
+	return nil
+}
+
+//TODO: Test this method
+func (a *EventActivity) AddArticle(article Article) error {
+	for _, v := range a.Articles {
+		if article.Title == v.Title {
+			return errors.New("This article is already in this activity")
+		}
+	}
+
+	a.Articles = append(a.Articles, article)
 	return nil
 }

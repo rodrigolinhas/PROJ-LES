@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "54515b45-fb48-434f-9d75-93ec8365c4fd",
+    "_postman_id": "097d64c0-fce9-48f9-bb4b-195fa4b9f2c4",
     "name": "00 - LES API (Runner)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "49772394",
-    "_collection_link": "https://go.postman.co/collection/52499233-54515b45-fb48-434f-9d75-93ec8365c4fd?source=collection_link"
+    "_exporter_id": "52830737",
+    "_collection_link": "https://go.postman.co/collection/52830737-097d64c0-fce9-48f9-bb4b-195fa4b9f2c4?source=collection_link"
   },
   "item": [
     {
@@ -839,6 +839,257 @@
                 "event",
                 "view",
                 "{{event_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activity_create",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Create Activity -> 201\", function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Create Activity -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Activity created successfully\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "ee18c74c-a6c4-4487-9698-ae6af8db5258"
+                },
+                {
+                  "key": "name",
+                  "value": "{{activity_name}}",
+                  "type": "text",
+                  "uuid": "8bcf3621-4f44-4fca-bbd8-9b954e064b3b"
+                },
+                {
+                  "key": "description",
+                  "value": "{{activity_desc}}",
+                  "type": "text",
+                  "uuid": "c833d5f1-af31-42a5-8453-8195aec288d4"
+                },
+                {
+                  "key": "startDate",
+                  "value": "{{event_start}}",
+                  "type": "text",
+                  "uuid": "7553a344-9975-49f2-a085-faf46b95d2cd"
+                },
+                {
+                  "key": "endDate",
+                  "value": "{{event_end}}",
+                  "type": "text",
+                  "uuid": "a4f165c7-b5b9-4e81-8543-42ba1cbb5dcf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/activity/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "activity",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activity_list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"List Activities -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  const activities = pm.response.json();",
+                  "",
+                  "  pm.test(\"List Activities -> returns array\", function () {",
+                  "    pm.expect(activities).to.be.an(\"array\");",
+                  "    pm.expect(activities.length).to.be.greaterThan(0);",
+                  "  });",
+                  "",
+                  "  const createdAct = activities.find(",
+                  "    elem => elem.Name === pm.environment.get(\"activity_name\")",
+                  "  );",
+                  "",
+                  "  pm.test(\"Created activity found in the event\", function () {",
+                  "    pm.expect(createdAct).to.exist;",
+                  "  });",
+                  "",
+                  "  if (createdAct) {",
+                  "    pm.environment.set(\"activity_id\", String(createdAct.ID));",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/activity/list?eventID={{event_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "activity",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "article_create",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Create Article -> 201\", function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Create Article -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Article created successfully\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "packages": {},
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "ee18c74c-a6c4-4487-9698-ae6af8db5258"
+                },
+                {
+                  "key": "activityID",
+                  "value": "{{activity_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "title",
+                  "value": "{{article_title}}",
+                  "type": "text"
+                },
+                {
+                  "key": "firstAuthorID",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "coAuthorsID",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "publisher",
+                  "value": "{{article_publisher}}",
+                  "type": "text"
+                },
+                {
+                  "key": "doi",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "isbn",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "url",
+                  "value": "{{article_url}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/article/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "article",
+                "create"
               ]
             }
           },
