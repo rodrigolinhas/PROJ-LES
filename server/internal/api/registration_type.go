@@ -13,18 +13,20 @@ import (
 )
 
 type RegistrationType struct {
-	ID				uint	`example:"1"`
-	Name			string 	`example:"Pass"`
-	Description		string	`example:"Pass Description"`
-	Price	        float64	`example:"7.5"`
+	ID          uint    `example:"1"`
+	Name        string  `example:"Pass"`
+	Description string  `example:"Pass Description"`
+	Price       float64 `example:"7.5"`
 }
 
 func regTypePreface(c *gin.Context) (*models.Event, error) {
 	event, err := eventEditPreface(c)
-	if err != nil { return nil, errors.New("Error sent") }
+	if err != nil {
+		return nil, errors.New("Error sent")
+	}
 
 	if event.Published == true {
-		c.String(http.StatusConflict, "Can't add/edit/remove a registration type of a published event")	
+		c.String(http.StatusConflict, "Can't add/edit/remove a registration type of a published event")
 		return nil, errors.New("Error sent")
 	}
 
@@ -42,6 +44,7 @@ func regTypePreface(c *gin.Context) (*models.Event, error) {
 // @Param 		name			formData	string	true	"Name of the registration type"
 // @Param 		description		formData	string	true	"Description of the registration type"
 // @Param 		price			formData	number	true	"Price of the registration type"
+// @Param 		benefits		formData	string	false	"Comma-separated list of benefits"
 // @Success 	200 {string} string "Event Registration Type added successfully"
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "Event not found"
@@ -52,17 +55,19 @@ func regTypePreface(c *gin.Context) (*models.Event, error) {
 // @Router 		/event/regtype/create [post]
 func RegistrationTypeCreate(c *gin.Context) {
 	event, err := regTypePreface(c)
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	name := c.Request.FormValue("name")
 	desc := c.Request.FormValue("description")
 	priceStr := c.Request.FormValue("price")
 
 	var price float64
-	if priceStr != ""  {
+	if priceStr != "" {
 		n, err := strconv.ParseFloat(priceStr, 64)
 		if err != nil {
-			c.String(http.StatusBadRequest, "Can't parse the price") 
+			c.String(http.StatusBadRequest, "Can't parse the price")
 			return
 		}
 		price = n
@@ -71,7 +76,14 @@ func RegistrationTypeCreate(c *gin.Context) {
 		return
 	}
 
-	regType, err := models.NewRegistrationType(event.ID, name, desc, price)
+	benefitsStr := c.Request.FormValue("benefits")
+	benefits, err := models.ParseBenefits(benefitsStr)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Invalid benefits format: "+err.Error())
+		return
+	}
+
+	regType, err := models.NewRegistrationType(event.ID, name, desc, price, benefits)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
@@ -79,7 +91,7 @@ func RegistrationTypeCreate(c *gin.Context) {
 
 	arr := []models.RegistrationType{}
 	dberr := db.DB.Where("event_id = ? AND name = ?", event.ID, regType.Name).
-				Find(&arr)
+		Find(&arr)
 	if dberr.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found in DB")
 		return
@@ -121,7 +133,9 @@ func RegistrationTypeCreate(c *gin.Context) {
 // @Router 		/event/regtype/edit [post]
 func RegistrationTypeEdit(c *gin.Context) {
 	event, err := regTypePreface(c)
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	regtypeID := c.Request.FormValue("regTypeID")
 	name := strings.TrimSpace(c.Request.FormValue("name"))
@@ -129,10 +143,10 @@ func RegistrationTypeEdit(c *gin.Context) {
 	priceStr := strings.TrimSpace(c.Request.FormValue("price"))
 
 	var price float64
-	if priceStr != ""  {
+	if priceStr != "" {
 		n, err := strconv.ParseFloat(priceStr, 64)
 		if err != nil {
-			c.String(http.StatusBadRequest, "Can't parse the price") 
+			c.String(http.StatusBadRequest, "Can't parse the price")
 			return
 		}
 		price = n
@@ -148,7 +162,7 @@ func RegistrationTypeEdit(c *gin.Context) {
 	if name != "" {
 		arr := []models.RegistrationType{}
 		dberr := db.DB.Where("event_id = ? AND name = ?", event.ID, name).
-					Find(&arr)
+			Find(&arr)
 		if dberr.Error != nil {
 			c.String(http.StatusInternalServerError, "Error found in DB")
 			return
@@ -183,13 +197,13 @@ func RegistrationTypeEdit(c *gin.Context) {
 
 // RegistrationTypeList
 // @Summary 	List the registration types of an event
-// @Description A user can view the registration types of an event that they own or was published 
+// @Description A user can view the registration types of an event that they own or was published
 // @Tags 		Event
 // @Accept		plain
 // @Produce 	json
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		id				path		string	true	"ID of the event"
-// @Success 	200 {array} RegistrationType 
+// @Success 	200 {array} RegistrationType
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		403 {string} string "Event was not published yet and the user is not the orgaziner"
 // @Failure		404 {string} string "Event/Registration Type not found"
@@ -197,7 +211,7 @@ func RegistrationTypeEdit(c *gin.Context) {
 func RegistrationTypeList(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
 		return
 	}
 
@@ -217,8 +231,8 @@ func RegistrationTypeList(c *gin.Context) {
 
 	var regtypes []RegistrationType
 	err := db.DB.Model(&models.RegistrationType{}).
-					Where("event_id = ?", event.ID).
-					Scan(&regtypes)
+		Where("event_id = ?", event.ID).
+		Scan(&regtypes)
 
 	if err.RowsAffected == 0 {
 		c.String(http.StatusNotFound, "This event doesn't have registration types")
@@ -246,7 +260,9 @@ func RegistrationTypeList(c *gin.Context) {
 // @Router 		/event/regtype/delete [post]
 func RegistrationTypeDelete(c *gin.Context) {
 	event, err := regTypePreface(c)
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	regtypeID := c.Request.FormValue("regTypeID")
 
@@ -264,4 +280,58 @@ func RegistrationTypeDelete(c *gin.Context) {
 	}
 
 	c.String(http.StatusOK, "Event Registration Type deleted successfully")
+}
+
+// EventBenefitsList
+// @Summary 	List the benefits of an event
+// @Description A user can view the benefits associated with an event that they own or was published
+// @Tags 		Event
+// @Accept		plain
+// @Produce 	json
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		id				path		string	true	"ID of the event"
+// @Success 	200 {array} string
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		403 {string} string "Event was not published yet and the user is not the orgaziner"
+// @Failure		404 {string} string "Event not found"
+// @Router 		/event/view/:id/benefits [get]
+func EventBenefitsList(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
+		return
+	}
+
+	eventID := c.Param("id")
+
+	var event models.Event
+	res := db.DB.Preload("RegTypes.Benefits").Model(&models.Event{}).Where("ID = ?", eventID).Take(&event)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if event.Published == false && event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "Event was not published yet and the user is not the orgaziner")
+		return
+	}
+
+	benefitsMap := make(map[string]bool)
+	var benefits []string
+
+	for _, rt := range event.RegTypes {
+		for _, b := range rt.Benefits {
+			if !benefitsMap[b.Name] {
+				benefitsMap[b.Name] = true
+				benefits = append(benefits, b.Name)
+			}
+		}
+	}
+
+	if len(benefits) == 0 {
+		c.String(http.StatusNotFound, "This event doesn't have benefits associated")
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, benefits)
 }
