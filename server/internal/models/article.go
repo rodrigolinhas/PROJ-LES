@@ -121,7 +121,7 @@ func (this *Article) RemoveTag(tag Tag) error {
 
 func (this *Article) RemoveTags(tags []Tag) int {
 	count := 0
-	for _, v := range this.Tags {
+	for _, v := range tags {
 		err := this.RemoveTag(v)
 		if err == nil {
 			count++
