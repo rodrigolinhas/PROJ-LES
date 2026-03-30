@@ -92,7 +92,7 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/event/register", api.EventRegister)
 	router.POST("/event/pay", api.EventPay)
 	router.GET("/event/my/enroll", api.EventRegistrationList)
-	
+
 	//registration types
 	router.POST("/event/regtype/create", api.RegistrationTypeCreate)
 	router.POST("/event/regtype/edit", api.RegistrationTypeEdit)
@@ -105,7 +105,8 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/event/activity/edit", api.EventActivityEdit)
 	router.POST("/event/activity/delete", api.EventActivityDelete)
 	router.GET("/event/activity/view/:id", api.EventActivityView)
-
+	router.GET("/event/view/:id/benefits", api.EventBenefitsList)
+	
 	//articles
 	router.POST("/article/create", api.ArticleCreate)
 
