@@ -103,3 +103,30 @@ func (this *Article) AddTags(tags []Tag) int {
 	}
 	return count
 }
+
+func (this *Article) RemoveTag(tag Tag) error {
+	if tag.Code == "" {
+		return errors.New("this code are empty, that's a invalid tag")
+	}
+
+	for i, v := range this.Tags {
+		if v.Code == tag.Code {
+			this.Tags = append(this.Tags[:i], this.Tags[i+1:]...)
+			return nil
+		}
+	}
+
+	return errors.New("this tag is not associated with the article")
+}
+
+func (this *Article) RemoveTags(tags []Tag) int {
+	count := 0
+	for _, v := range this.Tags {
+		err := this.RemoveTag(v)
+		if err == nil {
+			count++
+		}
+	}
+
+	return count
+}
