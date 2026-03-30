@@ -9,13 +9,14 @@ import (
 
 type RegistrationType struct {
 	gorm.Model
-	EventID			uint		`gorm:"not null"`
-	Name			string 		`gorm:"not null"`
-	Description		string		`gorm:"not null"`
-	Price	        float64		`gorm:"not null"`
+	EventID     uint      `gorm:"not null"`
+	Name        string    `gorm:"not null"`
+	Description string    `gorm:"not null"`
+	Price       float64   `gorm:"not null"`
+	Benefits    []Benefit `gorm:"many2many:registration_type_benefits;"`
 }
 
-func NewRegistrationType(eventID uint, name string, desc string, price float64) (*RegistrationType, error) {
+func NewRegistrationType(eventID uint, name string, desc string, price float64, benefits []Benefit) (*RegistrationType, error) {
 	name = strings.TrimSpace(name)
 	desc = strings.TrimSpace(desc)
 
@@ -27,11 +28,18 @@ func NewRegistrationType(eventID uint, name string, desc string, price float64) 
 		return nil, errors.New("RegistrationType: invalid price")
 	}
 
+	for _, b := range benefits {
+		if !IsValidBenefit(b.Name) {
+			return nil, errors.New("RegistrationType: invalid benefit")
+		}
+	}
+
 	regType := &RegistrationType{
-		EventID: eventID,
-		Name: name,
+		EventID:     eventID,
+		Name:        name,
 		Description: desc,
-		Price: price,
+		Price:       price,
+		Benefits:    benefits,
 	}
 
 	return regType, nil
