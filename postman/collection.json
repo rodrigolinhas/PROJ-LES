@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "097d64c0-fce9-48f9-bb4b-195fa4b9f2c4",
+    "_postman_id": "5024f5ab-ba2d-4cba-8314-69501cf755fb",
     "name": "00 - LES API (Runner)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "52830737",
-    "_collection_link": "https://go.postman.co/collection/52830737-097d64c0-fce9-48f9-bb4b-195fa4b9f2c4?source=collection_link"
+    "_exporter_id": "52499161",
+    "_collection_link": "https://go.postman.co/collection/52499161-5024f5ab-ba2d-4cba-8314-69501cf755fb?source=collection_link"
   },
   "item": [
     {
@@ -1322,6 +1322,82 @@
                 "event",
                 "view",
                 "{{event_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "benefits",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Benefits list -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  const res = pm.response.json();",
+                  "",
+                  "  pm.test(\"Benefits list -> returns array\", function () {",
+                  "    pm.expect(res).to.be.an(\"array\");",
+                  "  });",
+                  "",
+                  "  pm.test(\"Benefits list -> array is not empty\", function () {",
+                  "    pm.expect(res.length).to.be.greaterThan(0);",
+                  "  });",
+                  "",
+                  "  const expectedRaw = pm.environment.get(\"benefits\");",
+                  "",
+                  "  if (expectedRaw) {",
+                  "    const expected = expectedRaw",
+                  "      .split(\",\")",
+                  "      .map(b => b.trim())",
+                  "      .filter(Boolean);",
+                  "",
+                  "    pm.test(\"Benefits list -> contains expected benefits\", function () {",
+                  "      expected.forEach(b => {",
+                  "        pm.expect(res).to.include(b);",
+                  "      });",
+                  "    });",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}/benefits",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}",
+                "benefits"
               ]
             }
           },
