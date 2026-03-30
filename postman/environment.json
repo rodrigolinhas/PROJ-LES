@@ -1,5 +1,5 @@
 {
-	"id": "d159e62e-14e3-4f02-9afd-a37818d46bf5",
+	"id": "65b359f1-d467-451d-abe0-b075e0bbf049",
 	"name": "LES-Local",
 	"values": [
 		{
@@ -145,10 +145,82 @@
 			"value": "publisher.com/article",
 			"type": "default",
 			"enabled": true
+		},
+		{
+			"key": "regtype_name",
+			"value": "Pass",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_desc",
+			"value": "Pass Description",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_price",
+			"value": "5",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_name_edited",
+			"value": "FastPass",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_desc_edited",
+			"value": "FastPass Desc.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_price_edited",
+			"value": "7.5",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "email_stu",
+			"value": "student@uni.edu",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "role_stu",
+			"value": "Student",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "lName_stu",
+			"value": "Dent",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "fName_stu",
+			"value": "Stu",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_id",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "pay_token",
+			"value": "",
+			"type": "any",
+			"enabled": true
 		}
 	],
 	"color": null,
 	"_postman_variable_scope": "environment",
-	"_postman_exported_at": "2026-03-29T02:56:25.640Z",
+	"_postman_exported_at": "2026-03-29T17:56:07.664Z",
 	"_postman_exported_using": "Postman/11.85.1-260224-0818"
 }
