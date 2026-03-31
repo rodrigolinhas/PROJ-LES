@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getCookie } from "../../../shared/utils/getCookie";
+import { getCookie } from "../../../shared/utils/getCookie.ts";
 
 type EventDetails = {
     ID: number;

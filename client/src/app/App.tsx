@@ -8,7 +8,7 @@ import CreateEventPage from "../features/events/pages/CreateEventPage";
 import AuthSuccessPage from "../features/auth/pages/AuthSuccessPage";
 import EditEventPage from "../features/events/pages/EditEventPage";
 import MyEventsPage from "../features/events/pages/MyEventsPage";
-import ViewEventPage from "@/features/events/components/ViewEventPage.tsx";
+import ViewEventPage from "@/features/events/pages/ViewEventPage.tsx";
 
 import ProtectedRoutes from "./router/ProtectedRoutes";
 
