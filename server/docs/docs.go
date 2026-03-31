@@ -1157,14 +1157,14 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "PayToken given during event enrollment",
-                        "name": "PayToken",
+                        "name": "payToken",
                         "in": "formData",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Event registration payed successfully",
+                        "description": "Event registration paid successfully",
                         "schema": {
                             "type": "string"
                         }
@@ -1284,6 +1284,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "ID of the event",
                         "name": "eventID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the registration type",
+                        "name": "regTypeID",
                         "in": "formData",
                         "required": true
                     },
