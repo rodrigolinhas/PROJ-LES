@@ -31,6 +31,12 @@ import (
 // @tag.name Event
 // @tag.description Endpoints related to event management
 
+// @tag.name EventActivity
+// @tag.description Endpoints related to event activity management
+
+// @tag.name Article
+// @tag.description Endpoints related to article management
+
 // @host localhost:8080
 // @BasePath /
 func main() {
@@ -99,6 +105,9 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/event/:eventId/activity/edit/:id", api.EventActivityEdit)
 	router.POST("/event/:eventId/activity/delete/:id", api.EventActivityDelete)
 	router.GET("/event/:eventId/activity/view/:id", api.EventActivityView)
+
+	//articles
+	router.POST("/article/create", api.ArticleCreate)
 
 	// swagger handler
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swagfiles.Handler))

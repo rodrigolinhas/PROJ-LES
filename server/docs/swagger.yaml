@@ -1,5 +1,18 @@
 basePath: /
 definitions:
+  api.EventActivity:
+    properties:
+      description:
+        type: string
+      endDate:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      startDate:
+        type: string
+    type: object
   api.LongEvent:
     properties:
       closed:
@@ -90,6 +103,86 @@ info:
   title: Scientific Event Manager API
   version: "0.1"
 paths:
+  /article/create:
+    post:
+      consumes:
+      - multipart/form-data
+      description: While the user is logged in, creates an article and associates
+        it to an event activity
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the associated event
+        in: formData
+        name: eventID
+        required: true
+        type: string
+      - description: ID of the associated activity
+        in: formData
+        name: activityID
+        required: true
+        type: string
+      - description: Title of the article
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: ID of the article's first author
+        in: formData
+        name: firstAuthorID
+        required: true
+        type: string
+      - description: The IDs of the co-authors, separated by commas
+        in: formData
+        name: coAuthorsID
+        type: string
+      - description: Publisher of the article
+        in: formData
+        name: publisher
+        required: true
+        type: string
+      - description: Article's DOI
+        in: formData
+        name: doi
+        type: string
+      - description: Article's ISBN
+        in: formData
+        name: isbn
+        type: string
+      - description: URL where the article is accessible
+        in: formData
+        name: url
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "201":
+          description: Article created successfully
+          schema:
+            type: string
+        "400":
+          description: The activity does not belong to the event
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "404":
+          description: User/event/activity not found
+          schema:
+            type: string
+        "500":
+          description: Error found during article creation
+          schema:
+            type: string
+      summary: Create article
+      tags:
+      - Article
   /auth/google:
     get:
       description: Redirects the user to Google's OAuth2 consent screen for SSO login.
@@ -282,7 +375,7 @@ paths:
           description: OK
           schema:
             items:
-              type: object
+              $ref: '#/definitions/api.EventActivity'
             type: array
         "401":
           description: Invalid credentials
@@ -656,14 +749,14 @@ paths:
         type: string
       - description: PayToken given during event enrollment
         in: formData
-        name: PayToken
+        name: payToken
         required: true
         type: string
       produces:
       - text/plain
       responses:
         "200":
-          description: Event registration payed successfully
+          description: Event registration paid successfully
           schema:
             type: string
         "401":
@@ -744,6 +837,11 @@ paths:
       - description: ID of the event
         in: formData
         name: eventID
+        required: true
+        type: string
+      - description: ID of the registration type
+        in: formData
+        name: regTypeID
         required: true
         type: string
       - description: Discount code
@@ -1065,6 +1163,10 @@ paths:
         in: formData
         name: lastName
         type: string
+      - description: New email
+        in: formData
+        name: email
+        type: string
       - description: New password (must be at least 8 characters)
         in: formData
         name: password
@@ -1094,31 +1196,6 @@ paths:
           schema:
             type: string
       summary: Edit user account information
-      tags:
-      - User
-  /user/account/me:
-    get:
-      description: Returns the authenticated user's information
-      parameters:
-      - description: CSRF Token
-        in: header
-        name: X-CSRF-Token
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-      summary: View user account information
       tags:
       - User
   /user/login:
@@ -1184,6 +1261,31 @@ paths:
       tags:
       - User
       - Auth
+  /user/me:
+    get:
+      description: Returns the authenticated user's information
+      parameters:
+      - description: CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: View user account information
+      tags:
+      - User
   /user/register:
     post:
       consumes:
@@ -1245,3 +1347,7 @@ tags:
   name: Auth
 - description: Endpoints related to event management
   name: Event
+- description: Endpoints related to event activity management
+  name: EventActivity
+- description: Endpoints related to article management
+  name: Article

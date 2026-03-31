@@ -42,6 +42,7 @@ func UserMe(c *gin.Context) {
 // @Produce     plain
 // @Param       firstName formData string false "New first name"
 // @Param       lastName formData string false "New last name"
+// @Param       email formData string false "New email"
 // @Param       password formData string false "New password (must be at least 8 characters)"
 // @Param       X-CSRF-Token header string true "CSRF Token"
 // @Success     200 {string} string "User info updated successfully"

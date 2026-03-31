@@ -36,7 +36,7 @@ func InitGoogleAuth() {
 		google.New(
 			os.Getenv("GOOGLE_CLIENT_ID"),
 			os.Getenv("GOOGLE_CLIENT_SECRET"),
-			"http://" + utils.EnvHostBackend() + "/auth/google/callback",
+			"http://"+utils.EnvHostBackend()+"/auth/google/callback",
 			"email", "profile",
 		),
 	)
@@ -156,6 +156,8 @@ func GoogleAuthCallback(c *gin.Context) {
 	sessionToken := utils.GenerateToken(32)
 	csrfToken := utils.GenerateToken(32)
 
+	c.SetCookie("user_email", user.Email, 24*60*60,
+		"/", utils.EnvHostUrl(), false, true)
 	c.SetCookie("session_token", sessionToken, 24*60*60,
 		"/", utils.EnvHostUrl(), false, true)
 	c.SetCookie("csrf_token", csrfToken, 24*60*60,
@@ -165,6 +167,8 @@ func GoogleAuthCallback(c *gin.Context) {
 	user.CSRFToken = csrfToken
 	db.DB.Save(&user)
 
-	// Redirect to frontend success page
-	c.Redirect(http.StatusTemporaryRedirect, "http://" + utils.EnvHostFrontend() + "/auth/success")
+	// Redirect to frontend success page, passing email so the SPA can store it
+	// without needing an authenticated API call (avoids cross-origin CSRF issues)
+	c.Redirect(http.StatusTemporaryRedirect,
+		"http://"+utils.EnvHostFrontend()+"/auth/success?email="+user.Email)
 }

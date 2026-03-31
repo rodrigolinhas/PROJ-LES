@@ -15,6 +15,122 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/article/create": {
+            "post": {
+                "description": "While the user is logged in, creates an article and associates it to an event activity",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Create article",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the associated event",
+                        "name": "eventID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the associated activity",
+                        "name": "activityID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Title of the article",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the article's first author",
+                        "name": "firstAuthorID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The IDs of the co-authors, separated by commas",
+                        "name": "coAuthorsID",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Publisher of the article",
+                        "name": "publisher",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Article's DOI",
+                        "name": "doi",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Article's ISBN",
+                        "name": "isbn",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "URL where the article is accessible",
+                        "name": "url",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Article created successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "The activity does not belong to the event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "User/event/activity not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found during article creation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/google": {
             "get": {
                 "description": "Redirects the user to Google's OAuth2 consent screen for SSO login. If the user does not have an account, one will be created automatically upon callback.",
@@ -295,7 +411,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "object"
+                                "$ref": "#/definitions/api.EventActivity"
                             }
                         }
                     },
@@ -853,14 +969,14 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "PayToken given during event enrollment",
-                        "name": "PayToken",
+                        "name": "payToken",
                         "in": "formData",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Event registration payed successfully",
+                        "description": "Event registration paid successfully",
                         "schema": {
                             "type": "string"
                         }
@@ -980,6 +1096,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "ID of the event",
                         "name": "eventID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the registration type",
+                        "name": "regTypeID",
                         "in": "formData",
                         "required": true
                     },
@@ -1206,9 +1329,17 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "New first name",
-                        "name": "firstName",
-                        "in": "formData"
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "eventID",
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "string",
@@ -1399,7 +1530,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/account/me": {
+        "/ping": {
             "get": {
                 "description": "Return \"ping\" and log the time in the DB",
                 "produces": [
@@ -1433,6 +1564,30 @@ const docTemplate = `{
                 ],
                 "summary": "Edit user account information",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "New first name",
+                        "name": "firstName",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "New last name",
+                        "name": "lastName",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "New email",
+                        "name": "email",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "New password (must be at least 8 characters)",
+                        "name": "password",
+                        "in": "formData"
+                    },
                     {
                         "type": "string",
                         "description": "CSRF Token",
@@ -1563,6 +1718,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/me": {
+            "get": {
+                "description": "Returns the authenticated user's information",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "View user account information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/register": {
             "post": {
                 "description": "Registers an user on the DB",
@@ -1639,6 +1832,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "api.EventActivity": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                }
+            }
+        },
         "api.LongEvent": {
             "type": "object",
             "properties": {
@@ -1772,6 +1985,14 @@ const docTemplate = `{
         {
             "description": "Endpoints related to event management",
             "name": "Event"
+        },
+        {
+            "description": "Endpoints related to event activity management",
+            "name": "EventActivity"
+        },
+        {
+            "description": "Endpoints related to article management",
+            "name": "Article"
         }
     ]
 }`

@@ -11,6 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type EventActivity struct {
+	ID			uint
+	Name        string    
+	Description string    
+	StartDate   time.Time 
+	EndDate     time.Time 
+}
+
 // EventActivityCreate
 // @Summary     Create activity
 // @Description While the user is logged in, creates an activity associated with an event and registers it in the database
@@ -84,7 +92,7 @@ func EventActivityCreate(c *gin.Context) {
 // @Produce 	json
 // @Param 		X-CSRF-Token 	header 		string 	true 	"User's CSRF Token"
 // @Param 		eventID 		query 		string 	true 	"Event ID"
-// @Success 	200 {array} object
+// @Success 	200 {array} EventActivity
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "No activity found"
 // @Router 		/event/activity/list [get]
@@ -108,8 +116,8 @@ func EventActivityList(c *gin.Context) {
 		return
 	}
 
-	var activities []models.EventActivity
-	db.DB.Where("event_id = ?", eventID).Find(&activities)
+	var activities []EventActivity
+	db.DB.Model(&models.EventActivity{}).Where("event_id = ?", eventID).Scan(&activities)
 
 	c.JSON(http.StatusOK, activities)
 }
