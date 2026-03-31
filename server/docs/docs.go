@@ -15,6 +15,76 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/article/addTags": {
+            "post": {
+                "description": "While the user is logged in, adds one or more tags to an article",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Add tags to an article",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the article",
+                        "name": "articleID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The IDs of the tags, separated by commas",
+                        "name": "tagsID",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tags added successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid article/tag IDs",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Article/tag not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found while adding tags",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/article/create": {
             "post": {
                 "description": "While the user is logged in, creates an article and associates it to an event activity",
@@ -124,6 +194,76 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Error found during article creation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/article/removeTags": {
+            "post": {
+                "description": "While the user is logged in, removes one or more tags from an article",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Remove tags from an article",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the article",
+                        "name": "articleID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The IDs of the tags, separated by commas",
+                        "name": "tagsID",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tags removed successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid article/tag IDs",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Article/tag not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found while removing tags",
                         "schema": {
                             "type": "string"
                         }
@@ -411,7 +551,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/api.EventActivity"
+                                "$ref": "#/definitions/internal_api.EventActivity"
                             }
                         }
                     },
@@ -776,7 +916,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/api.ShortEvent"
+                                "$ref": "#/definitions/internal_api.ShortEvent"
                             }
                         }
                     },
@@ -844,7 +984,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/api.ShortEvent"
+                                "$ref": "#/definitions/internal_api.ShortEvent"
                             }
                         }
                     },
@@ -912,7 +1052,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/api.ShortEventEnroll"
+                                "$ref": "#/definitions/internal_api.ShortEventEnroll"
                             }
                         }
                     },
@@ -1110,7 +1250,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.PayTokenJSON"
+                            "$ref": "#/definitions/internal_api.PayTokenJSON"
                         }
                     },
                     "401": {
@@ -1439,7 +1579,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.LongEvent"
+                            "$ref": "#/definitions/internal_api.LongEvent"
                         }
                     },
                     "401": {
@@ -1498,7 +1638,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/api.RegistrationType"
+                                "$ref": "#/definitions/internal_api.RegistrationType"
                             }
                         }
                     },
@@ -1536,6 +1676,35 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/tags/list": {
+            "get": {
+                "description": "Returns all active tags of the system",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tag"
+                ],
+                "summary": "Get active tags",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/LES_server_internal_models.Tag"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error found while fetching tags",
                         "schema": {
                             "type": "string"
                         }
@@ -1825,7 +1994,312 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "api.EventActivity": {
+        "LES_server_internal_models.Article": {
+            "type": "object",
+            "properties": {
+                "coAuthors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LES_server_internal_models.User"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "doi": {
+                    "type": "string"
+                },
+                "eventActivity": {
+                    "$ref": "#/definitions/LES_server_internal_models.EventActivity"
+                },
+                "eventActivityID": {
+                    "type": "integer"
+                },
+                "firstAuthor": {
+                    "$ref": "#/definitions/LES_server_internal_models.User"
+                },
+                "firstAuthorID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isbn": {
+                    "type": "string"
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LES_server_internal_models.Tag"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "LES_server_internal_models.Event": {
+            "type": "object",
+            "properties": {
+                "closed": {
+                    "type": "boolean"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organization": {
+                    "type": "string"
+                },
+                "organizer": {
+                    "$ref": "#/definitions/LES_server_internal_models.User"
+                },
+                "organizerID": {
+                    "type": "integer"
+                },
+                "published": {
+                    "type": "boolean"
+                },
+                "regTypes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LES_server_internal_models.RegistrationType"
+                    }
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "theme": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "LES_server_internal_models.EventActivity": {
+            "type": "object",
+            "properties": {
+                "articles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LES_server_internal_models.Article"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "event": {
+                    "$ref": "#/definitions/LES_server_internal_models.Event"
+                },
+                "eventID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "LES_server_internal_models.RegistrationType": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "eventID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "LES_server_internal_models.Role": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3
+            ],
+            "x-enum-varnames": [
+                "None",
+                "Student",
+                "Professor",
+                "EventOrganizer"
+            ]
+        },
+        "LES_server_internal_models.Tag": {
+            "type": "object",
+            "properties": {
+                "articles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LES_server_internal_models.Article"
+                    }
+                },
+                "category": {
+                    "$ref": "#/definitions/LES_server_internal_models.TagCategory"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isActive": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "LES_server_internal_models.TagCategory": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-varnames": [
+                "TopicTag",
+                "TrackTag",
+                "ApplicationDomainTag"
+            ]
+        },
+        "LES_server_internal_models.User": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "csrftoken": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "hashedPassword": {
+                    "description": "nullable for OAuth users",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "providerUserID": {
+                    "type": "string"
+                },
+                "role": {
+                    "$ref": "#/definitions/LES_server_internal_models.Role"
+                },
+                "sessionToken": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "verified": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "internal_api.EventActivity": {
             "type": "object",
             "properties": {
                 "description": {
@@ -1845,7 +2319,7 @@ const docTemplate = `{
                 }
             }
         },
-        "api.LongEvent": {
+        "internal_api.LongEvent": {
             "type": "object",
             "properties": {
                 "closed": {
@@ -1894,7 +2368,7 @@ const docTemplate = `{
                 }
             }
         },
-        "api.PayTokenJSON": {
+        "internal_api.PayTokenJSON": {
             "type": "object",
             "properties": {
                 "payToken": {
@@ -1902,7 +2376,7 @@ const docTemplate = `{
                 }
             }
         },
-        "api.RegistrationType": {
+        "internal_api.RegistrationType": {
             "type": "object",
             "properties": {
                 "description": {
@@ -1923,7 +2397,7 @@ const docTemplate = `{
                 }
             }
         },
-        "api.ShortEvent": {
+        "internal_api.ShortEvent": {
             "type": "object",
             "properties": {
                 "id": {
@@ -1940,7 +2414,7 @@ const docTemplate = `{
                 }
             }
         },
-        "api.ShortEventEnroll": {
+        "internal_api.ShortEventEnroll": {
             "type": "object",
             "properties": {
                 "confirmed": {

@@ -1,6 +1,211 @@
 basePath: /
 definitions:
-  api.EventActivity:
+  LES_server_internal_models.Article:
+    properties:
+      coAuthors:
+        items:
+          $ref: '#/definitions/LES_server_internal_models.User'
+        type: array
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      doi:
+        type: string
+      eventActivity:
+        $ref: '#/definitions/LES_server_internal_models.EventActivity'
+      eventActivityID:
+        type: integer
+      firstAuthor:
+        $ref: '#/definitions/LES_server_internal_models.User'
+      firstAuthorID:
+        type: integer
+      id:
+        type: integer
+      isbn:
+        type: string
+      publisher:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/LES_server_internal_models.Tag'
+        type: array
+      title:
+        type: string
+      updatedAt:
+        type: string
+      url:
+        type: string
+    type: object
+  LES_server_internal_models.Event:
+    properties:
+      closed:
+        type: boolean
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        type: string
+      endDate:
+        type: string
+      id:
+        type: integer
+      location:
+        type: string
+      name:
+        type: string
+      organization:
+        type: string
+      organizer:
+        $ref: '#/definitions/LES_server_internal_models.User'
+      organizerID:
+        type: integer
+      published:
+        type: boolean
+      regTypes:
+        items:
+          $ref: '#/definitions/LES_server_internal_models.RegistrationType'
+        type: array
+      startDate:
+        type: string
+      theme:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  LES_server_internal_models.EventActivity:
+    properties:
+      articles:
+        items:
+          $ref: '#/definitions/LES_server_internal_models.Article'
+        type: array
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        type: string
+      endDate:
+        type: string
+      event:
+        $ref: '#/definitions/LES_server_internal_models.Event'
+      eventID:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      startDate:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  LES_server_internal_models.RegistrationType:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        type: string
+      eventID:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      updatedAt:
+        type: string
+    type: object
+  LES_server_internal_models.Role:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-varnames:
+    - None
+    - Student
+    - Professor
+    - EventOrganizer
+  LES_server_internal_models.Tag:
+    properties:
+      articles:
+        items:
+          $ref: '#/definitions/LES_server_internal_models.Article'
+        type: array
+      category:
+        $ref: '#/definitions/LES_server_internal_models.TagCategory'
+      code:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      isActive:
+        type: boolean
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  LES_server_internal_models.TagCategory:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - TopicTag
+    - TrackTag
+    - ApplicationDomainTag
+  LES_server_internal_models.User:
+    properties:
+      createdAt:
+        type: string
+      csrftoken:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      firstName:
+        type: string
+      hashedPassword:
+        description: nullable for OAuth users
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      provider:
+        type: string
+      providerUserID:
+        type: string
+      role:
+        $ref: '#/definitions/LES_server_internal_models.Role'
+      sessionToken:
+        type: string
+      updatedAt:
+        type: string
+      verified:
+        type: boolean
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  internal_api.EventActivity:
     properties:
       description:
         type: string
@@ -13,7 +218,7 @@ definitions:
       startDate:
         type: string
     type: object
-  api.LongEvent:
+  internal_api.LongEvent:
     properties:
       closed:
         example: false
@@ -49,12 +254,12 @@ definitions:
         example: CompSci
         type: string
     type: object
-  api.PayTokenJSON:
+  internal_api.PayTokenJSON:
     properties:
       payToken:
         type: string
     type: object
-  api.RegistrationType:
+  internal_api.RegistrationType:
     properties:
       description:
         example: Pass Description
@@ -69,7 +274,7 @@ definitions:
         example: 7.5
         type: number
     type: object
-  api.ShortEvent:
+  internal_api.ShortEvent:
     properties:
       id:
         example: 1
@@ -81,7 +286,7 @@ definitions:
         example: CompSci
         type: string
     type: object
-  api.ShortEventEnroll:
+  internal_api.ShortEventEnroll:
     properties:
       confirmed:
         example: true
@@ -103,6 +308,53 @@ info:
   title: Scientific Event Manager API
   version: "0.1"
 paths:
+  /article/addTags:
+    post:
+      consumes:
+      - multipart/form-data
+      description: While the user is logged in, adds one or more tags to an article
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the article
+        in: formData
+        name: articleID
+        required: true
+        type: string
+      - description: The IDs of the tags, separated by commas
+        in: formData
+        name: tagsID
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Tags added successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid article/tag IDs
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "404":
+          description: Article/tag not found
+          schema:
+            type: string
+        "500":
+          description: Error found while adding tags
+          schema:
+            type: string
+      summary: Add tags to an article
+      tags:
+      - Article
   /article/create:
     post:
       consumes:
@@ -181,6 +433,53 @@ paths:
           schema:
             type: string
       summary: Create article
+      tags:
+      - Article
+  /article/removeTags:
+    post:
+      consumes:
+      - multipart/form-data
+      description: While the user is logged in, removes one or more tags from an article
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the article
+        in: formData
+        name: articleID
+        required: true
+        type: string
+      - description: The IDs of the tags, separated by commas
+        in: formData
+        name: tagsID
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Tags removed successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid article/tag IDs
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "404":
+          description: Article/tag not found
+          schema:
+            type: string
+        "500":
+          description: Error found while removing tags
+          schema:
+            type: string
+      summary: Remove tags from an article
       tags:
       - Article
   /auth/google:
@@ -375,7 +674,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/api.EventActivity'
+              $ref: '#/definitions/internal_api.EventActivity'
             type: array
         "401":
           description: Invalid credentials
@@ -622,7 +921,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/api.ShortEvent'
+              $ref: '#/definitions/internal_api.ShortEvent'
             type: array
         "401":
           description: Invalid credentials
@@ -668,7 +967,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/api.ShortEvent'
+              $ref: '#/definitions/internal_api.ShortEvent'
             type: array
         "401":
           description: Invalid credentials
@@ -714,7 +1013,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/api.ShortEventEnroll'
+              $ref: '#/definitions/internal_api.ShortEventEnroll'
             type: array
         "401":
           description: Invalid credentials
@@ -849,7 +1148,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.PayTokenJSON'
+            $ref: '#/definitions/internal_api.PayTokenJSON'
         "401":
           description: Invalid credentials
           schema:
@@ -1074,7 +1373,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.LongEvent'
+            $ref: '#/definitions/internal_api.LongEvent'
         "401":
           description: Invalid credentials
           schema:
@@ -1114,7 +1413,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/api.RegistrationType'
+              $ref: '#/definitions/internal_api.RegistrationType'
             type: array
         "401":
           description: Invalid credentials
@@ -1144,6 +1443,25 @@ paths:
       summary: Example ping endpoint
       tags:
       - Dev
+  /tags/list:
+    get:
+      description: Returns all active tags of the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/LES_server_internal_models.Tag'
+            type: array
+        "500":
+          description: Error found while fetching tags
+          schema:
+            type: string
+      summary: Get active tags
+      tags:
+      - Tag
   /user/account/edit:
     post:
       consumes:
