@@ -100,13 +100,13 @@
 		},
 		{
 			"key": "csrfToken",
-			"value": "",
+			"value": "WsJ1iUy5sOOSrrGGvBp_2b774_enFEfwK3R8Px2txR0%3D",
 			"type": "any",
 			"enabled": true
 		},
 		{
 			"key": "event_id",
-			"value": "",
+			"value": "3",
 			"type": "any",
 			"enabled": true
 		},
@@ -124,7 +124,7 @@
 		},
 		{
 			"key": "activity_id",
-			"value": "",
+			"value": "3",
 			"type": "any",
 			"enabled": true
 		},
@@ -148,91 +148,19 @@
 		},
 		{
 			"key": "article_id",
-			"value": "",
-			"type": "any",
-			"enabled": true
-		},
-		{
-			"key": "regtype_name",
-			"value": "Pass",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "regtype_desc",
-			"value": "Pass Description",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "regtype_price",
-			"value": "5",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "regtype_name_edited",
-			"value": "FastPass",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "regtype_desc_edited",
-			"value": "FastPass Desc.",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "regtype_price_edited",
-			"value": "7.5",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "email_stu",
-			"value": "student@uni.edu",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "role_stu",
-			"value": "Student",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "lName_stu",
-			"value": "Dent",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "fName_stu",
-			"value": "Stu",
-			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "regtype_id",
-			"value": "",
+			"value": "21",
 			"type": "any",
 			"enabled": true
 		},
 		{
 			"key": "tags_id",
-			"value": "",
+			"value": "2,3",
 			"type": "default",
-			"enabled": true
-		},
-		{
-			"key": "pay_token",
-			"value": "",
-			"type": "any",
 			"enabled": true
 		}
 	],
 	"color": null,
 	"_postman_variable_scope": "environment",
-	"_postman_exported_at": "2026-03-31T13:19:14.553Z",
+	"_postman_exported_at": "2026-03-31T14:23:58.651Z",
 	"_postman_exported_using": "Postman/12.4.2"
 }
