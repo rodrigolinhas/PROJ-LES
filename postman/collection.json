@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "097d64c0-fce9-48f9-bb4b-195fa4b9f2c4",
+    "_postman_id": "bc4846fb-9b7c-4344-9dd7-b50d8f9ba6da",
     "name": "00 - LES API (Runner)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "52830737",
-    "_collection_link": "https://go.postman.co/collection/52830737-097d64c0-fce9-48f9-bb4b-195fa4b9f2c4?source=collection_link"
+    "_exporter_id": "49772394",
+    "_collection_link": "https://go.postman.co/collection/49772394-bc4846fb-9b7c-4344-9dd7-b50d8f9ba6da?source=collection_link"
   },
   "item": [
     {
@@ -992,6 +992,57 @@
           "response": []
         },
         {
+          "name": "tags_list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is an array\", function () {\r",
+                  "    const data = pm.response.json();\r",
+                  "    pm.expect(data).to.be.an(\"array\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tags/list",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tags",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "article_create",
           "event": [
             {
@@ -1002,9 +1053,13 @@
                   "  pm.response.to.have.status(201);",
                   "});",
                   "",
+                  "const data = pm.response.json();",
+                  "",
                   "pm.test(\"Create Article -> success message\", function () {",
-                  "  pm.expect(pm.response.text()).to.include(\"Article created successfully\");",
-                  "});"
+                  "  pm.expect(data.message).to.eql(\"Article created successfully\");",
+                  "});",
+                  "",
+                  "pm.environment.set(\"article_id\", String(data.articleID));"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -1014,8 +1069,12 @@
             {
               "listen": "prerequest",
               "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
                 "packages": {},
-                "type": "text/javascript"
+                "requests": {}
               }
             }
           ],
@@ -1090,6 +1149,323 @@
               "path": [
                 "article",
                 "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "article_details_after_create",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Get Article -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const data = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Article starts with no tags\", function () {\r",
+                  "  pm.expect(data.Tags).to.be.an(\"array\");\r",
+                  "  pm.expect(data.Tags.length).to.eql(0);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/article/details?id={{article_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "article",
+                "details"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{article_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "article_tags_addTags",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Correct success message\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.eql(\"Tags added successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "articleID",
+                  "value": "{{article_id}}",
+                  "type": "text",
+                  "uuid": "8890893a-07d0-40ee-97de-db3a3863504d"
+                },
+                {
+                  "key": "tagsID",
+                  "value": "{{tags_id}}",
+                  "type": "text",
+                  "uuid": "4bd2a865-3f6e-450c-9f11-d228757830d5"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/article/addTags",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "article",
+                "addTags"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "article_details_after_addTags",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Get Article -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const data = pm.response.json();\r",
+                  "const expectedTagIds = pm.environment.get(\"tags_id\")\r",
+                  "  .split(\",\")\r",
+                  "  .map(id => Number(id.trim()));\r",
+                  "\r",
+                  "const returnedTagIds = (data.Tags || []).map(tag => tag.ID);\r",
+                  "\r",
+                  "pm.test(\"Article has tags array\", function () {\r",
+                  "  pm.expect(data.Tags).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"All expected tags were added\", function () {\r",
+                  "  expectedTagIds.forEach(id => {\r",
+                  "    pm.expect(returnedTagIds).to.include(id);\r",
+                  "  });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/article/details?id={{article_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "article",
+                "details"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{article_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "article_tags_removeTags",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Correct success message\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.eql(\"Tags removed successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "articleID",
+                  "value": "{{article_id}}",
+                  "type": "text",
+                  "uuid": "b64fb8d7-b91f-4bae-8a7d-ac96c68efac5"
+                },
+                {
+                  "key": "tagsID",
+                  "value": "{{tags_id}}",
+                  "type": "text",
+                  "uuid": "6dd5efe8-6bef-4fab-b5d4-20deeeec68d0"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/article/removeTags",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "article",
+                "removeTags"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "article_details_after_removeTags",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Get Article -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const data = pm.response.json();\r",
+                  "const removedTagIds = pm.environment.get(\"tags_id\")\r",
+                  "  .split(\",\")\r",
+                  "  .map(id => Number(id.trim()));\r",
+                  "\r",
+                  "const returnedTagIds = (data.Tags || []).map(tag => tag.ID);\r",
+                  "\r",
+                  "pm.test(\"Article has tags array\", function () {\r",
+                  "  pm.expect(data.Tags).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Removed tags are no longer associated\", function () {\r",
+                  "  removedTagIds.forEach(id => {\r",
+                  "    pm.expect(returnedTagIds).to.not.include(id);\r",
+                  "  });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/article/details?id={{article_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "article",
+                "details"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{article_id}}"
+                }
               ]
             }
           },
