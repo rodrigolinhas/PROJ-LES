@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -6,57 +6,50 @@ function getCookie(name: string) {
     if (parts.length === 2) return parts.pop()?.split(";").shift();
 }
 
-/*
-TODO
+type Props = {
+    eventId: number;
+    activityID: number;
+    onDeleted: () => void;
+};
 
-When doing another pass on this component make sure to ask the user to confirm
-before doing this action
-*/
+export default function DeleteActivityButton({ eventId, activityID, onDeleted }: Props) {
+    const [loading, setLoading] = useState(false);
 
-export default function DeleteActivityButton(props: any) {
-    let activityID: number = props.activityID
-    let setActivityDeleted = props.setActivityDeleted
+    async function handleDelete() {
+        const confirmDelete = window.confirm("Are you sure you want to delete this activity?");
+        if (!confirmDelete) return;
 
-    const [title, setTitle] = useState("Delete Activity");
+        setLoading(true);
 
-    async function handleClick() {
         const csrfToken = getCookie("csrf_token") || "";
-        const formData = new FormData();
-
-        formData.append("activityID", activityID.toString());
 
         try {
-            const response = await fetch("http://localhost:8080/activity/delete", {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-CSRF-Token": csrfToken
-                },
-                credentials: "include"
-            });
+            const response = await fetch(
+                `http://localhost:8080/event/${eventId}/activity/delete/${activityID}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-Token": csrfToken
+                    },
+                    credentials: "include"
+                }
+            );
 
-            if(response.status === 200) {
-                setTitle("Activity Deleted!");
-                setActivityDeleted(true)
+            if (response.status === 200) {
+                onDeleted();
+            } else {
+                alert(await response.text());
             }
-            else {
-                const errorText = await response.text();
-                setTitle(errorText);
-            }
-        }
-        catch(error) {
-            setTitle("Server error");
+        } catch {
+            alert("Server error");
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
-        <div>
-            <button
-                type='button'
-                onClick={handleClick}
-            >
-                {title}
-            </button>
-        </div>
-    )
+        <button onClick={handleDelete} disabled={loading}>
+            {loading ? "Deleting..." : "Delete Activity"}
+        </button>
+    );
 }

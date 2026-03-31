@@ -8,11 +8,11 @@ import CreateEventPage from "../features/events/pages/CreateEventPage";
 import AuthSuccessPage from "../features/auth/pages/AuthSuccessPage";
 import EditEventPage from "../features/events/pages/EditEventPage";
 import MyEventsPage from "../features/events/pages/MyEventsPage";
-
-import ListActivitiesPage from "../features/events/activities/pages/ListActivitiesPage.tsx";
-import ViewActivityPage from "../features/events/activities/pages/ViewActivityPage.tsx";
+import ViewEventPage from "../features/events/pages/ViewEventPage";
 import EditActivityPage from "../features/events/activities/pages/EditActivityPage.tsx";
 import CreateActivityPage from "../features/events/activities/pages/CreateActivityPage.tsx";
+import ViewActivityPage from "@/features/events/activities/pages/ViewActivityPage.tsx";
+import ListActivityPage from "@/features/events/activities/pages/ListActivitiesPage.tsx";
 
 import ProtectedRoutes from "./router/ProtectedRoutes";
 
@@ -30,11 +30,13 @@ function App() {
                     <Route path="/events" element={<MyEventsPage />}/>
                     <Route path="/event/create" element={<CreateEventPage />}/>
                     <Route path="/event/edit/:id" element={<EditEventPage />}/>
+                    <Route path="/event/:id" element={<ViewEventPage />} />
 
-                    <Route path="/event/activity/list" element={<ListActivitiesPage />}/>
-                    <Route path="/event/activity/view" element={<ViewActivityPage />}/>
-                    <Route path="/event/activity/edit" element={<EditActivityPage />}/>
-                    <Route path="/event/activity/create" element={<CreateActivityPage />}/>
+
+                    <Route path="/event/:eventId/activity/edit/:id" element={<EditActivityPage />}/>
+                    <Route path="/event/:eventId/activity/create" element={<CreateActivityPage />}/>
+                    <Route path="/event/:eventId/activity/view/:id" element={<ViewActivityPage />} />
+                    <Route path="/event/:eventId/activity/list" element={<ListActivityPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

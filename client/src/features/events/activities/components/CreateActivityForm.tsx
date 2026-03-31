@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -8,6 +8,8 @@ function getCookie(name: string) {
 }
 
 export default function CreateActivityForm() {
+    const {eventId} = useParams();
+
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState("");
@@ -28,7 +30,7 @@ export default function CreateActivityForm() {
         formData.append("endDate", new Date(endDate).toISOString());
 
         try {
-            const response = await fetch("http://localhost:8080/event/activity/create", {
+            const response = await fetch(`http://localhost:8080/event/${eventId}/activity/create`, {
                 method: "POST",
                 body: formData,
                 headers: {
@@ -60,7 +62,7 @@ export default function CreateActivityForm() {
         return (
             <div style={{ textAlign: "center", margin: "100px" }}>
                 <h2 style={{ color: "green" }}>Activity created with success!</h2>
-                <Link to ="/event/activity/list">Go back to this event's activities list</Link>
+                <Link to = {`/event/${eventId}/activity/list`}>Go back to this event's activities list</Link>
             </div>
         );
     }

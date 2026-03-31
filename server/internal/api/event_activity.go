@@ -3,7 +3,9 @@ package api
 import (
 	db "LES/server/internal/database"
 	"LES/server/internal/models"
+	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -36,7 +38,7 @@ func EventActivityCreate(c *gin.Context) {
 	desc := c.Request.FormValue("description")
 	start := c.Request.FormValue("startDate")
 	end := c.Request.FormValue("endDate")
-	eventID := c.Request.FormValue("eventID")
+	eventID := c.Param("eventId")
 
 	startt, serr := time.Parse(time.RFC3339, start)
 	if serr != nil {
@@ -93,7 +95,7 @@ func EventActivityList(c *gin.Context) {
 		return
 	}
 
-	eventID := c.Query("eventID")
+	eventID := c.Param("eventId")
 
 	var event models.Event
 	if err := db.DB.First(&event, eventID).Error; err != nil {
@@ -103,6 +105,7 @@ func EventActivityList(c *gin.Context) {
 
 	if !event.Published && event.OrganizerID != user.ID {
 		c.String(http.StatusForbidden, "You can't view activities of this event (need to be the event organizer)")
+		return
 	}
 
 	var activities []models.EventActivity
@@ -129,7 +132,8 @@ func EventActivityEdit(c *gin.Context) {
 		return
 	}
 
-	id := c.PostForm("activityID")
+	id := c.Param("id")
+	eventID := c.Param("eventId")
 
 	var activity models.EventActivity
 	if err := db.DB.First(&activity, id).Error; err != nil {
@@ -137,8 +141,13 @@ func EventActivityEdit(c *gin.Context) {
 		return
 	}
 
+	if fmt.Sprint(activity.EventID) != eventID {
+		c.String(http.StatusBadRequest, "Invalid event")
+		return
+	}
+
 	var event models.Event
-	db.DB.First(&event, activity.EventID)
+	db.DB.First(&event, eventID)
 
 	if event.OrganizerID != user.ID {
 		c.String(http.StatusForbidden, "Not your event")
@@ -172,7 +181,8 @@ func EventActivityDelete(c *gin.Context) {
 		return
 	}
 
-	id := c.PostForm("activityID")
+	id := c.Param("id")
+	eventID := c.Param("eventId")
 
 	var activity models.EventActivity
 	if err := db.DB.First(&activity, id).Error; err != nil {
@@ -180,8 +190,13 @@ func EventActivityDelete(c *gin.Context) {
 		return
 	}
 
+	if fmt.Sprint(activity.EventID) != eventID {
+		c.String(http.StatusBadRequest, "Invalid event")
+		return
+	}
+
 	var event models.Event
-	db.DB.First(&event, activity.EventID)
+	db.DB.First(&event, eventID)
 
 	if event.OrganizerID != user.ID {
 		c.String(http.StatusForbidden, "Not your event")
@@ -211,6 +226,7 @@ func EventActivityView(c *gin.Context) {
 	}
 
 	id := c.Param("id")
+	eventID := c.Param("eventId")
 
 	var activity models.EventActivity
 	if err := db.DB.First(&activity, id).Error; err != nil {
@@ -218,8 +234,19 @@ func EventActivityView(c *gin.Context) {
 		return
 	}
 
+	eventIDUint, err := strconv.ParseUint(eventID, 10, 64)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Invalid event ID")
+		return
+	}
+
+	if activity.EventID != uint(eventIDUint) {
+		c.String(http.StatusBadRequest, "Activity does not belong to this event")
+		return
+	}
+
 	var event models.Event
-	if err := db.DB.First(&event, activity.EventID).Error; err != nil {
+	if err := db.DB.First(&event, eventID).Error; err != nil {
 		c.String(http.StatusNotFound, "Event not found")
 		return
 	}
