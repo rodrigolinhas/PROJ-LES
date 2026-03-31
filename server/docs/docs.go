@@ -70,6 +70,12 @@ const docTemplate = `{
                             "type": "string"
                         }
                     },
+                    "403": {
+                        "description": "User is not the organizer of this event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "404": {
                         "description": "Article/tag not found",
                         "schema": {
@@ -204,7 +210,7 @@ const docTemplate = `{
         },
         "/article/details": {
             "get": {
-                "description": "Returns an article with its associated tags",
+                "description": "Returns an article with its associated tags. Unpublished articles can only be viewed by the event organizer.",
                 "produces": [
                     "application/json"
                 ],
@@ -219,17 +225,37 @@ const docTemplate = `{
                         "name": "id",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/LES_server_internal_models.Article"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "400": {
                         "description": "Missing article ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "You can't view this article (need to be the event organizer)",
                         "schema": {
                             "type": "string"
                         }
@@ -241,7 +267,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Error while fetching article",
+                        "description": "Internal server error",
                         "schema": {
                             "type": "string"
                         }
@@ -300,6 +326,12 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not the organizer of this event",
                         "schema": {
                             "type": "string"
                         }
@@ -599,7 +631,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/internal_api.EventActivity"
+                                "$ref": "#/definitions/api.EventActivity"
                             }
                         }
                     },
@@ -964,7 +996,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/internal_api.ShortEvent"
+                                "$ref": "#/definitions/api.ShortEvent"
                             }
                         }
                     },
@@ -1032,7 +1064,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/internal_api.ShortEvent"
+                                "$ref": "#/definitions/api.ShortEvent"
                             }
                         }
                     },
@@ -1100,7 +1132,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/internal_api.ShortEventEnroll"
+                                "$ref": "#/definitions/api.ShortEventEnroll"
                             }
                         }
                     },
@@ -1305,7 +1337,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_api.PayTokenJSON"
+                            "$ref": "#/definitions/api.PayTokenJSON"
                         }
                     },
                     "401": {
@@ -1634,7 +1666,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_api.LongEvent"
+                            "$ref": "#/definitions/api.LongEvent"
                         }
                     },
                     "401": {
@@ -1693,7 +1725,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/internal_api.RegistrationType"
+                                "$ref": "#/definitions/api.RegistrationType"
                             }
                         }
                     },
@@ -1763,7 +1795,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/LES_server_internal_models.Tag"
+                                "$ref": "#/definitions/api.TagResponse"
                             }
                         }
                     },
@@ -2064,312 +2096,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "LES_server_internal_models.Article": {
-            "type": "object",
-            "properties": {
-                "coAuthors": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/LES_server_internal_models.User"
-                    }
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "doi": {
-                    "type": "string"
-                },
-                "eventActivity": {
-                    "$ref": "#/definitions/LES_server_internal_models.EventActivity"
-                },
-                "eventActivityID": {
-                    "type": "integer"
-                },
-                "firstAuthor": {
-                    "$ref": "#/definitions/LES_server_internal_models.User"
-                },
-                "firstAuthorID": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "isbn": {
-                    "type": "string"
-                },
-                "publisher": {
-                    "type": "string"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/LES_server_internal_models.Tag"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
-        "LES_server_internal_models.Event": {
-            "type": "object",
-            "properties": {
-                "closed": {
-                    "type": "boolean"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "endDate": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "location": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "organization": {
-                    "type": "string"
-                },
-                "organizer": {
-                    "$ref": "#/definitions/LES_server_internal_models.User"
-                },
-                "organizerID": {
-                    "type": "integer"
-                },
-                "published": {
-                    "type": "boolean"
-                },
-                "regTypes": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/LES_server_internal_models.RegistrationType"
-                    }
-                },
-                "startDate": {
-                    "type": "string"
-                },
-                "theme": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "LES_server_internal_models.EventActivity": {
-            "type": "object",
-            "properties": {
-                "articles": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/LES_server_internal_models.Article"
-                    }
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "endDate": {
-                    "type": "string"
-                },
-                "event": {
-                    "$ref": "#/definitions/LES_server_internal_models.Event"
-                },
-                "eventID": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "startDate": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "LES_server_internal_models.RegistrationType": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "eventID": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "LES_server_internal_models.Role": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2,
-                3
-            ],
-            "x-enum-varnames": [
-                "None",
-                "Student",
-                "Professor",
-                "EventOrganizer"
-            ]
-        },
-        "LES_server_internal_models.Tag": {
-            "type": "object",
-            "properties": {
-                "articles": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/LES_server_internal_models.Article"
-                    }
-                },
-                "category": {
-                    "$ref": "#/definitions/LES_server_internal_models.TagCategory"
-                },
-                "code": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "isActive": {
-                    "type": "boolean"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "LES_server_internal_models.TagCategory": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2
-            ],
-            "x-enum-varnames": [
-                "TopicTag",
-                "TrackTag",
-                "ApplicationDomainTag"
-            ]
-        },
-        "LES_server_internal_models.User": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "csrftoken": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "firstName": {
-                    "type": "string"
-                },
-                "hashedPassword": {
-                    "description": "nullable for OAuth users",
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "lastName": {
-                    "type": "string"
-                },
-                "provider": {
-                    "type": "string"
-                },
-                "providerUserID": {
-                    "type": "string"
-                },
-                "role": {
-                    "$ref": "#/definitions/LES_server_internal_models.Role"
-                },
-                "sessionToken": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "verified": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "gorm.DeletedAt": {
-            "type": "object",
-            "properties": {
-                "time": {
-                    "type": "string"
-                },
-                "valid": {
-                    "description": "Valid is true if Time is not NULL",
-                    "type": "boolean"
-                }
-            }
-        },
-        "internal_api.EventActivity": {
+        "api.EventActivity": {
             "type": "object",
             "properties": {
                 "description": {
@@ -2389,7 +2116,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api.LongEvent": {
+        "api.LongEvent": {
             "type": "object",
             "properties": {
                 "closed": {
@@ -2438,7 +2165,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api.PayTokenJSON": {
+        "api.PayTokenJSON": {
             "type": "object",
             "properties": {
                 "payToken": {
@@ -2446,7 +2173,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api.RegistrationType": {
+        "api.RegistrationType": {
             "type": "object",
             "properties": {
                 "description": {
@@ -2467,7 +2194,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api.ShortEvent": {
+        "api.ShortEvent": {
             "type": "object",
             "properties": {
                 "id": {
@@ -2484,7 +2211,7 @@ const docTemplate = `{
                 }
             }
         },
-        "internal_api.ShortEventEnroll": {
+        "api.ShortEventEnroll": {
             "type": "object",
             "properties": {
                 "confirmed": {
@@ -2504,6 +2231,48 @@ const docTemplate = `{
                     "example": "CompSci"
                 }
             }
+        },
+        "api.TagResponse": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.TagCategory"
+                        }
+                    ],
+                    "example": 0
+                },
+                "code": {
+                    "type": "string",
+                    "example": "AI"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "isActive": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Artificial Intelligence"
+                }
+            }
+        },
+        "models.TagCategory": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-varnames": [
+                "TopicTag",
+                "TrackTag",
+                "ApplicationDomainTag"
+            ]
         }
     },
     "tags": [

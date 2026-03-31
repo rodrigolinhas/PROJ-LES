@@ -1,211 +1,6 @@
 basePath: /
 definitions:
-  LES_server_internal_models.Article:
-    properties:
-      coAuthors:
-        items:
-          $ref: '#/definitions/LES_server_internal_models.User'
-        type: array
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      doi:
-        type: string
-      eventActivity:
-        $ref: '#/definitions/LES_server_internal_models.EventActivity'
-      eventActivityID:
-        type: integer
-      firstAuthor:
-        $ref: '#/definitions/LES_server_internal_models.User'
-      firstAuthorID:
-        type: integer
-      id:
-        type: integer
-      isbn:
-        type: string
-      publisher:
-        type: string
-      tags:
-        items:
-          $ref: '#/definitions/LES_server_internal_models.Tag'
-        type: array
-      title:
-        type: string
-      updatedAt:
-        type: string
-      url:
-        type: string
-    type: object
-  LES_server_internal_models.Event:
-    properties:
-      closed:
-        type: boolean
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      description:
-        type: string
-      endDate:
-        type: string
-      id:
-        type: integer
-      location:
-        type: string
-      name:
-        type: string
-      organization:
-        type: string
-      organizer:
-        $ref: '#/definitions/LES_server_internal_models.User'
-      organizerID:
-        type: integer
-      published:
-        type: boolean
-      regTypes:
-        items:
-          $ref: '#/definitions/LES_server_internal_models.RegistrationType'
-        type: array
-      startDate:
-        type: string
-      theme:
-        type: string
-      updatedAt:
-        type: string
-    type: object
-  LES_server_internal_models.EventActivity:
-    properties:
-      articles:
-        items:
-          $ref: '#/definitions/LES_server_internal_models.Article'
-        type: array
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      description:
-        type: string
-      endDate:
-        type: string
-      event:
-        $ref: '#/definitions/LES_server_internal_models.Event'
-      eventID:
-        type: integer
-      id:
-        type: integer
-      name:
-        type: string
-      startDate:
-        type: string
-      updatedAt:
-        type: string
-    type: object
-  LES_server_internal_models.RegistrationType:
-    properties:
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      description:
-        type: string
-      eventID:
-        type: integer
-      id:
-        type: integer
-      name:
-        type: string
-      price:
-        type: number
-      updatedAt:
-        type: string
-    type: object
-  LES_server_internal_models.Role:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    type: integer
-    x-enum-varnames:
-    - None
-    - Student
-    - Professor
-    - EventOrganizer
-  LES_server_internal_models.Tag:
-    properties:
-      articles:
-        items:
-          $ref: '#/definitions/LES_server_internal_models.Article'
-        type: array
-      category:
-        $ref: '#/definitions/LES_server_internal_models.TagCategory'
-      code:
-        type: string
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      id:
-        type: integer
-      isActive:
-        type: boolean
-      name:
-        type: string
-      updatedAt:
-        type: string
-    type: object
-  LES_server_internal_models.TagCategory:
-    enum:
-    - 0
-    - 1
-    - 2
-    type: integer
-    x-enum-varnames:
-    - TopicTag
-    - TrackTag
-    - ApplicationDomainTag
-  LES_server_internal_models.User:
-    properties:
-      createdAt:
-        type: string
-      csrftoken:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      email:
-        type: string
-      firstName:
-        type: string
-      hashedPassword:
-        description: nullable for OAuth users
-        type: string
-      id:
-        type: integer
-      lastName:
-        type: string
-      provider:
-        type: string
-      providerUserID:
-        type: string
-      role:
-        $ref: '#/definitions/LES_server_internal_models.Role'
-      sessionToken:
-        type: string
-      updatedAt:
-        type: string
-      verified:
-        type: boolean
-    type: object
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
-    type: object
-  internal_api.EventActivity:
+  api.EventActivity:
     properties:
       description:
         type: string
@@ -218,7 +13,7 @@ definitions:
       startDate:
         type: string
     type: object
-  internal_api.LongEvent:
+  api.LongEvent:
     properties:
       closed:
         example: false
@@ -254,12 +49,12 @@ definitions:
         example: CompSci
         type: string
     type: object
-  internal_api.PayTokenJSON:
+  api.PayTokenJSON:
     properties:
       payToken:
         type: string
     type: object
-  internal_api.RegistrationType:
+  api.RegistrationType:
     properties:
       description:
         example: Pass Description
@@ -274,7 +69,7 @@ definitions:
         example: 7.5
         type: number
     type: object
-  internal_api.ShortEvent:
+  api.ShortEvent:
     properties:
       id:
         example: 1
@@ -286,7 +81,7 @@ definitions:
         example: CompSci
         type: string
     type: object
-  internal_api.ShortEventEnroll:
+  api.ShortEventEnroll:
     properties:
       confirmed:
         example: true
@@ -301,6 +96,35 @@ definitions:
         example: CompSci
         type: string
     type: object
+  api.TagResponse:
+    properties:
+      category:
+        allOf:
+        - $ref: '#/definitions/models.TagCategory'
+        example: 0
+      code:
+        example: AI
+        type: string
+      id:
+        example: 1
+        type: integer
+      isActive:
+        example: true
+        type: boolean
+      name:
+        example: Artificial Intelligence
+        type: string
+    type: object
+  models.TagCategory:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - TopicTag
+    - TrackTag
+    - ApplicationDomainTag
 host: localhost:8080
 info:
   contact: {}
@@ -342,6 +166,10 @@ paths:
             type: string
         "401":
           description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: User is not the organizer of this event
           schema:
             type: string
         "404":
@@ -438,11 +266,17 @@ paths:
       - Article
   /article/details:
     get:
-      description: Returns an article with its associated tags
+      description: Returns an article with its associated tags. Unpublished articles
+        can only be viewed by the event organizer.
       parameters:
       - description: Article ID
         in: query
         name: id
+        required: true
+        type: string
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
         required: true
         type: string
       produces:
@@ -451,9 +285,18 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/LES_server_internal_models.Article'
+            additionalProperties: true
+            type: object
         "400":
           description: Missing article ID
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: You can't view this article (need to be the event organizer)
           schema:
             type: string
         "404":
@@ -461,7 +304,7 @@ paths:
           schema:
             type: string
         "500":
-          description: Error while fetching article
+          description: Internal server error
           schema:
             type: string
       summary: Get article by ID
@@ -501,6 +344,10 @@ paths:
             type: string
         "401":
           description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: User is not the organizer of this event
           schema:
             type: string
         "404":
@@ -706,7 +553,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/internal_api.EventActivity'
+              $ref: '#/definitions/api.EventActivity'
             type: array
         "401":
           description: Invalid credentials
@@ -953,7 +800,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/internal_api.ShortEvent'
+              $ref: '#/definitions/api.ShortEvent'
             type: array
         "401":
           description: Invalid credentials
@@ -999,7 +846,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/internal_api.ShortEvent'
+              $ref: '#/definitions/api.ShortEvent'
             type: array
         "401":
           description: Invalid credentials
@@ -1045,7 +892,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/internal_api.ShortEventEnroll'
+              $ref: '#/definitions/api.ShortEventEnroll'
             type: array
         "401":
           description: Invalid credentials
@@ -1185,7 +1032,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_api.PayTokenJSON'
+            $ref: '#/definitions/api.PayTokenJSON'
         "401":
           description: Invalid credentials
           schema:
@@ -1410,7 +1257,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_api.LongEvent'
+            $ref: '#/definitions/api.LongEvent'
         "401":
           description: Invalid credentials
           schema:
@@ -1450,7 +1297,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/internal_api.RegistrationType'
+              $ref: '#/definitions/api.RegistrationType'
             type: array
         "401":
           description: Invalid credentials
@@ -1496,7 +1343,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/LES_server_internal_models.Tag'
+              $ref: '#/definitions/api.TagResponse'
             type: array
         "401":
           description: Invalid credentials

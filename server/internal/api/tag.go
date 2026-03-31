@@ -9,13 +9,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type TagResponse struct {
+	ID       uint               `json:"id" example:"1"`
+	Name     string             `json:"name" example:"Artificial Intelligence"`
+	Code     string             `json:"code" example:"AI"`
+	Category models.TagCategory `json:"category" example:"0"`
+	IsActive bool               `json:"isActive" example:"true"`
+}
+
 // GetTags
 // @Summary     Get active tags
 // @Description Returns all active tags in the system
 // @Tags        Tag
 // @Param       X-CSRF-Token  header    string  true   "User's CSRF token"
 // @Produce     json
-// @Success     200 {array} models.Tag
+// @Success     200 {array} TagResponse
 // @Failure     401 {string} string "Invalid credentials"
 // @Failure     500 {string} string "Error while fetching tags"
 // @Router      /tags/list [get]
@@ -29,13 +37,23 @@ func GetTags(c *gin.Context) {
 	var tags []models.Tag
 
 	res := db.DB.Where("is_active = ?", true).Order("category asc").Order("name asc").Find(&tags)
-
 	if res.Error != nil {
 		c.String(http.StatusInternalServerError, "Error while fetching tags")
 		return
 	}
 
-	c.JSON(http.StatusOK, tags)
+	response := make([]TagResponse, 0, len(tags))
+	for _, tag := range tags {
+		response = append(response, TagResponse{
+			ID:       tag.ID,
+			Name:     tag.Name,
+			Code:     tag.Code,
+			Category: tag.Category,
+			IsActive: tag.IsActive,
+		})
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 // ArticleAddTags
@@ -50,11 +68,12 @@ func GetTags(c *gin.Context) {
 // @Success     200 {string} string "Tags added successfully"
 // @Failure     400 {string} string "Invalid article/tag IDs"
 // @Failure     401 {string} string "Invalid credentials"
+// @Failure     403 {string} string "User is not the organizer of this event"
 // @Failure     404 {string} string "Article/tag not found"
 // @Failure     500 {string} string "Error found while adding tags"
 // @Router      /article/addTags [post]
 func ArticleAddTags(c *gin.Context) {
-	_, err := Authorize(c)
+	user, err := Authorize(c)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Invalid credentials")
 		return
@@ -69,9 +88,25 @@ func ArticleAddTags(c *gin.Context) {
 	}
 
 	var article models.Article
-	res := db.DB.Preload("Tags").Where("id = ?", articleID).Take(&article)
-	if res.Error != nil || res.RowsAffected != 1 {
+	if err := db.DB.Where("id = ?", articleID).Take(&article).Error; err != nil {
 		c.String(http.StatusNotFound, "Article not found")
+		return
+	}
+
+	var activity models.EventActivity
+	if err := db.DB.Where("id = ?", article.EventActivityID).Take(&activity).Error; err != nil {
+		c.String(http.StatusNotFound, "Activity not found")
+		return
+	}
+
+	var event models.Event
+	if err := db.DB.Where("id = ?", activity.EventID).Take(&event).Error; err != nil {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "User is not the organizer of this event")
 		return
 	}
 
@@ -81,8 +116,15 @@ func ArticleAddTags(c *gin.Context) {
 		return
 	}
 
+	var currentTags []models.Tag
+	if err := db.DB.Model(&article).Association("Tags").Find(&currentTags); err != nil {
+		c.String(http.StatusInternalServerError, "Error found while fetching current tags")
+		return
+	}
+	article.Tags = currentTags
+
 	var tags []models.Tag
-	res = db.DB.Where("id IN ?", tagIDs).Where("is_active = ?", true).Find(&tags)
+	res := db.DB.Where("id IN ?", tagIDs).Where("is_active = ?", true).Find(&tags)
 	if res.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found while fetching tags")
 		return
@@ -99,8 +141,7 @@ func ArticleAddTags(c *gin.Context) {
 		return
 	}
 
-	err = db.DB.Model(&article).Association("Tags").Replace(article.Tags)
-	if err != nil {
+	if err := db.DB.Model(&article).Association("Tags").Replace(article.Tags); err != nil {
 		c.String(http.StatusInternalServerError, "Error found while adding tags")
 		return
 	}
@@ -120,11 +161,12 @@ func ArticleAddTags(c *gin.Context) {
 // @Success     200 {string} string "Tags removed successfully"
 // @Failure     400 {string} string "Invalid article/tag IDs"
 // @Failure     401 {string} string "Invalid credentials"
+// @Failure     403 {string} string "User is not the organizer of this event"
 // @Failure     404 {string} string "Article/tag not found"
 // @Failure     500 {string} string "Error found while removing tags"
 // @Router      /article/removeTags [post]
 func ArticleRemoveTags(c *gin.Context) {
-	_, err := Authorize(c)
+	user, err := Authorize(c)
 	if err != nil {
 		c.String(http.StatusUnauthorized, "Invalid credentials")
 		return
@@ -139,9 +181,25 @@ func ArticleRemoveTags(c *gin.Context) {
 	}
 
 	var article models.Article
-	res := db.DB.Preload("Tags").Where("id = ?", articleID).Take(&article)
-	if res.Error != nil || res.RowsAffected != 1 {
+	if err := db.DB.Where("id = ?", articleID).Take(&article).Error; err != nil {
 		c.String(http.StatusNotFound, "Article not found")
+		return
+	}
+
+	var activity models.EventActivity
+	if err := db.DB.Where("id = ?", article.EventActivityID).Take(&activity).Error; err != nil {
+		c.String(http.StatusNotFound, "Activity not found")
+		return
+	}
+
+	var event models.Event
+	if err := db.DB.Where("id = ?", activity.EventID).Take(&event).Error; err != nil {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "User is not the organizer of this event")
 		return
 	}
 
@@ -151,8 +209,15 @@ func ArticleRemoveTags(c *gin.Context) {
 		return
 	}
 
+	var currentTags []models.Tag
+	if err := db.DB.Model(&article).Association("Tags").Find(&currentTags); err != nil {
+		c.String(http.StatusInternalServerError, "Error found while fetching current tags")
+		return
+	}
+	article.Tags = currentTags
+
 	var tags []models.Tag
-	res = db.DB.Where("id IN ?", tagIDs).Where("is_active = ?", true).Find(&tags)
+	res := db.DB.Where("id IN ?", tagIDs).Where("is_active = ?", true).Find(&tags)
 	if res.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found while fetching tags")
 		return
@@ -169,8 +234,7 @@ func ArticleRemoveTags(c *gin.Context) {
 		return
 	}
 
-	err = db.DB.Model(&article).Association("Tags").Replace(article.Tags)
-	if err != nil {
+	if err := db.DB.Model(&article).Association("Tags").Replace(article.Tags); err != nil {
 		c.String(http.StatusInternalServerError, "Error found while removing tags")
 		return
 	}

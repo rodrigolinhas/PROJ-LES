@@ -122,16 +122,25 @@ func ArticleCreate(c *gin.Context) {
 
 // ArticleGetById
 // @Summary     Get article by ID
-// @Description Returns an article with its associated tags
+// @Description Returns an article with its associated tags. Unpublished articles can only be viewed by the event organizer.
 // @Tags        Article
 // @Produce     json
 // @Param       id  query     string  true  "Article ID"
-// @Success     200 {object} models.Article
+// @Param       X-CSRF-Token  header    string  true   "User's CSRF Token"
+// @Success     200 {object} map[string]interface{}
 // @Failure     400 {string} string "Missing article ID"
+// @Failure     401 {string} string "Invalid credentials"
+// @Failure     403 {string} string "You can't view this article (need to be the event organizer)"
 // @Failure     404 {string} string "Article not found"
-// @Failure     500 {string} string "Error while fetching article"
+// @Failure     500 {string} string "Internal server error"
 // @Router      /article/details [get]
 func ArticleGetById(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid credentials")
+		return
+	}
+
 	articleID := c.Query("id")
 	if articleID == "" {
 		c.String(http.StatusBadRequest, "Missing article ID")
@@ -139,18 +148,65 @@ func ArticleGetById(c *gin.Context) {
 	}
 
 	var article models.Article
-	res := db.DB.
-		Preload("FirstAuthor").
-		Preload("CoAuthors").
-		Preload("Tags").
-		Preload("EventActivity").
-		Where("id = ?", articleID).
-		Take(&article)
-
-	if res.Error != nil || res.RowsAffected != 1 {
+	if err := db.DB.Where("id = ?", articleID).Take(&article).Error; err != nil {
 		c.String(http.StatusNotFound, "Article not found")
 		return
 	}
 
-	c.JSON(http.StatusOK, article)
+	var activity models.EventActivity
+	if err := db.DB.Where("id = ?", article.EventActivityID).Take(&activity).Error; err != nil {
+		c.String(http.StatusNotFound, "Activity not found")
+		return
+	}
+
+	var event models.Event
+	if err := db.DB.Where("id = ?", activity.EventID).Take(&event).Error; err != nil {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if !event.Published && event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "You can't view this article (need to be the event organizer)")
+		return
+	}
+
+	var firstAuthor map[string]interface{}
+	if err := db.DB.Model(&models.User{}).
+		Select("id").
+		Where("id = ?", article.FirstAuthorID).
+		Take(&firstAuthor).Error; err != nil {
+		c.String(http.StatusNotFound, "First author not found")
+		return
+	}
+
+	var coAuthors []map[string]interface{}
+	if err := db.DB.Table("users").
+		Select("users.id").
+		Joins("JOIN article_coauthors ON article_coauthors.user_id = users.id").
+		Where("article_coauthors.article_id = ?", article.ID).
+		Scan(&coAuthors).Error; err != nil {
+		c.String(http.StatusInternalServerError, "Error while fetching co-authors")
+		return
+	}
+
+	var tags []models.Tag
+	if err := db.DB.Model(&article).Association("Tags").Find(&tags); err != nil {
+		c.String(http.StatusInternalServerError, "Error while fetching tags")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"id":            article.ID,
+		"title":         article.Title,
+		"firstAuthor":   firstAuthor,
+		"coAuthors":     coAuthors,
+		"publisher":     article.Publisher,
+		"doi":           article.DOI,
+		"isbn":          article.ISBN,
+		"url":           article.URL,
+		"eventActivity": activity,
+		"tags":          tags,
+		"createdAt":     article.CreatedAt,
+		"updatedAt":     article.UpdatedAt,
+	})
 }
