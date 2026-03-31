@@ -77,13 +77,23 @@ func RegistrationTypeCreate(c *gin.Context) {
 	}
 
 	benefitsStr := c.Request.FormValue("benefits")
-	benefits, err := models.ParseBenefits(benefitsStr)
+	parsedBenefits, err := models.ParseBenefits(benefitsStr)
 	if err != nil {
 		c.String(http.StatusBadRequest, "Invalid benefits format: "+err.Error())
 		return
 	}
 
-	regType, err := models.NewRegistrationType(event.ID, name, desc, price, benefits)
+	var dbBenefits []models.Benefit
+	for _, pb := range parsedBenefits {
+		var dbB models.Benefit
+		if err := db.DB.Where("name = ?", pb.Name).FirstOrCreate(&dbB, models.Benefit{Name: pb.Name}).Error; err != nil {
+			c.String(http.StatusInternalServerError, "Error handling benefits")
+			return
+		}
+		dbBenefits = append(dbBenefits, dbB)
+	}
+
+	regType, err := models.NewRegistrationType(event.ID, name, desc, price, dbBenefits)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return

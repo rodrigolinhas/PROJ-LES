@@ -95,6 +95,11 @@ func TestNewRegistrationType6(t *testing.T) {
 		{Name: "test"},
 	}
 	res, err := NewRegistrationType(uint(eventid), name, desc, price, benefits)
-	assert.Nil(t, res)
-	assert.NotNil(t, err)
+	assert.NotNil(t, res)
+	assert.Nil(t, err)
+	assert.Equal(t, uint(eventid), res.EventID)
+	assert.Equal(t, name, res.Name)
+	assert.Equal(t, desc, res.Description)
+	assert.Equal(t, price, res.Price)
+	assert.Equal(t, benefits, res.Benefits)
 }

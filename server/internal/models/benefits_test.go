@@ -41,9 +41,11 @@ func TestMultipleBenefits1(t *testing.T) {
 	name := "Gala Dinner, test"
 
 	res, err := ParseBenefits(name)
-	assert.Nil(t, res)
-	assert.NotNil(t, err)
-	assert.Equal(t, "Benefit: invalid benefit name", err.Error())
+	assert.NotNil(t, res)
+	assert.Nil(t, err)
+	assert.Equal(t, 2, len(res))
+	assert.Equal(t, "Gala Dinner", res[0].Name)
+	assert.Equal(t, "test", res[1].Name)
 }
 
 func TestNonExistentBenefit(t *testing.T) {
@@ -51,7 +53,7 @@ func TestNonExistentBenefit(t *testing.T) {
 
 	res, err := NewBenefit(name)
 
-	assert.Nil(t, res)
-	assert.NotNil(t, err)
-	assert.Equal(t, "Benefit: invalid benefit name", err.Error())
+	assert.NotNil(t, res)
+	assert.Nil(t, err)
+	assert.Equal(t, name, res.Name)
 }

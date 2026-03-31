@@ -63,10 +63,6 @@ func NewBenefit(name string) (*Benefit, error) {
 		return nil, errors.New("Benefit: empty name")
 	}
 
-	if !IsValidBenefit(name) {
-		return nil, errors.New("Benefit: invalid benefit name")
-	}
-
 	benefit := &Benefit{
 		Name: name,
 	}

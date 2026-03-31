@@ -28,12 +28,6 @@ func NewRegistrationType(eventID uint, name string, desc string, price float64, 
 		return nil, errors.New("RegistrationType: invalid price")
 	}
 
-	for _, b := range benefits {
-		if !IsValidBenefit(b.Name) {
-			return nil, errors.New("RegistrationType: invalid benefit")
-		}
-	}
-
 	regType := &RegistrationType{
 		EventID:     eventID,
 		Name:        name,
