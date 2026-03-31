@@ -92,7 +92,7 @@ const docTemplate = `{
                     "multipart/form-data"
                 ],
                 "produces": [
-                    "text/plain"
+                    "application/json"
                 ],
                 "tags": [
                     "Article"
@@ -169,9 +169,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Article created successfully",
+                        "description": "Created",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "400": {
@@ -194,6 +195,53 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Error found during article creation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/article/details": {
+            "get": {
+                "description": "Returns an article with its associated tags",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Get article by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Article ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/LES_server_internal_models.Article"
+                        }
+                    },
+                    "400": {
+                        "description": "Missing article ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Article not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error while fetching article",
                         "schema": {
                             "type": "string"
                         }
@@ -1685,7 +1733,7 @@ const docTemplate = `{
         },
         "/tags/list": {
             "get": {
-                "description": "Returns all active tags of the system",
+                "description": "Returns all active tags in the system",
                 "produces": [
                     "application/json"
                 ],
@@ -1693,6 +1741,15 @@ const docTemplate = `{
                     "Tag"
                 ],
                 "summary": "Get active tags",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1703,8 +1760,14 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "500": {
-                        "description": "Error found while fetching tags",
+                        "description": "Error while fetching tags",
                         "schema": {
                             "type": "string"
                         }

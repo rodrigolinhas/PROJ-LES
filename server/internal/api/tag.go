@@ -11,13 +11,21 @@ import (
 
 // GetTags
 // @Summary     Get active tags
-// @Description Returns all active tags of the system
+// @Description Returns all active tags in the system
 // @Tags        Tag
+// @Param       X-CSRF-Token  header    string  true   "User's CSRF token"
 // @Produce     json
 // @Success     200 {array} models.Tag
-// @Failure     500 {string} string "Error found while fetching tags"
+// @Failure     401 {string} string "Invalid credentials"
+// @Failure     500 {string} string "Error while fetching tags"
 // @Router      /tags/list [get]
 func GetTags(c *gin.Context) {
+	_, err := Authorize(c)
+	if err != nil {
+		c.String(http.StatusUnauthorized, "Invalid credentials")
+		return
+	}
+
 	var tags []models.Tag
 
 	res := db.DB.Where("is_active = ?", true).Order("category asc").Order("name asc").Find(&tags)

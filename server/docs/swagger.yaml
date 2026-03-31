@@ -410,12 +410,13 @@ paths:
         required: true
         type: string
       produces:
-      - text/plain
+      - application/json
       responses:
         "201":
-          description: Article created successfully
+          description: Created
           schema:
-            type: string
+            additionalProperties: true
+            type: object
         "400":
           description: The activity does not belong to the event
           schema:
@@ -433,6 +434,37 @@ paths:
           schema:
             type: string
       summary: Create article
+      tags:
+      - Article
+  /article/details:
+    get:
+      description: Returns an article with its associated tags
+      parameters:
+      - description: Article ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/LES_server_internal_models.Article'
+        "400":
+          description: Missing article ID
+          schema:
+            type: string
+        "404":
+          description: Article not found
+          schema:
+            type: string
+        "500":
+          description: Error while fetching article
+          schema:
+            type: string
+      summary: Get article by ID
       tags:
       - Article
   /article/removeTags:
@@ -1445,7 +1477,13 @@ paths:
       - Dev
   /tags/list:
     get:
-      description: Returns all active tags of the system
+      description: Returns all active tags in the system
+      parameters:
+      - description: User's CSRF token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1455,8 +1493,12 @@ paths:
             items:
               $ref: '#/definitions/LES_server_internal_models.Tag'
             type: array
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
         "500":
-          description: Error found while fetching tags
+          description: Error while fetching tags
           schema:
             type: string
       summary: Get active tags

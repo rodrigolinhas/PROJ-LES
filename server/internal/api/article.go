@@ -14,7 +14,7 @@ import (
 // @Description While the user is logged in, creates an article and associates it to an event activity
 // @Tags        Article
 // @Accept      mpfd
-// @Produce 	plain
+// @Produce 	json
 // @Param 		X-CSRF-Token 	header		string	true	"User's CSRF Token"
 // @Param 		eventID 		formData 	string 	true 	"ID of the associated event"
 // @Param 		activityID 		formData 	string 	true 	"ID of the associated activity"
@@ -25,7 +25,7 @@ import (
 // @Param       doi             formData 	string  false   "Article's DOI"
 // @Param       isbn            formData 	string  false   "Article's ISBN"
 // @Param       url             formData 	string  true    "URL where the article is accessible"
-// @Success     201 {string} string "Article created successfully"
+// @Success     201 {object} map[string]interface{}
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure 	404 {string} string "User/event/activity not found"
 // @Failure 	400 {string} string "The activity does not belong to the event"
@@ -36,7 +36,7 @@ func ArticleCreate(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	
+
 	title := c.Request.FormValue("title")
 	firstAuthorID := c.Request.FormValue("firstAuthorID")
 	coAuthorsID := c.Request.FormValue("coAuthorsID") // 1, 2, 3, 4
@@ -57,7 +57,7 @@ func ArticleCreate(c *gin.Context) {
 		c.String(http.StatusBadRequest, "The activity does not belong to the event")
 		return
 	}
-	
+
 	firstAuthor := &models.User{}
 	dberr = db.DB.Where("id = ?", firstAuthorID).Take(firstAuthor)
 	if dberr.Error != nil || dberr.RowsAffected != 1 {
@@ -99,19 +99,58 @@ func ArticleCreate(c *gin.Context) {
 		article.ISBN = isbn
 	}
 
+	article.FirstAuthorID = firstAuthor.ID
+	article.EventActivityID = act.ID
 	article.AddCoAuthors(coAuthors)
 
 	aerr = act.AddArticle(*article)
 	if aerr != nil {
 		c.String(http.StatusInternalServerError, aerr.Error())
 	}
-	
-	dberr = db.DB.Save(act)
+
+	dberr = db.DB.Create(article)
 	if dberr.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found in DB")
 		return
 	}
 
-	c.String(http.StatusCreated, "Article created successfully")
-	return
+	c.JSON(http.StatusCreated, gin.H{
+		"message":   "Article created successfully",
+		"articleID": article.ID,
+	})
+}
+
+// ArticleGetById
+// @Summary     Get article by ID
+// @Description Returns an article with its associated tags
+// @Tags        Article
+// @Produce     json
+// @Param       id  query     string  true  "Article ID"
+// @Success     200 {object} models.Article
+// @Failure     400 {string} string "Missing article ID"
+// @Failure     404 {string} string "Article not found"
+// @Failure     500 {string} string "Error while fetching article"
+// @Router      /article/details [get]
+func ArticleGetById(c *gin.Context) {
+	articleID := c.Query("id")
+	if articleID == "" {
+		c.String(http.StatusBadRequest, "Missing article ID")
+		return
+	}
+
+	var article models.Article
+	res := db.DB.
+		Preload("FirstAuthor").
+		Preload("CoAuthors").
+		Preload("Tags").
+		Preload("EventActivity").
+		Where("id = ?", articleID).
+		Take(&article)
+
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Article not found")
+		return
+	}
+
+	c.JSON(http.StatusOK, article)
 }
