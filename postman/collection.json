@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "bc4846fb-9b7c-4344-9dd7-b50d8f9ba6da",
+    "_postman_id": "134f5035-55d6-465d-88fb-cafaee5346b3",
     "name": "00 - LES API (Runner)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "49772394",
-    "_collection_link": "https://go.postman.co/collection/49772394-bc4846fb-9b7c-4344-9dd7-b50d8f9ba6da?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/49772394-134f5035-55d6-465d-88fb-cafaee5346b3?source=collection_link"
   },
   "item": [
     {
@@ -1168,8 +1168,8 @@
                   "const articleDetailsRes = pm.response.json();\r",
                   "\r",
                   "pm.test(\"Article starts with no tags\", function () {\r",
-                  "  pm.expect(articleDetailsRes.Tags).to.be.an(\"array\");\r",
-                  "  pm.expect(articleDetailsRes.Tags.length).to.eql(0);\r",
+                  "  pm.expect(articleDetailsRes.tags).to.be.an(\"array\");\r",
+                  "  pm.expect(articleDetailsRes.tags.length).to.eql(0);\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -1289,10 +1289,10 @@
                   "  .split(\",\")\r",
                   "  .map(id => Number(id.trim()));\r",
                   "\r",
-                  "const returnedTagIds = (articleAfterAddRes.Tags || []).map(tag => tag.ID);\r",
+                  "const returnedTagIds = (articleAfterAddRes.tags || []).map(tag => tag.ID);\r",
                   "\r",
                   "pm.test(\"Article has tags array\", function () {\r",
-                  "  pm.expect(articleAfterAddRes.Tags).to.be.an(\"array\");\r",
+                  "  pm.expect(articleAfterAddRes.tags).to.be.an(\"array\");\r",
                   "});\r",
                   "\r",
                   "pm.test(\"All expected tags were added\", function () {\r",
@@ -1418,10 +1418,10 @@
                   "  .split(\",\")\r",
                   "  .map(id => Number(id.trim()));\r",
                   "\r",
-                  "const returnedTagIds = (articleAfterRemoveRes.Tags || []).map(tag => tag.ID);\r",
+                  "const returnedTagIds = (articleAfterRemoveRes.tags || []).map(tag => tag.ID);\r",
                   "\r",
                   "pm.test(\"Article has tags array\", function () {\r",
-                  "  pm.expect(articleAfterRemoveRes.Tags).to.be.an(\"array\");\r",
+                  "  pm.expect(articleAfterRemoveRes.tags).to.be.an(\"array\");\r",
                   "});\r",
                   "\r",
                   "pm.test(\"Removed tags are no longer associated\", function () {\r",
