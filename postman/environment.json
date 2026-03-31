@@ -148,7 +148,73 @@
 		},
 		{
 			"key": "article_id",
-			"value": "21",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "regtype_name",
+			"value": "Pass",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_desc",
+			"value": "Pass Description",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_price",
+			"value": "5",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_name_edited",
+			"value": "FastPass",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_desc_edited",
+			"value": "FastPass Desc.",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_price_edited",
+			"value": "7.5",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "email_stu",
+			"value": "student@uni.edu",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "role_stu",
+			"value": "Student",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "lName_stu",
+			"value": "Dent",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "fName_stu",
+			"value": "Stu",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "regtype_id",
+			"value": "",
 			"type": "any",
 			"enabled": true
 		},
