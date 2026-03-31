@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "5024f5ab-ba2d-4cba-8314-69501cf755fb",
+    "_postman_id": "a9373dcf-49b0-4c46-a982-1a48d8b2f7a2",
     "name": "00 - LES API (Runner)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "52499161",
-    "_collection_link": "https://go.postman.co/collection/52499161-5024f5ab-ba2d-4cba-8314-69501cf755fb?source=collection_link"
+    "_exporter_id": "52830737",
+    "_collection_link": "https://go.postman.co/collection/52830737-a9373dcf-49b0-4c46-a982-1a48d8b2f7a2?source=collection_link"
   },
   "item": [
     {
@@ -1398,6 +1398,1049 @@
                 "view",
                 "{{event_id}}",
                 "benefits"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 - event registration",
+      "item": [
+        {
+          "name": "create_event_forTestsRegistration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Create Event -> 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Create Event -> success message\", function () {\r",
+                  "    pm.expect(pm.response.text()).to.include(\"Event created successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "d8b7e788-4986-439b-8db5-e7622485d3f1"
+                },
+                {
+                  "key": "name",
+                  "value": "{{event_name}}",
+                  "type": "text",
+                  "uuid": "0c7e60bc-46f3-4a28-a9f1-7b96e1170ff0"
+                },
+                {
+                  "key": "theme",
+                  "value": "{{event_theme}}",
+                  "type": "text",
+                  "uuid": "6cd3f22d-2a1e-4bbf-8575-23c818fb242e"
+                },
+                {
+                  "key": "description",
+                  "value": "{{event_description}}",
+                  "type": "text",
+                  "uuid": "dcf0b5e1-ed16-4161-8edc-ea442e167cc6"
+                },
+                {
+                  "key": "organization",
+                  "value": "{{event_organization}}",
+                  "type": "text",
+                  "uuid": "1410ba6d-97e8-48cd-b24b-fe96968032c6"
+                },
+                {
+                  "key": "startDate",
+                  "value": "{{event_start}}",
+                  "type": "text",
+                  "uuid": "69d3681d-47c0-4b83-9771-c8a4ec1e5e79"
+                },
+                {
+                  "key": "endDate",
+                  "value": "{{event_end}}",
+                  "type": "text",
+                  "uuid": "4bb507f1-e956-4e50-8f24-1763fd6adf0f"
+                },
+                {
+                  "key": "location",
+                  "value": "{{event_location}}",
+                  "type": "text",
+                  "uuid": "9a9314cf-ea43-4c19-9c9b-1fd7c64bccea"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_my_forTestsRegistration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"My Events -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "if (pm.response.code === 200) {\r",
+                  "  const myEvents = pm.response.json();\r",
+                  "\r",
+                  "  pm.test(\"My Events -> returns array\", function () {\r",
+                  "    pm.expect(myEvents).to.be.an(\"array\");\r",
+                  "    pm.expect(myEvents.length).to.be.greaterThan(0);\r",
+                  "  });\r",
+                  "\r",
+                  "  const createdEvent = myEvents.find(\r",
+                  "    e => e.Name === pm.environment.get(\"event_name\")\r",
+                  "  );\r",
+                  "\r",
+                  "  pm.test(\"Created event found in my events\", function () {\r",
+                  "    pm.expect(createdEvent).to.exist;\r",
+                  "  });\r",
+                  "\r",
+                  "  if (createdEvent) {\r",
+                  "    pm.environment.set(\"event_id\", String(createdEvent.ID));\r",
+                  "  }\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/my?filter={{event_name}}&limit=20&offset=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "my"
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "{{event_name}}",
+                  "type": "text"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "type": "text"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "regtype_create",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Create RegType -> 201\", function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Create RegType -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Event Registration Type added successfully\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "ee18c74c-a6c4-4487-9698-ae6af8db5258"
+                },
+                {
+                  "key": "name",
+                  "value": "{{regtype_name}}",
+                  "type": "text",
+                  "uuid": "8bcf3621-4f44-4fca-bbd8-9b954e064b3b"
+                },
+                {
+                  "key": "description",
+                  "value": "{{regtype_desc}}",
+                  "type": "text",
+                  "uuid": "c833d5f1-af31-42a5-8453-8195aec288d4"
+                },
+                {
+                  "key": "price",
+                  "value": "{{regtype_price}}",
+                  "type": "text",
+                  "uuid": "7553a344-9975-49f2-a085-faf46b95d2cd"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/regtype/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "regtype",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "regtype_list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"List RegType -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  const regtypes = pm.response.json();",
+                  "",
+                  "  pm.test(\"List RegType -> returns array\", function () {",
+                  "    pm.expect(regtypes).to.be.an(\"array\");",
+                  "    pm.expect(regtypes.length).to.be.greaterThan(0);",
+                  "  });",
+                  "",
+                  "  const createdRegType = regtypes.find(",
+                  "    elem => elem.Name === pm.environment.get(\"regtype_name\")",
+                  "  );",
+                  "",
+                  "  pm.test(\"Created regtype found in the event\", function () {",
+                  "    pm.expect(createdRegType).to.exist;",
+                  "  });",
+                  "",
+                  "  if (createdRegType) {",
+                  "    pm.environment.set(\"regtype_id\", String(createdRegType.ID));",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}/regtypes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}",
+                "regtypes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "regtype_edit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Edit Regtype -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Edit Regtype -> success message\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event Registration Type edited successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "4bae8272-c5d4-4d5a-b202-5ba986e1c6ba"
+                },
+                {
+                  "key": "regTypeID",
+                  "value": "{{regtype_id}}",
+                  "type": "text",
+                  "uuid": "44df54c6-61a7-41b2-a839-4c6d0b7feb52"
+                },
+                {
+                  "key": "name",
+                  "value": "{{regtype_name_edited}}",
+                  "type": "text",
+                  "uuid": "ebb7af57-cbc5-49ad-a11c-a28f71b902a4"
+                },
+                {
+                  "key": "description",
+                  "value": "{{regtype_desc_edited}}",
+                  "type": "text",
+                  "uuid": "a26aea9b-6874-4d5f-bcbd-8992f15abd45"
+                },
+                {
+                  "key": "price",
+                  "value": "{{regtype_price_edited}}",
+                  "type": "text",
+                  "uuid": "7a21a21a-1c82-4f7b-9d17-f58b43e753d9"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/regtype/edit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "regtype",
+                "edit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "regtype_list_after_edit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"List RegType -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  const regtypes = pm.response.json();",
+                  "",
+                  "  pm.test(\"List RegType -> returns array\", function () {",
+                  "    pm.expect(regtypes).to.be.an(\"array\");",
+                  "    pm.expect(regtypes.length).to.be.greaterThan(0);",
+                  "  });",
+                  "",
+                  "  const createdRegType = regtypes.find(",
+                  "    elem => elem.Name === pm.environment.get(\"regtype_name_edited\")",
+                  "  );",
+                  "",
+                  "  pm.test(\"Edited regtype found in the event\", function () {",
+                  "    pm.expect(createdRegType).to.exist;",
+                  "    pm.expect(createdRegType.Name).to.eq(pm.environment.get(\"regtype_name_edited\"));",
+                  "    pm.expect(createdRegType.Description).to.eq(pm.environment.get(\"regtype_desc_edited\"));",
+                  "    pm.expect(createdRegType.Price + \"\").to.eq(pm.environment.get(\"regtype_price_edited\"));",
+                  "  });",
+                  "",
+                  "  if (createdRegType) {",
+                  "    pm.environment.set(\"regtype_id\", String(createdRegType.ID));",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}/regtypes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}",
+                "regtypes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "regtype_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Delete Event -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Delete Event -> success message\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event Registration Type deleted successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "d25b0328-4e83-42f2-9b0c-4d40d856b074"
+                },
+                {
+                  "key": "regTypeID",
+                  "value": "{{regtype_id}}",
+                  "type": "text",
+                  "uuid": "e3b69419-9241-4a2c-b0a2-812750e056fe"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/regtype/delete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "regtype",
+                "delete"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "regtype_list_after_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"List RegType -> 404\", function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"List Regtype -> not found message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"This event doesn't have registration types\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}/regtypes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}",
+                "regtypes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "regtype_create_for_reg",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Create RegType -> 201\", function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Create RegType -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Event Registration Type added successfully\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "ee18c74c-a6c4-4487-9698-ae6af8db5258"
+                },
+                {
+                  "key": "name",
+                  "value": "{{regtype_name}}",
+                  "type": "text",
+                  "uuid": "8bcf3621-4f44-4fca-bbd8-9b954e064b3b"
+                },
+                {
+                  "key": "description",
+                  "value": "{{regtype_desc}}",
+                  "type": "text",
+                  "uuid": "c833d5f1-af31-42a5-8453-8195aec288d4"
+                },
+                {
+                  "key": "price",
+                  "value": "{{regtype_price}}",
+                  "type": "text",
+                  "uuid": "7553a344-9975-49f2-a085-faf46b95d2cd"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/regtype/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "regtype",
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "regtype_list_for_reg",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"List RegType -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  const regtypes = pm.response.json();",
+                  "",
+                  "  pm.test(\"List RegType -> returns array\", function () {",
+                  "    pm.expect(regtypes).to.be.an(\"array\");",
+                  "    pm.expect(regtypes.length).to.be.greaterThan(0);",
+                  "  });",
+                  "",
+                  "  const createdRegType = regtypes.find(",
+                  "    elem => elem.Name === pm.environment.get(\"regtype_name\")",
+                  "  );",
+                  "",
+                  "  pm.test(\"Created regtype found in the event\", function () {",
+                  "    pm.expect(createdRegType).to.exist;",
+                  "  });",
+                  "",
+                  "  if (createdRegType) {",
+                  "    pm.environment.set(\"regtype_id\", String(createdRegType.ID));",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}/regtypes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}",
+                "regtypes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_publish_forTestsRegistration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Publish Event -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Publish Event -> success message\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event published with success\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "060f908c-d780-48e2-94ee-513363045f9b"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "publish"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "register_forTestsRegistration",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Register -> 201\", function () {\r",
+                  "  pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Register -> success message\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"User registered successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "firstName",
+                  "value": "{{fName_stu}}",
+                  "type": "text",
+                  "uuid": "93aeec8b-2531-463c-8bce-e7b5ffdf7758"
+                },
+                {
+                  "key": "lastName",
+                  "value": "{{lName_stu}}",
+                  "type": "text",
+                  "uuid": "c86f0f10-882e-4f3a-887d-df780c0fa24e"
+                },
+                {
+                  "key": "role",
+                  "value": "{{role_stu}}",
+                  "type": "text",
+                  "uuid": "f8ea54a5-823a-4263-98bb-ef4a96267dd7"
+                },
+                {
+                  "key": "email",
+                  "value": "{{email_stu}}",
+                  "type": "text",
+                  "uuid": "fe5ac9c4-b217-4b77-b0c2-82df010a5e80"
+                },
+                {
+                  "key": "pass",
+                  "value": "{{password}}",
+                  "type": "text",
+                  "uuid": "3f4f22d5-467c-4f28-b071-0685e27d716d"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login_forTestsRegistration",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Login -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const setCookies = pm.response.headers.all()\r",
+                  "  .filter(h => h.key.toLowerCase() === \"set-cookie\")\r",
+                  "  .map(h => h.value);\r",
+                  "\r",
+                  "function getCookieValue(name) {\r",
+                  "  const row = setCookies.find(v => v.startsWith(name + \"=\"));\r",
+                  "  if (!row) return null;\r",
+                  "  return row.split(\";\")[0].substring(name.length + 1);\r",
+                  "}\r",
+                  "\r",
+                  "const csrf = getCookieValue(\"csrf_token\");\r",
+                  "pm.test(\"CSRF cookie veio no login\", function () {\r",
+                  "  pm.expect(csrf).to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "if (csrf) {\r",
+                  "  pm.environment.set(\"csrfToken\", csrf);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "{{email_stu}}",
+                  "type": "text",
+                  "uuid": "c80fe009-1824-4fbb-9344-5904aadacce6"
+                },
+                {
+                  "key": "pass",
+                  "value": "{{password}}",
+                  "type": "text",
+                  "uuid": "ade1d20b-d44e-45da-9998-a21b71452b1e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Event Register -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "if (pm.response.code === 200) {\r",
+                  "  const token = pm.response.json();\r",
+                  "\r",
+                  "  pm.test(\"Recieved payToken\", function () {\r",
+                  "    pm.expect(token.payToken).to.exist;\r",
+                  "  });\r",
+                  "\r",
+                  "  if (token.payToken) {\r",
+                  "    pm.environment.set(\"pay_token\", String(token.payToken));\r",
+                  "  }\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "d25b0328-4e83-42f2-9b0c-4d40d856b074"
+                },
+                {
+                  "key": "regTypeID",
+                  "value": "{{regtype_id}}",
+                  "type": "text",
+                  "uuid": "43d15d1a-f2f3-451e-8492-2fcf1a9276ae"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "pay",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Event Pay -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Event Pay -> success message\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event registration paid successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text",
+                  "uuid": "d25b0328-4e83-42f2-9b0c-4d40d856b074"
+                },
+                {
+                  "key": "payToken",
+                  "value": "{{pay_token}}",
+                  "type": "text",
+                  "uuid": "ce8f025b-111e-46e7-9647-0f9a7370f51d"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/pay",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "pay"
               ]
             }
           },
