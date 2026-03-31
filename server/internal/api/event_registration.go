@@ -24,6 +24,7 @@ type PayTokenJSON struct {
 // @Produce 	json
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		eventID			formData	string	true	"ID of the event"
+// @Param 		regTypeID		formData	string	true	"ID of the registration type"
 // @Param 		discountCode	formData	string	false	"Discount code"
 // @Success 	200 {object} PayTokenJSON
 // @Failure		401 {string} string "Invalid credentials"
@@ -123,8 +124,8 @@ func EventRegister(c *gin.Context) {
 // @Produce 	plain
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		eventID			formData	string	true	"ID of the event"
-// @Param 		PayToken		formData	string	true	"PayToken given during event enrollment"
-// @Success 	200 {string} string "Event registration payed successfully"
+// @Param 		payToken		formData	string	true	"PayToken given during event enrollment"
+// @Success 	200 {string} string "Event registration paid successfully"
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "Registration not found"
 // @Failure		409 {string} string "Registration has already been paid"
@@ -162,7 +163,7 @@ func EventPay(c *gin.Context) {
 		return
 	}
 
-	c.String(http.StatusOK, "Event registration payed successfully")
+	c.String(http.StatusOK, "Event registration paid successfully")
 }
 
 type ShortEventEnroll struct {

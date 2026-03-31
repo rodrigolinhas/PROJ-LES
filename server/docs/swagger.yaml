@@ -1080,14 +1080,14 @@ paths:
         type: string
       - description: PayToken given during event enrollment
         in: formData
-        name: PayToken
+        name: payToken
         required: true
         type: string
       produces:
       - text/plain
       responses:
         "200":
-          description: Event registration payed successfully
+          description: Event registration paid successfully
           schema:
             type: string
         "401":
@@ -1168,6 +1168,11 @@ paths:
       - description: ID of the event
         in: formData
         name: eventID
+        required: true
+        type: string
+      - description: ID of the registration type
+        in: formData
+        name: regTypeID
         required: true
         type: string
       - description: Discount code

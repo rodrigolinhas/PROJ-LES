@@ -96,7 +96,7 @@ func RegistrationTypeCreate(c *gin.Context) {
 		return
 	}
 
-	c.String(http.StatusOK, "Event Registration Type added successfully")
+	c.String(http.StatusCreated, "Event Registration Type added successfully")
 }
 
 // RegistrationTypeEdit
