@@ -910,13 +910,12 @@
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/create",
+              "raw": "{{baseUrl}}/event/activity/create",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "event",
-                "{{event_id}}",
                 "activity",
                 "create"
               ]
@@ -972,13 +971,12 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/list",
+              "raw": "{{baseUrl}}/event/activity/list?eventID={{event_id}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "event",
-                "{{event_id}}",
                 "activity",
                 "list"
               ],
