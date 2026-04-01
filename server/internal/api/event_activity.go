@@ -28,13 +28,13 @@ type EventActivity struct {
 // @Param 		X-CSRF-Token 	header		string	true	"User's CSRF Token"
 // @Param       name            formData 	string  true    "Activity name"
 // @Param 		description 	formData 	string  true    "Activity description"
-// @Param 		eventID 		formData 	string 	true 	"Event ID of the associated event"
+// @Param 		eventID 		path 	    string 	true 	"Event ID of the associated event"
 // @Param 		startDate 		formData 	string  true 	"Date/Time at which the activity starts (RFC3339/ISO8601 format)"
 // @Param 		endDate 		formData    string  true    "Date/Time at which the activity ends (RFC3339/ISO8601 format)"
 // @Success     201 {string} string "Activity created with success"
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure 	500 {string} string "Error found during activity creation"
-// @Router /event/activity/create [post]
+// @Router /event/{eventId}/activity/create [post]
 func EventActivityCreate(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
@@ -91,11 +91,11 @@ func EventActivityCreate(c *gin.Context) {
 // @Tags 		EventActivity
 // @Produce 	json
 // @Param 		X-CSRF-Token 	header 		string 	true 	"User's CSRF Token"
-// @Param 		eventID 		query 		string 	true 	"Event ID"
-// @Success 	200 {array} EventActivity
+// @Param 		eventID 		path 		string 	true 	"Event ID"
+// @Success 	200 {array} object
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "No activity found"
-// @Router 		/event/activity/list [get]
+// @Router 		/event/{eventId}/activity/list [get]
 func EventActivityList(c *gin.Context) {
 	user, err := Authorize(c)
 	if err != nil {
@@ -128,11 +128,12 @@ func EventActivityList(c *gin.Context) {
 // @Accept 	mpfd
 // @Produce plain
 // @Param 	X-CSRF-Token 	header 		string 	true	"User's CSRF Token"
-// @Param 	activityID      formData    string  true    "Activity ID"
+// @Param   eventId         path        string  true    "Event ID"
+// @Param 	id              path        string  true    "Activity ID"
 // @Param 	name            formData    string  false   "Name"
 // @Param 	description     formData    string  false   "Description"
 // @Success 200 {string} string "Updated"
-// @Router 	/event/activity/edit [post]
+// @Router 	/event/{eventId}/activity/edit/{id} [post]
 func EventActivityEdit(c *gin.Context) {
 	user, err := Authorize(c)
 	if err != nil {
@@ -179,9 +180,10 @@ func EventActivityEdit(c *gin.Context) {
 // @Accept  mpfd
 // @Produce plain
 // @Param   X-CSRF-Token 	header 		string 	true 	"User's CSRF Token"
-// @Param   activityID      formData    string 	true 	"Activity ID"
+// @Param   eventId         path        string  true    "Event ID"
+// @Param   id              path        string 	true 	"Activity ID"
 // @Success 200 {string} string "Deleted"
-// @Router /event/activity/delete [post]
+// @Router /event/{eventId}/activity/delete/{id} [post]
 func EventActivityDelete(c *gin.Context) {
 	user, err := Authorize(c)
 	if err != nil {
@@ -221,11 +223,12 @@ func EventActivityDelete(c *gin.Context) {
 // @Tags 		EventActivity
 // @Produce 	json
 // @Param 		X-CSRF-Token 	header 		string 	true 	"CSRF Token"
+// @Param       eventId         path        string  true    "Event ID"
 // @Param 		id 				path		string  true    "Activity ID"
 // @Success 	200 {object} object
 // @Failure 	401 {string} string "Unauthorized"
 // @Failure 	404 {string} string "Activity not found"
-// @Router 		/event/activity/view/:id [get]
+// @Router 		/event/{eventId}/activity/view/{id} [get]
 func EventActivityView(c *gin.Context) {
 	user, err := Authorize(c)
 	if err != nil {
