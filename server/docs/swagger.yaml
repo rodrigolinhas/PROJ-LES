@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  api.ArticleCreateResponse:
+    properties:
+      articleID:
+        type: integer
+      message:
+        type: string
+    type: object
   api.EventActivity:
     properties:
       description:
@@ -243,8 +250,7 @@ paths:
         "201":
           description: Created
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/api.ArticleCreateResponse'
         "400":
           description: The activity does not belong to the event
           schema:

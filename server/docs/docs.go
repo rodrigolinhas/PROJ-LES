@@ -177,8 +177,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/api.ArticleCreateResponse"
                         }
                     },
                     "400": {
@@ -2096,6 +2095,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "api.ArticleCreateResponse": {
+            "type": "object",
+            "properties": {
+                "articleID": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "api.EventActivity": {
             "type": "object",
             "properties": {

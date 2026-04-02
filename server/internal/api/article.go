@@ -9,6 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ArticleCreateResponse struct {
+	Message   string `json:"message"`
+	ArticleID uint   `json:"articleID"`
+}
+
 // ArticleCreate
 // @Summary     Create article
 // @Description While the user is logged in, creates an article and associates it to an event activity
@@ -25,7 +30,7 @@ import (
 // @Param       doi             formData 	string  false   "Article's DOI"
 // @Param       isbn            formData 	string  false   "Article's ISBN"
 // @Param       url             formData 	string  true    "URL where the article is accessible"
-// @Success     201 {object} map[string]interface{}
+// @Success     201 {object} 	ArticleCreateResponse
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure 	404 {string} string "User/event/activity not found"
 // @Failure 	400 {string} string "The activity does not belong to the event"
@@ -114,9 +119,9 @@ func ArticleCreate(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{
-		"message":   "Article created successfully",
-		"articleID": article.ID,
+	c.JSON(http.StatusCreated, ArticleCreateResponse{
+		Message:   "Article created successfully",
+		ArticleID: article.ID,
 	})
 }
 
