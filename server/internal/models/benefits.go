@@ -37,16 +37,6 @@ var DefaultBenefits = []string{
 	"Booth Space",
 }
 
-// IsValidBenefit checks if the given benefit name is within the DefaultBenefits list.
-func IsValidBenefit(name string) bool {
-	for _, b := range DefaultBenefits {
-		if b == name {
-			return true
-		}
-	}
-	return false
-}
-
 // NewBenefit creates and returns a new Benefit instance, validating that the name is not empty
 // and belongs to the predefined list of benefits.
 //
