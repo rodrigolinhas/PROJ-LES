@@ -92,7 +92,7 @@ func EventActivityCreate(c *gin.Context) {
 // @Produce 	json
 // @Param 		X-CSRF-Token 	header 		string 	true 	"User's CSRF Token"
 // @Param 		eventID 		path 		string 	true 	"Event ID"
-// @Success 	200 {array} object
+// @Success 	200 {array} EventActivity
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "No activity found"
 // @Router 		/event/{eventId}/activity/list [get]
