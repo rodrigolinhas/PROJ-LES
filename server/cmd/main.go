@@ -92,7 +92,7 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/event/register", api.EventRegister)
 	router.POST("/event/pay", api.EventPay)
 	router.GET("/event/my/enroll", api.EventRegistrationList)
-	
+
 	//registration types
 	router.POST("/event/regtype/create", api.RegistrationTypeCreate)
 	router.POST("/event/regtype/edit", api.RegistrationTypeEdit)
@@ -108,6 +108,12 @@ func setEndpoints(router *gin.Engine) {
 
 	//articles
 	router.POST("/article/create", api.ArticleCreate)
+	router.POST("/article/addTags", api.ArticleAddTags)
+	router.POST("/article/removeTags", api.ArticleRemoveTags)
+	router.GET("/article/details", api.ArticleGetById)
+
+	//tags
+	router.GET("/tags/list", api.GetTags)
 
 	// swagger handler
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swagfiles.Handler))

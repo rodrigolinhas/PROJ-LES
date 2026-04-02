@@ -27,6 +27,7 @@ func ConnectDB() {
 		&models.EventRegistration{},
 		&models.RegistrationType{},
 		&models.Article{},
+		&models.Tag{},
 	)
 
 	if err != nil {
@@ -34,4 +35,6 @@ func ConnectDB() {
 	}
 
 	DB = database
+
+	SeedTags()
 }
