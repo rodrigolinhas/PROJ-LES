@@ -49,6 +49,9 @@ func (a EventActivity) validate() error {
 	if a.StartDate.Before(epoch) || a.EndDate.Before(epoch) || a.StartDate.After(a.EndDate) {
 		return errors.New("EventActivity: Invalid date")
 	}
+	if a.StartDate.Before(a.Event.StartDate) || a.EndDate.After(a.Event.EndDate) {
+		return errors.New("Activity must take place during the event")
+	}
 	return nil
 }
 

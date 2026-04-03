@@ -112,7 +112,9 @@ export default function EventList({
                 <ul>
                     {events.map((event) => (
                         <li key={event.ID}>
-                            <strong>{event.Name}</strong> – {event.Theme}
+                            <Link to={`/event/${event.ID}`}>
+                                <strong>{event.Name}</strong>
+                            </Link> – {event.Theme}
                             {showEditButton && (
                                 <>
                                     {" "}
