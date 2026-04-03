@@ -8,7 +8,8 @@ import CreateEventPage from "../features/events/pages/CreateEventPage";
 import AuthSuccessPage from "../features/auth/pages/AuthSuccessPage";
 import EditEventPage from "../features/events/pages/EditEventPage";
 import MyEventsPage from "../features/events/pages/MyEventsPage";
-import ViewEventPage from "@/features/events/pages/ViewEventPage.tsx";
+import ViewEventPage from "../features/events/pages/ViewEventPage";
+import SettingsPage from "../features/settings/pages/SettingsPage";
 
 import ProtectedRoutes from "./router/ProtectedRoutes";
 
@@ -22,11 +23,12 @@ function App() {
                 <Route path={"/auth/success"} element={<AuthSuccessPage />} />
 
                 <Route element={<ProtectedRoutes />}>
-                    <Route path="/home" element={<HomePage />}/>
-                    <Route path="/events" element={<MyEventsPage />}/>
-                    <Route path="/event/create" element={<CreateEventPage />}/>
-                    <Route path="/event/edit/:id" element={<EditEventPage />}/>
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/events" element={<MyEventsPage />} />
+                    <Route path="/event/create" element={<CreateEventPage />} />
+                    <Route path="/event/edit/:id" element={<EditEventPage />} />
                     <Route path="/event/:id" element={<ViewEventPage />} />
+                    <Route path="/settings" element={<SettingsPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
