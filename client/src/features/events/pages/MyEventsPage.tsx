@@ -14,9 +14,13 @@ export default function MyEventsPage() {
             <h1>Events</h1>
             <p>Here you can filter published events and also see your own events.</p>
 
-            <Link to="/home">Back Home</Link>
+            <button>
+                <Link to="/home">Back Home</Link>
+            </button>
 
-            {role === 3 && <Link to="/event/create">Create Event</Link>}
+            <button>
+                {role === 3 && <Link to="/event/create">Create Event</Link>}
+            </button>
 
             <EventList
                 title="Published Events"
