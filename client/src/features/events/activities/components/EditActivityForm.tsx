@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import DeleteActivityButton from "./DeleteActivityButton";
 import { Link } from "react-router-dom";
-
-function getCookie(name: string) {
-    const value = "; " + document.cookie;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(";").shift();
-}
+import { getCookie } from "@/shared/utils/getCookie.ts"
 
 type Props = {
     eventId: number;
