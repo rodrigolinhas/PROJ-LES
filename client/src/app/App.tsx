@@ -11,6 +11,7 @@ import MyEventsPage from "../features/events/pages/MyEventsPage";
 import ViewEventPage from "@/features/events/pages/ViewEventPage.tsx";
 
 import ProtectedRoutes from "./router/ProtectedRoutes";
+import ViewUserPage from '@/features/user/pages/UserInfoPage';
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
 
                 <Route element={<ProtectedRoutes />}>
                     <Route path="/home" element={<HomePage />}/>
+                    <Route path="/user/me" element={<ViewUserPage />} />
                     <Route path="/events" element={<MyEventsPage />}/>
                     <Route path="/event/create" element={<CreateEventPage />}/>
                     <Route path="/event/edit/:id" element={<EditEventPage />}/>
