@@ -1053,7 +1053,7 @@
                   "});",
                   "",
                   "pm.test(\"Edit Activity -> success message\", function () {",
-                  "  pm.expect(pm.response.text()).to.include(\"Activity edited successfully\");",
+                  "  pm.expect(pm.response.text()).to.include(\"Activity updated\");",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1109,90 +1109,6 @@
                 "{{event_id}}",
                 "activity",
                 "edit",
-                "{{activity_id}}"
-              ]
-            }
-          }
-        },
-        {
-          "name": "activity_delete",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Delete Activity -> 200\", function () {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Delete Activity -> success message\", function () {",
-                  "  pm.expect(pm.response.text()).to.include(\"Activity deleted successfully\");",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "eventID",
-                  "value": "{{event_id}}",
-                  "type": "text"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/delete/{{activity_id}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["event","{{event_id}}","activity","delete","{{activity_id}}"]
-            }
-          }
-        },
-        {
-          "name": "activity_view_after_delete",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Deleted activity cannot be viewed\", function () {",
-                  "  pm.response.to.have.status(404);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/view/{{activity_id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "event",
-                "{{event_id}}",
-                "activity",
-                "view",
                 "{{activity_id}}"
               ]
             }
@@ -1677,6 +1593,90 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "activity_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Delete Activity -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Delete Activity -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Activity deleted\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/delete/{{activity_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event","{{event_id}}","activity","delete","{{activity_id}}"]
+            }
+          }
+        },
+        {
+          "name": "activity_view_after_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deleted activity cannot be viewed\", function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/view/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "view",
+                "{{activity_id}}"
+              ]
+            }
+          }
         },
         {
           "name": "event_publish",
