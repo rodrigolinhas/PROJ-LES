@@ -994,6 +994,211 @@
           "response": []
         },
         {
+          "name": "activity_view",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"View Activity -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const activity = pm.response.json();",
+                  "",
+                  "pm.test(\"Correct activity returned\", function () {",
+                  "  pm.expect(activity.ID).to.eql(Number(pm.environment.get(\"activity_id\")));",
+                  "  pm.expect(activity.Name).to.eql(pm.environment.get(\"activity_name\"));",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/view/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "view",
+                "{{activity_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "activity_edit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Edit Activity -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Edit Activity -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Activity edited successfully\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "{{activity_name}}_edited",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Edited description",
+                  "type": "text"
+                },
+                {
+                  "key": "startDate",
+                  "value": "{{event_start}}",
+                  "type": "text"
+                },
+                {
+                  "key": "endDate",
+                  "value": "{{event_end}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/edit/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "edit",
+                "{{activity_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "activity_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Delete Activity -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Delete Activity -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Activity deleted successfully\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/delete/{{activity_id}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event","{{event_id}}","activity","delete","{{activity_id}}"]
+            }
+          }
+        },
+        {
+          "name": "activity_view_after_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deleted activity cannot be viewed\", function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/view/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "view",
+                "{{activity_id}}"
+              ]
+            }
+          }
+        },
+        {
           "name": "tags_list",
           "event": [
             {
