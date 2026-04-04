@@ -22,10 +22,23 @@ export default function HomePage() {
                 }}
             >
                 Log Out
-            </button> <br/>
-            {role === "EventOrganizer" && <span><Link to="/event/create">Create Event</Link><br/></span>} 
-            <Link to="/events">View Events</Link> <br/>
-            <Link to="/user/me">User Information</Link> <br/>
+            </button>
+
+            {role === "EventOrganizer" && (
+                <button>
+                    <Link to="/event/create">Create Event</Link>
+                </button>
+            )}
+
+            <button>
+                <Link to="/events">View Events</Link>
+            </button>
+            <button>
+                <Link to="/user/me">User Information</Link>
+            </button>
+            <button>
+                <Link to="/settings">Settings</Link>
+            </button>
         </div>
     );
 }

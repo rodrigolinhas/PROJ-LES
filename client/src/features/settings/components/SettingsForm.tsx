@@ -41,13 +41,13 @@ export default function SettingsForm() {
                 );
                 if (res.ok) {
                     const data = await res.json();
-                    setFirstName(data.firstName);
-                    setLastName(data.lastName);
-                    setEmail(data.email);
+                    setFirstName(data.FirstName);
+                    setLastName(data.LastName);
+                    setEmail(data.Email);
                     setOriginalData({
-                        firstName: data.firstName,
-                        lastName: data.lastName,
-                        email: data.email,
+                        firstName: data.FirstName,
+                        lastName: data.LastName,
+                        email: data.Email,
                     });
                 } else {
                     setMessage("Failed to load user data");

@@ -30,6 +30,7 @@ function App() {
                 <Route element={<ProtectedRoutes />}>
                     <Route path="/home" element={<HomePage />}/>
                     <Route path="/user/me" element={<ViewUserPage />} />
+                    <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/events" element={<MyEventsPage />}/>
                     <Route path="/event/create" element={<CreateEventPage />}/>
                     <Route path="/event/edit/:id" element={<EditEventPage />}/>
