@@ -7,12 +7,12 @@ import { getCookie } from "../utils/getCookie";
  * @returns The user's numeric role, or `null` while loading / on error.
  *
  * Role values (as defined by the backend):
- * - '1' - Student
- * - '2' - Professor
- * - `3` — Event organizer
+ * - Student
+ * - Professor
+ * - EventOrganizer
  */
-export function useUserRole(): number | null {
-    const [role, setRole] = useState<number | null>(null);
+export function useUserRole(): string | null {
+    const [role, setRole] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchRole = async () => {
@@ -26,7 +26,7 @@ export function useUserRole(): number | null {
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    setRole(data.role);
+                    setRole(data.Role);
                 }
             } catch (err) {
                 console.error("Failed to fetch user role", err);

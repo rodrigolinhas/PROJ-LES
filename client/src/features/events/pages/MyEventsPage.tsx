@@ -16,7 +16,7 @@ export default function MyEventsPage() {
 
             <Link to="/home">Back Home</Link>
 
-            {role === 3 && <Link to="/event/create">Create Event</Link>}
+            {role === "EventOrganizer" && <Link to="/event/create">Create Event</Link>}
 
             <EventList
                 title="Published Events"
@@ -24,7 +24,7 @@ export default function MyEventsPage() {
                 emptyMessage="No published events found."
             />
 
-            {role === 3 && (
+            {role === "EventOrganizer" && (
                 <EventList
                     title="My Events"
                     endpoint="http://localhost:8080/event/my"
