@@ -122,6 +122,17 @@ definitions:
         example: Artificial Intelligence
         type: string
     type: object
+  api.UserInfo:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      role:
+        type: string
+    type: object
   models.TagCategory:
     enum:
     - 0
@@ -423,7 +434,7 @@ paths:
       summary: Google SSO callback
       tags:
       - Auth
-  /event/activity/create:
+  /event/{eventId}/activity/create:
     post:
       consumes:
       - multipart/form-data
@@ -446,7 +457,7 @@ paths:
         required: true
         type: string
       - description: Event ID of the associated event
-        in: formData
+        in: path
         name: eventID
         required: true
         type: string
@@ -478,7 +489,7 @@ paths:
       summary: Create activity
       tags:
       - EventActivity
-  /event/activity/delete:
+  /event/{eventId}/activity/delete/{id}:
     post:
       consumes:
       - multipart/form-data
@@ -488,9 +499,14 @@ paths:
         name: X-CSRF-Token
         required: true
         type: string
+      - description: Event ID
+        in: path
+        name: eventId
+        required: true
+        type: string
       - description: Activity ID
-        in: formData
-        name: activityID
+        in: path
+        name: id
         required: true
         type: string
       produces:
@@ -503,7 +519,7 @@ paths:
       summary: Delete activity
       tags:
       - EventActivity
-  /event/activity/edit:
+  /event/{eventId}/activity/edit/{id}:
     post:
       consumes:
       - multipart/form-data
@@ -513,9 +529,14 @@ paths:
         name: X-CSRF-Token
         required: true
         type: string
+      - description: Event ID
+        in: path
+        name: eventId
+        required: true
+        type: string
       - description: Activity ID
-        in: formData
-        name: activityID
+        in: path
+        name: id
         required: true
         type: string
       - description: Name
@@ -536,7 +557,7 @@ paths:
       summary: Edit activity
       tags:
       - EventActivity
-  /event/activity/list:
+  /event/{eventId}/activity/list:
     get:
       consumes:
       - text/plain
@@ -548,7 +569,7 @@ paths:
         required: true
         type: string
       - description: Event ID
-        in: query
+        in: path
         name: eventID
         required: true
         type: string
@@ -572,13 +593,18 @@ paths:
       summary: List activities of an event
       tags:
       - EventActivity
-  /event/activity/view/:id:
+  /event/{eventId}/activity/view/{id}:
     get:
       description: View details of a specific activity
       parameters:
       - description: CSRF Token
         in: header
         name: X-CSRF-Token
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: eventId
         required: true
         type: string
       - description: Activity ID
@@ -1489,9 +1515,7 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.UserInfo'
         "401":
           description: Unauthorized
           schema:
