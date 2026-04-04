@@ -25,9 +25,14 @@ export default function HomePage() {
             </button>
 
             {role === "EventOrganizer" && (
-                <button>
-                    <Link to="/event/create">Create Event</Link>
-                </button>
+                <>
+                    <button>
+                        <Link to="/event/create">Create Event</Link>
+                    </button>
+                    <button>
+                        <Link to="/article/create">Create Article</Link>
+                    </button>
+                </>
             )}
 
             <button>
