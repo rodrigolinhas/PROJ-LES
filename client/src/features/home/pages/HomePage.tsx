@@ -25,6 +25,10 @@ export default function HomePage() {
             </button>
             {role === 3 && <Link to="/event/create">Create Event</Link>}
             <Link to="/events">View Events</Link>
+
+            <button>
+                <Link to="/article/create">Create Article</Link>
+            </button>
         </div>
     );
 }

@@ -9,6 +9,7 @@ import AuthSuccessPage from "../features/auth/pages/AuthSuccessPage";
 import EditEventPage from "../features/events/pages/EditEventPage";
 import MyEventsPage from "../features/events/pages/MyEventsPage";
 import ViewEventPage from "@/features/events/pages/ViewEventPage.tsx";
+import CreateArticlePage from "../features/articles/pages/CreateArticlePage";
 
 import ProtectedRoutes from "./router/ProtectedRoutes";
 
@@ -27,6 +28,7 @@ function App() {
                     <Route path="/event/create" element={<CreateEventPage />}/>
                     <Route path="/event/edit/:id" element={<EditEventPage />}/>
                     <Route path="/event/:id" element={<ViewEventPage />} />
+                    <Route path="/article/create" element={<CreateArticlePage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
