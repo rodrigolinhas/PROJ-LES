@@ -14,11 +14,14 @@ export default function MyEventsPage() {
             <h1>Events</h1>
             <p>Here you can filter published events and also see your own events.</p>
 
-            <Link to="/home">Back Home</Link>
+            <button>
+                <Link to="/home">Back Home</Link>
+            </button>
 
-            {role === "EventOrganizer" && <Link to="/event/create">Create Event</Link>}
-
-            <EventList
+            <button>
+                {role === "EventOrganizer" && <Link to="/event/create">Create Event</Link>}
+            </button>
+                <EventList
                 title="Published Events"
                 endpoint="http://localhost:8080/event/list"
                 emptyMessage="No published events found."

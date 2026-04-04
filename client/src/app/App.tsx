@@ -9,6 +9,7 @@ import AuthSuccessPage from "../features/auth/pages/AuthSuccessPage";
 import EditEventPage from "../features/events/pages/EditEventPage";
 import MyEventsPage from "../features/events/pages/MyEventsPage";
 import ViewEventPage from "../features/events/pages/ViewEventPage";
+import SettingsPage from "../features/settings/pages/SettingsPage";
 import EditActivityPage from "../features/events/activities/pages/EditActivityPage.tsx";
 import CreateActivityPage from "../features/events/activities/pages/CreateActivityPage.tsx";
 import ViewActivityPage from "@/features/events/activities/pages/ViewActivityPage.tsx";
@@ -29,6 +30,7 @@ function App() {
                 <Route element={<ProtectedRoutes />}>
                     <Route path="/home" element={<HomePage />}/>
                     <Route path="/user/me" element={<ViewUserPage />} />
+                    <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/events" element={<MyEventsPage />}/>
                     <Route path="/event/create" element={<CreateEventPage />}/>
                     <Route path="/event/edit/:id" element={<EditEventPage />}/>
