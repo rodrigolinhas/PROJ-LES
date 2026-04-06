@@ -2097,10 +2097,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/api.UserInfo"
                         }
                     },
                     "401": {
@@ -2371,6 +2368,23 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "Artificial Intelligence"
+                }
+            }
+        },
+        "api.UserInfo": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },

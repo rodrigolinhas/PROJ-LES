@@ -10,13 +10,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type UserInfo struct {
+	FirstName 	string
+	LastName 	string
+	Email		string
+	Role		string
+}
+
 // UserMe
 // @Summary     View user account information
 // @Description Returns the authenticated user's information
 // @Tags        User
 // @Produce     json
 // @Param       X-CSRF-Token header string true "CSRF Token"
-// @Success     200 {object} map[string]string
+// @Success     200 {object} UserInfo
 // @Failure     401 {string} string "Unauthorized"
 // @Router      /user/me [get]
 func UserMe(c *gin.Context) {
@@ -26,11 +33,11 @@ func UserMe(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"firstName": user.FirstName,
-		"lastName":  user.LastName,
-		"email":     user.Email,
-		"role":      user.Role,
+	c.JSON(http.StatusOK, UserInfo{
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
+		Role:      models.RoleName[user.Role],
 	})
 }
 

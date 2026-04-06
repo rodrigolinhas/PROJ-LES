@@ -1039,8 +1039,12 @@
                 "{{activity_id}}"
               ]
             }
+<<<<<<< feature/benefits-db
           },
           "response": []
+=======
+          }
+>>>>>>> main
         },
         {
           "name": "activity_edit",
@@ -1113,8 +1117,12 @@
                 "{{activity_id}}"
               ]
             }
+<<<<<<< feature/benefits-db
           },
           "response": []
+=======
+          }
+>>>>>>> main
         },
         {
           "name": "tags_list",
@@ -1636,6 +1644,7 @@
             },
             "url": {
               "raw": "{{baseUrl}}/event/{{event_id}}/activity/delete/{{activity_id}}",
+<<<<<<< feature/benefits-db
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1649,6 +1658,12 @@
             }
           },
           "response": []
+=======
+              "host": ["{{baseUrl}}"],
+              "path": ["event","{{event_id}}","activity","delete","{{activity_id}}"]
+            }
+          }
+>>>>>>> main
         },
         {
           "name": "activity_view_after_delete",
@@ -1687,8 +1702,12 @@
                 "{{activity_id}}"
               ]
             }
+<<<<<<< feature/benefits-db
           },
           "response": []
+=======
+          }
+>>>>>>> main
         },
         {
           "name": "event_publish",

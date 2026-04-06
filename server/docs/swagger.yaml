@@ -129,6 +129,17 @@ definitions:
         example: Artificial Intelligence
         type: string
     type: object
+  api.UserInfo:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      role:
+        type: string
+    type: object
   models.TagCategory:
     enum:
     - 0
@@ -1560,9 +1571,7 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/api.UserInfo'
         "401":
           description: Unauthorized
           schema:
