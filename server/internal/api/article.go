@@ -5,13 +5,25 @@ import (
 	"LES/server/internal/models"
 	"net/http"
 	"strings"
+	"errors"
 
 	"github.com/gin-gonic/gin"
 )
 
-type ArticleCreateResponse struct {
+type ArticleResponse struct {
 	Message   string `json:"message"`
 	ArticleID uint   `json:"articleID"`
+}
+
+type Article struct {
+	Title           string 
+	FirstAuthorID   uint   
+	CoAuthorsID     []uint 
+	Publisher       string 
+	DOI             string
+	ISBN            string
+	URL             string        
+	Tags            []string   
 }
 
 // ArticleCreate
@@ -30,13 +42,14 @@ type ArticleCreateResponse struct {
 // @Param       doi             formData 	string  false   "Article's DOI"
 // @Param       isbn            formData 	string  false   "Article's ISBN"
 // @Param       url             formData 	string  true    "URL where the article is accessible"
-// @Success     201 {object} 	ArticleCreateResponse
+// @Success     201 {object} 	ArticleResponse
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure 	404 {string} string "User/event/activity not found"
 // @Failure 	400 {string} string "The activity does not belong to the event"
 // @Failure 	500 {string} string "Error found during article creation"
 // @Router 		/article/create [post]
 func ArticleCreate(c *gin.Context) {
+	//TODO: Use another preface
 	event, err := eventEditPreface(c)
 	if err != nil {
 		return
@@ -119,10 +132,144 @@ func ArticleCreate(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, ArticleCreateResponse{
+	c.JSON(http.StatusCreated, ArticleResponse{
 		Message:   "Article created successfully",
 		ArticleID: article.ID,
 	})
+}
+
+func articleEditPreface(c *gin.Context) (*models.Article, error) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		return nil, errors.New("Error sent")
+	}
+
+	artID := c.Request.FormValue("eventID")
+
+	var article models.Article
+	res := db.DB.Preload("EventActivity").Preload("Event").Where("ID = ?", artID).First(&article)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Event not found")
+		return nil, errors.New("Error sent")
+	}
+
+	if article.EventActivity.Event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "User is not the organizer of this event")
+		return nil, errors.New("Error sent")
+	}
+
+	return &article, nil
+}
+
+//TODO: Docs
+func ArticleEdit(c *gin.Context) {
+	article, err := articleEditPreface(c)
+	if err != nil {
+		return
+	}
+
+	title := c.Request.FormValue("title")
+	firstAuthorID := c.Request.FormValue("firstAuthorID")
+	publisher := c.Request.FormValue("publisher")
+	doi := c.Request.FormValue("doi")
+	isbn := c.Request.FormValue("isbn")
+	url := c.Request.FormValue("url")
+
+	if(firstAuthorID != "") {
+		firstAuthor := &models.User{}
+		dberr := db.DB.Where("id = ?", firstAuthorID).Take(firstAuthor)
+		if dberr.Error != nil || dberr.RowsAffected != 1 {
+			c.String(http.StatusNotFound, "First author not found")
+			return
+		}
+
+		article.FirstAuthor = *firstAuthor;
+	}
+
+	if title != "" {
+		title = strings.TrimSpace(title)
+		article.Title = title
+	}
+
+	if publisher != "" {
+		publisher = strings.TrimSpace(publisher)
+		article.Publisher = publisher
+	}
+
+	if url != "" {
+		url = strings.TrimSpace(url)
+		article.URL = url
+	}
+
+	if doi != "" {
+		doi = strings.TrimSpace(doi)
+		article.DOI = doi
+	}
+
+	if isbn != "" {
+		isbn = strings.TrimSpace(isbn)
+		article.ISBN = isbn
+	}
+
+	dberr := db.DB.Save(article)
+	if dberr.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found in DB")
+		return
+	}
+
+	c.JSON(http.StatusOK, ArticleResponse{
+		Message:   "Article edited successfully",
+		ArticleID: article.ID,
+	})
+}
+
+//TODO: Docs
+func ArticleDelete(c *gin.Context) {
+	article, err := articleEditPreface(c)
+	if err != nil {
+		return
+	}
+
+	dberr := db.DB.Delete(article)
+	if dberr.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found in DB")
+		return
+	}
+
+	c.String(http.StatusOK, "Article deleted successfully")
+}
+
+//TODO: Docs
+func ArticleList(c *gin.Context) {
+	user, limit, offset, filter, err := eventListPreface(c)
+	if err != nil { return }
+
+	actID := c.Request.FormValue("activityID")
+
+	activity := models.EventActivity{}
+	dberr := db.DB.Preload("Event").Preload("Articles").Where("id = ", actID).Take(&activity)
+	if dberr.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found in DB")
+	}
+
+	if activity.Event.Published == false && activity.Event.Organizer.ID != user.ID {
+		c.String(http.StatusForbidden, "Event was not published yet and the user is not the orgaziner")
+	}
+
+	var articles []Article
+	res := db.DB.Model(&models.Event{}).
+				 Limit(limit).
+				 Offset(offset).
+				 Where("published = ? AND name LIKE ?", true, "%"+filter+"%").
+				 Scan(&events)
+
+	if res.RowsAffected == 0 {
+		c.String(http.StatusNotFound, "No event found")
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, events)
 }
 
 // ArticleGetById
