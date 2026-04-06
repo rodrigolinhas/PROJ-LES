@@ -146,12 +146,12 @@ func articleEditPreface(c *gin.Context) (*models.Article, error) {
 		return nil, errors.New("Error sent")
 	}
 
-	artID := c.Request.FormValue("eventID")
+	artID := c.Request.FormValue("articleID")
 
 	var article models.Article
-	res := db.DB.Preload("EventActivity").Preload("Event").Where("ID = ?", artID).First(&article)
+	res := db.DB.Preload("EventActivity").Preload("EventActivity.Event").Where("ID = ?", artID).First(&article)
 	if res.Error != nil || res.RowsAffected != 1 {
-		c.String(http.StatusNotFound, "Event not found")
+		c.String(http.StatusNotFound, "Article not found")
 		return nil, errors.New("Error sent")
 	}
 
@@ -163,7 +163,27 @@ func articleEditPreface(c *gin.Context) (*models.Article, error) {
 	return &article, nil
 }
 
-//TODO: Docs
+// ArticleEdit
+// @Summary     Edit an article
+// @Description While the user is logged in, edits an article associated to an event which the user is the organizer
+// @Tags        Article
+// @Accept      mpfd
+// @Produce 	json
+// @Param 		X-CSRF-Token 	header		string	true	"User's CSRF Token"
+// @Param 		articleID 		formData 	string 	true 	"ID of the article"
+// @Param       title           formData 	string  false    "Title of the article"
+// @Param       firstAuthorID   formData 	string  false    "ID of the article's first author"
+// @Param       coAuthorsID	    formData 	string  false   "The IDs of the co-authors, separated by commas"
+// @Param       publisher 	    formData 	string  false    "Publisher of the article"
+// @Param       doi             formData 	string  false   "Article's DOI"
+// @Param       isbn            formData 	string  false   "Article's ISBN"
+// @Param       url             formData 	string  false    "URL where the article is accessible"
+// @Success     200 {object} 	ArticleResponse
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure 	404 {string} string "Article/user/event/activity not found"
+// @Failure 	403 {string} string "User is not the event organizer"
+// @Failure 	500 {string} string "Error found during article edition"
+// @Router 		/article/edit [post]
 func ArticleEdit(c *gin.Context) {
 	article, err := articleEditPreface(c)
 	if err != nil {
@@ -225,7 +245,20 @@ func ArticleEdit(c *gin.Context) {
 	})
 }
 
-//TODO: Docs
+// ArticleDelete
+// @Summary     Delete an article
+// @Description While the user is logged in, deletes an article associated to an event which the user is the organizer
+// @Tags        Article
+// @Accept      mpfd
+// @Produce 	json
+// @Param 		X-CSRF-Token 	header		string	true	"User's CSRF Token"
+// @Param 		articleID 		formData 	string 	true 	"ID of the article"
+// @Success     200 {string} string	"Article deleted successfully"
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure 	404 {string} string "Article/event/activity not found"
+// @Failure 	403 {string} string "User is not the event organizer"
+// @Failure 	500 {string} string "Error found during article deletion"
+// @Router 		/article/delete [post]
 func ArticleDelete(c *gin.Context) {
 	article, err := articleEditPreface(c)
 	if err != nil {
@@ -241,8 +274,22 @@ func ArticleDelete(c *gin.Context) {
 	c.String(http.StatusOK, "Article deleted successfully")
 }
 
-
-//TODO: Docs
+// ArticleList
+// @Summary 	List the articles associated to an activity
+// @Description A user can view and filter the articles associated to an activity of a event that was published or which the user is the organizer
+// @Tags 		Article
+// @Accept		plain
+// @Produce 	json
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		activityID		query		string	true	"ID of the associated activity" 
+// @Param 		filter			query		string	false	"Filter the name of the events shown" 
+// @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
+// @Param 		offset			query		int		false	"Number of events to skip in the search" default(0)
+// @Success 	200 {array} Article
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		403 {string} string "Event was not published yet and the user is not the orgaziner"
+// @Failure		404 {string} string "No article found"
+// @Router 		/article/list [get]
 func ArticleList(c *gin.Context) {
 	user, limit, offset, filter, err := eventListPreface(c)
 	if err != nil { return }
@@ -301,6 +348,11 @@ func ArticleList(c *gin.Context) {
 			URL             : v.URL,
 			Tags            : tags, 
 		})
+	}
+
+	if len(res) == 0 {
+		c.String(http.StatusNotFound, "No article found")
+		return
 	}
 
 	c.IndentedJSON(http.StatusOK, res)
