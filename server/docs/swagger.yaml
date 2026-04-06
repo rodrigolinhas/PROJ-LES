@@ -150,6 +150,50 @@ info:
   title: Scientific Event Manager API
   version: "0.1"
 paths:
+  /article/add-authors:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Adds one or more co-authors to an existing article
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: Article ID
+        in: formData
+        name: articleID
+        required: true
+        type: string
+      - description: IDs of the co-authors, separated by commas
+        in: formData
+        name: coAuthorsID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "404":
+          description: Article/User not found
+          schema:
+            type: string
+        "500":
+          description: Error updating co-authors
+          schema:
+            type: string
+      summary: Add co-authors to article
+      tags:
+      - Article
   /article/addTags:
     post:
       consumes:
@@ -325,6 +369,50 @@ paths:
           schema:
             type: string
       summary: Get article by ID
+      tags:
+      - Article
+  /article/remove-authors:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Removes one or more co-authors from an existing article
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: Article ID
+        in: formData
+        name: articleID
+        required: true
+        type: string
+      - description: IDs of the co-authors to remove, separated by commas
+        in: formData
+        name: coAuthorsID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "404":
+          description: Article/User not found
+          schema:
+            type: string
+        "500":
+          description: Error removing co-authors
+          schema:
+            type: string
+      summary: Remove co-authors from article
       tags:
       - Article
   /article/removeTags:

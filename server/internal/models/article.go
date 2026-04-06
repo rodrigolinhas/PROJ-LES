@@ -78,7 +78,6 @@ func (this *Article) AddCoAuthors(authors []User) int {
 	return count
 }
 
-// TODO: Test this method
 func (this *Article) DeleteCoAuthor(author User) error {
 	if author == this.FirstAuthor {
 		return errors.New("Cannot delete the first author")
@@ -87,13 +86,12 @@ func (this *Article) DeleteCoAuthor(author User) error {
 	for i, v := range this.CoAuthors {
 		if author == v {
 			this.CoAuthors = append(this.CoAuthors[:i], this.CoAuthors[i+1:]...)
-			return nill
+			return nil
 		}
 	}
 	return errors.New("Cannot find co-author")
 }
 
-// TODO: Test this method
 // Delete co-authors to an article, and returns the number of authors deleted
 // successfully.
 func (this *Article) DeleteCoAuthors(authors []User) int {
