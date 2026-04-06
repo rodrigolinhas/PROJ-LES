@@ -16,15 +16,15 @@ type ArticleResponse struct {
 }
 
 type Article struct {
-	ID				uint
-	Title           string 
-	FirstAuthorID   uint   
-	CoAuthorsID     []uint 
-	Publisher       string 
-	DOI             string
-	ISBN            string
-	URL             string        
-	Tags            []string   
+	ID				uint		`json:"id"`
+	Title           string 		`json:"title"`
+	FirstAuthorID   uint   		`json:"firstAuthorID"`
+	CoAuthorsID     []uint 		`json:"coAuthorsID"`
+	Publisher       string 		`json:"publisher"`
+	DOI             string		`json:"doi"`
+	ISBN            string		`json:"isbn"`
+	URL             string      `json:"url"`
+	Tags            []string    `json:"tags"`
 }
 
 // ArticleCreate
@@ -303,7 +303,7 @@ func ArticleList(c *gin.Context) {
 		return
 	}
 
-	if !activity.Event.Published && activity.Event.Organizer.ID != user.ID {
+	if !activity.Event.Published && activity.Event.OrganizerID != user.ID {
 		c.String(http.StatusForbidden, "Event was not published yet and the user is not the orgaziner")
 		return
 	}
