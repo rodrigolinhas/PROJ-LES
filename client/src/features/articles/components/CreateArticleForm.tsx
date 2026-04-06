@@ -22,7 +22,7 @@ export default function CreateArticleForm() {
     const [url, setUrl] = useState("");
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
-    const [articleCreated, setArticleCreated] = useState(false);
+    const [createdArticleId, setCreatedArticleId] = useState<number | null>(null);
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -51,27 +51,39 @@ export default function CreateArticleForm() {
             });
 
             if (response.status === 201) {
-                setMessage("Article created successfully!");
+                const data = await response.json();
+                setMessage(data.message || "Article created successfully!");
                 setIsError(false);
-                setArticleCreated(true);
+                setCreatedArticleId(data.articleID);
             } else {
                 const errorText = await response.text();
                 setMessage(errorText);
                 setIsError(true);
-                setArticleCreated(false);
+                setCreatedArticleId(null);
             }
         } catch {
             setMessage("Server error");
             setIsError(true);
-            setArticleCreated(false);
+            setCreatedArticleId(null);
         }
     }
 
-    if (articleCreated) {
+    if (createdArticleId !== null) {
         return (
             <div style={{ textAlign: "center", margin: "100px" }}>
                 <h2 style={{ color: "green" }}>Article created successfully!</h2>
-                <Link to="/home">Go back to Home</Link>
+                <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "20px" }}>
+                    <button type="button">
+                        <Link to={`/article/${createdArticleId}/tags`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                            Manage Tags for this Article
+                        </Link>
+                    </button>
+                    <button type="button" style={{ backgroundColor: "#888" }}>
+                        <Link to="/home" style={{ color: 'inherit', textDecoration: 'none' }}>
+                            Go back to Home
+                        </Link>
+                    </button>
+                </div>
             </div>
         );
     } else {
