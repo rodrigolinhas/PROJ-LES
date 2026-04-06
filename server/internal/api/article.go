@@ -16,6 +16,7 @@ type ArticleResponse struct {
 }
 
 type Article struct {
+	ID				uint
 	Title           string 
 	FirstAuthorID   uint   
 	CoAuthorsID     []uint 
@@ -240,36 +241,69 @@ func ArticleDelete(c *gin.Context) {
 	c.String(http.StatusOK, "Article deleted successfully")
 }
 
+
 //TODO: Docs
 func ArticleList(c *gin.Context) {
 	user, limit, offset, filter, err := eventListPreface(c)
 	if err != nil { return }
 
-	actID := c.Request.FormValue("activityID")
+	actID := c.Query("activityID")
 
 	activity := models.EventActivity{}
-	dberr := db.DB.Preload("Event").Preload("Articles").Where("id = ", actID).Take(&activity)
+	dberr := db.DB.Preload("Event").Preload("Articles").Where("id = ?", actID).Take(&activity)
 	if dberr.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found in DB")
-	}
-
-	if activity.Event.Published == false && activity.Event.Organizer.ID != user.ID {
-		c.String(http.StatusForbidden, "Event was not published yet and the user is not the orgaziner")
-	}
-
-	var articles []Article
-	res := db.DB.Model(&models.Event{}).
-				 Limit(limit).
-				 Offset(offset).
-				 Where("published = ? AND name LIKE ?", true, "%"+filter+"%").
-				 Scan(&events)
-
-	if res.RowsAffected == 0 {
-		c.String(http.StatusNotFound, "No event found")
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, events)
+	if !activity.Event.Published && activity.Event.Organizer.ID != user.ID {
+		c.String(http.StatusForbidden, "Event was not published yet and the user is not the orgaziner")
+		return
+	}
+
+	var articles []models.Article
+	err = db.DB.Model(&activity).
+				 Limit(limit).
+				 Offset(offset).
+				 Where("title LIKE ?", "%"+filter+"%").
+				 Association("Articles").
+				 Find(&articles)
+	//TODO: Check error
+
+	res := []Article{}
+	for _, v := range articles {
+		coauthors := []uint{}
+		tags := []string{}
+		verr := db.DB.Preload("CoAuthors").Preload("Tags").Take(&v)
+		if verr.Error != nil {
+			c.String(http.StatusInternalServerError, "Error found in DB")
+			return
+		}
+
+		for _, ca := range v.CoAuthors {
+			coauthors = append(coauthors, ca.ID)
+		}
+
+		for _, t := range v.Tags {
+			if t.IsActive {
+				tags = append(tags, t.Name)
+			}
+		}
+
+		res = append(res, Article{
+			ID				: v.ID,
+			Title           : v.Title,
+			FirstAuthorID	: v.FirstAuthorID, 
+			CoAuthorsID     : coauthors,
+			Publisher       : v.Publisher,
+			DOI             : v.DOI,
+			ISBN            : v.ISBN,
+			URL             : v.URL,
+			Tags            : tags, 
+		})
+	}
+
+	c.IndentedJSON(http.StatusOK, res)
 }
 
 // ArticleGetById
