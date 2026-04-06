@@ -63,6 +63,13 @@ definitions:
     type: object
   api.RegistrationType:
     properties:
+      benefits:
+        example:
+        - '["Lunch"'
+        - ' "Wi-Fi Access"]'
+        items:
+          type: string
+        type: array
       description:
         example: Pass Description
         type: string
@@ -423,7 +430,7 @@ paths:
       summary: Google SSO callback
       tags:
       - Auth
-  /event/activity/create:
+  /event/{eventId}/activity/create:
     post:
       consumes:
       - multipart/form-data
@@ -446,7 +453,7 @@ paths:
         required: true
         type: string
       - description: Event ID of the associated event
-        in: formData
+        in: path
         name: eventID
         required: true
         type: string
@@ -478,7 +485,7 @@ paths:
       summary: Create activity
       tags:
       - EventActivity
-  /event/activity/delete:
+  /event/{eventId}/activity/delete/{id}:
     post:
       consumes:
       - multipart/form-data
@@ -488,9 +495,14 @@ paths:
         name: X-CSRF-Token
         required: true
         type: string
+      - description: Event ID
+        in: path
+        name: eventId
+        required: true
+        type: string
       - description: Activity ID
-        in: formData
-        name: activityID
+        in: path
+        name: id
         required: true
         type: string
       produces:
@@ -503,7 +515,7 @@ paths:
       summary: Delete activity
       tags:
       - EventActivity
-  /event/activity/edit:
+  /event/{eventId}/activity/edit/{id}:
     post:
       consumes:
       - multipart/form-data
@@ -513,9 +525,14 @@ paths:
         name: X-CSRF-Token
         required: true
         type: string
+      - description: Event ID
+        in: path
+        name: eventId
+        required: true
+        type: string
       - description: Activity ID
-        in: formData
-        name: activityID
+        in: path
+        name: id
         required: true
         type: string
       - description: Name
@@ -536,7 +553,7 @@ paths:
       summary: Edit activity
       tags:
       - EventActivity
-  /event/activity/list:
+  /event/{eventId}/activity/list:
     get:
       consumes:
       - text/plain
@@ -548,7 +565,7 @@ paths:
         required: true
         type: string
       - description: Event ID
-        in: query
+        in: path
         name: eventID
         required: true
         type: string
@@ -572,13 +589,18 @@ paths:
       summary: List activities of an event
       tags:
       - EventActivity
-  /event/activity/view/:id:
+  /event/{eventId}/activity/view/{id}:
     get:
       description: View details of a specific activity
       parameters:
       - description: CSRF Token
         in: header
         name: X-CSRF-Token
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: eventId
         required: true
         type: string
       - description: Activity ID
@@ -1210,6 +1232,10 @@ paths:
         in: formData
         name: price
         type: number
+      - description: Comma-separated list of benefits
+        in: formData
+        name: benefits
+        type: string
       produces:
       - application/json
       responses:

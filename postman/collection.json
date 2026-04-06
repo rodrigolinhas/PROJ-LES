@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "134f5035-55d6-465d-88fb-cafaee5346b3",
+    "_postman_id": "9b00181a-18c7-4c94-a03c-3ced91d21f78",
     "name": "00 - LES API (Runner)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "49772394",
-    "_collection_link": "https://go.postman.co/collection/49772394-134f5035-55d6-465d-88fb-cafaee5346b3?source=collection_link"
+    "_exporter_id": "52499161",
+    "_collection_link": "https://go.postman.co/collection/52499161-9b00181a-18c7-4c94-a03c-3ced91d21f78?source=collection_link"
   },
   "item": [
     {
@@ -972,7 +972,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/list",
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/list?eventID={{event_id}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -988,6 +988,129 @@
                   "value": "{{event_id}}",
                   "type": "text"
                 }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activity_view",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"View Activity -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const activity = pm.response.json();",
+                  "",
+                  "pm.test(\"Correct activity returned\", function () {",
+                  "  pm.expect(activity.ID).to.eql(Number(pm.environment.get(\"activity_id\")));",
+                  "  pm.expect(activity.Name).to.eql(pm.environment.get(\"activity_name\"));",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/view/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "view",
+                "{{activity_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activity_edit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Edit Activity -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Edit Activity -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Activity updated\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "{{activity_name}}_edited",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Edited description",
+                  "type": "text"
+                },
+                {
+                  "key": "startDate",
+                  "value": "{{event_start}}",
+                  "type": "text"
+                },
+                {
+                  "key": "endDate",
+                  "value": "{{event_end}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/edit/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "edit",
+                "{{activity_id}}"
               ]
             }
           },
@@ -1474,6 +1597,100 @@
           "response": []
         },
         {
+          "name": "activity_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Delete Activity -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Delete Activity -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Activity deleted\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/delete/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "delete",
+                "{{activity_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activity_view_after_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deleted activity cannot be viewed\", function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/view/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "view",
+                "{{activity_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "event_publish",
           "event": [
             {
@@ -1700,82 +1917,6 @@
                 "event",
                 "view",
                 "{{event_id}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "benefits",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Benefits list -> 200\", function () {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "if (pm.response.code === 200) {",
-                  "  const res = pm.response.json();",
-                  "",
-                  "  pm.test(\"Benefits list -> returns array\", function () {",
-                  "    pm.expect(res).to.be.an(\"array\");",
-                  "  });",
-                  "",
-                  "  pm.test(\"Benefits list -> array is not empty\", function () {",
-                  "    pm.expect(res.length).to.be.greaterThan(0);",
-                  "  });",
-                  "",
-                  "  const expectedRaw = pm.environment.get(\"benefits\");",
-                  "",
-                  "  if (expectedRaw) {",
-                  "    const expected = expectedRaw",
-                  "      .split(\",\")",
-                  "      .map(b => b.trim())",
-                  "      .filter(Boolean);",
-                  "",
-                  "    pm.test(\"Benefits list -> contains expected benefits\", function () {",
-                  "      expected.forEach(b => {",
-                  "        pm.expect(res).to.include(b);",
-                  "      });",
-                  "    });",
-                  "  }",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "url": {
-              "raw": "{{baseUrl}}/event/view/{{event_id}}/benefits",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "event",
-                "view",
-                "{{event_id}}",
-                "benefits"
               ]
             }
           },
@@ -2015,6 +2156,12 @@
                   "value": "{{regtype_price}}",
                   "type": "text",
                   "uuid": "7553a344-9975-49f2-a085-faf46b95d2cd"
+                },
+                {
+                  "key": "benefits",
+                  "value": "{{benefits}}",
+                  "type": "text",
+                  "uuid": "034bdee9-43a5-4834-a623-26a86896ac36"
                 }
               ]
             },
@@ -2400,6 +2547,12 @@
                   "value": "{{regtype_price}}",
                   "type": "text",
                   "uuid": "7553a344-9975-49f2-a085-faf46b95d2cd"
+                },
+                {
+                  "key": "benefits",
+                  "value": "{{benefits}}",
+                  "type": "text",
+                  "uuid": "bedda50c-95b0-4092-9972-80f6b73ca85e"
                 }
               ]
             },
@@ -2474,6 +2627,74 @@
                 "view",
                 "{{event_id}}",
                 "regtypes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "regtype_benefits",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Benefits list -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  const res = pm.response.json();",
+                  "",
+                  "  pm.test(\"Benefits list -> returns array\", function () {",
+                  "    pm.expect(res).to.be.an(\"array\");",
+                  "  });",
+                  "",
+                  "  pm.test(\"Benefits list -> array is not empty\", function () {",
+                  "    pm.expect(res.length).to.be.greaterThan(0);",
+                  "  });",
+                  "",
+                  "  const expectedRaw = pm.environment.get(\"benefits\");",
+                  "",
+                  "  if (expectedRaw) {",
+                  "    const expected = expectedRaw",
+                  "      .split(\",\")",
+                  "      .map(b => b.trim())",
+                  "      .filter(Boolean);",
+                  "",
+                  "    pm.test(\"Benefits list -> contains expected benefits\", function () {",
+                  "      expected.forEach(b => {",
+                  "        pm.expect(res).to.include(b);",
+                  "      });",
+                  "    });",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}/benefits",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}",
+                "benefits"
               ]
             }
           },

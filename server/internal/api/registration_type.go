@@ -13,10 +13,11 @@ import (
 )
 
 type RegistrationType struct {
-	ID          uint    `example:"1"`
-	Name        string  `example:"Pass"`
-	Description string  `example:"Pass Description"`
-	Price       float64 `example:"7.5"`
+	ID          uint     `example:"1"`
+	Name        string   `example:"Pass"`
+	Description string   `example:"Pass Description"`
+	Price       float64  `example:"7.5"`
+	Benefits    []string `example:"[\"Lunch\", \"Wi-Fi Access\"]"`
 }
 
 func regTypePreface(c *gin.Context) (*models.Event, error) {
@@ -133,6 +134,7 @@ func RegistrationTypeCreate(c *gin.Context) {
 // @Param 		name			formData	string	false	"Name of the registration type"
 // @Param 		description		formData	string	false	"Description of the registration type"
 // @Param 		price			formData	number	false	"Price of the registration type"
+// @Param 		benefits		formData	string	false	"Comma-separated list of benefits"
 // @Success 	200 {string} string "Event Registration Type edited successfully"
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "Event not found"
@@ -196,6 +198,31 @@ func RegistrationTypeEdit(c *gin.Context) {
 		regType.Price = price
 	}
 
+	benefitsStr, ok := c.GetPostForm("benefits")
+	if ok {
+		parsedBenefits, err := models.ParseBenefits(benefitsStr)
+		if err != nil {
+			c.String(http.StatusBadRequest, "Invalid benefits format: "+err.Error())
+			return
+		}
+
+		var dbBenefits []models.Benefit
+		for _, pb := range parsedBenefits {
+			var dbB models.Benefit
+			if err := db.DB.Where("name = ?", pb.Name).FirstOrCreate(&dbB, models.Benefit{Name: pb.Name}).Error; err != nil {
+				c.String(http.StatusInternalServerError, "Error handling benefits")
+				return
+			}
+			dbBenefits = append(dbBenefits, dbB)
+		}
+
+		err = db.DB.Model(&regType).Association("Benefits").Replace(dbBenefits)
+		if err != nil {
+			c.String(http.StatusInternalServerError, "Error updating benefits in DB")
+			return
+		}
+	}
+
 	res := db.DB.Save(&regType)
 	if res.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found in DB")
@@ -239,17 +266,36 @@ func RegistrationTypeList(c *gin.Context) {
 		return
 	}
 
-	var regtypes []RegistrationType
-	err := db.DB.Model(&models.RegistrationType{}).
+	var regtypes []models.RegistrationType
+	err := db.DB.Preload("Benefits").Model(&models.RegistrationType{}).
 		Where("event_id = ?", event.ID).
-		Scan(&regtypes)
+		Find(&regtypes)
 
 	if err.RowsAffected == 0 {
 		c.String(http.StatusNotFound, "This event doesn't have registration types")
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, regtypes)
+	var response []RegistrationType
+	for _, rt := range regtypes {
+		var benefits []string
+		for _, b := range rt.Benefits {
+			benefits = append(benefits, b.Name)
+		}
+		if benefits == nil {
+			benefits = []string{}
+		}
+
+		response = append(response, RegistrationType{
+			ID:          rt.ID,
+			Name:        rt.Name,
+			Description: rt.Description,
+			Price:       rt.Price,
+			Benefits:    benefits,
+		})
+	}
+
+	c.IndentedJSON(http.StatusOK, response)
 }
 
 // RegistrationTypeDelete
