@@ -139,6 +139,14 @@ func ArticleCreate(c *gin.Context) {
 	})
 }
 
+// Procedure shared across endpoints that deals with article editing.
+// This procedure deals with:
+//  - User authentication and authorization
+//  - Fetching article model from the database (articleID : formData)
+//  - Checking if the user can edit the article
+// Returns:
+//	- Article model with the given ID, obtained from the FormData (articleID)
+//  - Error
 func articleEditPreface(c *gin.Context) (*models.Article, error) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
