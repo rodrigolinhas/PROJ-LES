@@ -1597,6 +1597,241 @@
           "response": []
         },
         {
+          "name": "article_edit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Correct success message\", function () {\r",
+                  "    pm.expect(pm.response.json().message).to.eql(\"Article edited successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "articleID",
+                  "value": "{{article_id}}",
+                  "type": "text",
+                  "uuid": "b64fb8d7-b91f-4bae-8a7d-ac96c68efac5"
+                },
+                {
+                  "key": "title",
+                  "value": "{{article_title_edited}}",
+                  "type": "text",
+                  "uuid": "d213355e-97e6-4231-ab66-0b3f0fd57a23"
+                },
+                {
+                  "key": "url",
+                  "value": "{{article_url_edited}}",
+                  "type": "text",
+                  "uuid": "bd09ed3e-679a-418a-be43-b86edcfed847"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/article/edit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "article",
+                "edit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "article_list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Get Articles -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Article has edited fields\", function () {\r",
+                  "  pm.expect(res[0].title).to.eql(pm.environment.get(\"article_title_edited\"));\r",
+                  "  pm.expect(res[0].url).to.eql(pm.environment.get(\"article_url_edited\"));\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/article/list?activityID={{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "article",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "activityID",
+                  "value": "{{activity_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "article_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Delete Article -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Delete Article -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Article deleted successfully\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "articleID",
+                  "value": "{{article_id}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/article/delete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "article",
+                "delete"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "article_list_after_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"List Articles -> 404\", function () {\r",
+                  "  pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"List Articles -> 'not found' message\", function () {\r",
+                  "  pm.expect(pm.response.text()).to.include(\"No article found\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/article/list?activityID={{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "article",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "activityID",
+                  "value": "{{activity_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "activity_delete",
           "event": [
             {

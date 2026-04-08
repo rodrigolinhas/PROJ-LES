@@ -225,6 +225,12 @@
 			"enabled": true
 		},
 		{
+			"key": "article_title_edited",
+			"value": "Article Presentation",
+      "type": "default",
+			"enabled": true
+    	},
+		{
 			"key": "benefits",
 			"value": "Gala Dinner, tests",
 			"type": "default",
@@ -234,6 +240,12 @@
 			"key": "pay_token",
 			"value": "",
 			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "article_url_edited",
+			"value": "publisher.com/article_short",
+			"type": "default",
 			"enabled": true
 		}
 	],

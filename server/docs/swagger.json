@@ -236,7 +236,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/api.ArticleCreateResponse"
+                            "$ref": "#/definitions/api.ArticleResponse"
                         }
                     },
                     "400": {
@@ -259,6 +259,69 @@
                     },
                     "500": {
                         "description": "Error found during article creation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/article/delete": {
+            "post": {
+                "description": "While the user is logged in, deletes an article associated to an event which the user is the organizer",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Delete an article",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the article",
+                        "name": "articleID",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Article deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not the event organizer",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Article/event/activity not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found during article deletion",
                         "schema": {
                             "type": "string"
                         }
@@ -2309,7 +2372,45 @@
         }
     },
     "definitions": {
-        "api.ArticleCreateResponse": {
+        "api.Article": {
+            "type": "object",
+            "properties": {
+                "coAuthorsID": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "doi": {
+                    "type": "string"
+                },
+                "firstAuthorID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isbn": {
+                    "type": "string"
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.ArticleResponse": {
             "type": "object",
             "properties": {
                 "articleID": {

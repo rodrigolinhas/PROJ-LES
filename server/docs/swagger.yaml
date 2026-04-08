@@ -1,6 +1,31 @@
 basePath: /
 definitions:
-  api.ArticleCreateResponse:
+  api.Article:
+    properties:
+      coAuthorsID:
+        items:
+          type: integer
+        type: array
+      doi:
+        type: string
+      firstAuthorID:
+        type: integer
+      id:
+        type: integer
+      isbn:
+        type: string
+      publisher:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      url:
+        type: string
+    type: object
+  api.ArticleResponse:
     properties:
       articleID:
         type: integer
@@ -312,7 +337,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/api.ArticleCreateResponse'
+            $ref: '#/definitions/api.ArticleResponse'
         "400":
           description: The activity does not belong to the event
           schema:
@@ -330,6 +355,49 @@ paths:
           schema:
             type: string
       summary: Create article
+      tags:
+      - Article
+  /article/delete:
+    post:
+      consumes:
+      - multipart/form-data
+      description: While the user is logged in, deletes an article associated to an
+        event which the user is the organizer
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the article
+        in: formData
+        name: articleID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Article deleted successfully
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: User is not the event organizer
+          schema:
+            type: string
+        "404":
+          description: Article/event/activity not found
+          schema:
+            type: string
+        "500":
+          description: Error found during article deletion
+          schema:
+            type: string
+      summary: Delete an article
       tags:
       - Article
   /article/details:
