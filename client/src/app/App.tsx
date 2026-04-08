@@ -8,6 +8,8 @@ import CreateEventPage from "../features/events/pages/CreateEventPage";
 import AuthSuccessPage from "../features/auth/pages/AuthSuccessPage";
 import EditEventPage from "../features/events/pages/EditEventPage";
 import MyEventsPage from "../features/events/pages/MyEventsPage";
+import CreateArticlePage from "../features/articles/pages/CreateArticlePage";
+import ManageArticleTagsPage from "../features/articles/pages/ManageArticleTagsPage";
 import ViewEventPage from "../features/events/pages/ViewEventPage";
 import SettingsPage from "../features/settings/pages/SettingsPage";
 import EditActivityPage from "../features/events/activities/pages/EditActivityPage.tsx";
@@ -35,6 +37,8 @@ function App() {
                     <Route path="/event/create" element={<CreateEventPage />}/>
                     <Route path="/event/edit/:id" element={<EditEventPage />}/>
                     <Route path="/event/:id" element={<ViewEventPage />} />
+                    <Route path="/article/create" element={<CreateArticlePage />} />
+                    <Route path="/article/:id/tags" element={<ManageArticleTagsPage />} />
 
 
                     <Route path="/event/:eventId/activity/edit/:id" element={<EditActivityPage />}/>
