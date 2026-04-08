@@ -112,6 +112,8 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/article/addTags", api.ArticleAddTags)
 	router.POST("/article/removeTags", api.ArticleRemoveTags)
 	router.GET("/article/details", api.ArticleGetById)
+	router.POST("/article/add-auhors", api.ArticleAddAuthors)
+	router.POST("/article/delete-auhors", api.ArticleDeleteAuthors)
 
 	//tags
 	router.GET("/tags/list", api.GetTags)

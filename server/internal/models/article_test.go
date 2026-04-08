@@ -220,3 +220,64 @@ func TestArticle_RemoveTags(t *testing.T) {
 	assert.Equal(t, 2, count)
 	assert.Len(t, art.Tags, 1)
 }
+
+func TestDeleteCoAuthor1(t *testing.T) {
+	user := *exampleUser
+	art, _ := NewArticle("title", user, "pub", "url")
+
+	coauthor := *exampleStu
+	_ = art.AddCoAuthor(coauthor)
+
+	err := art.DeleteCoAuthor(coauthor)
+
+	assert.Nil(t, err)
+	assert.NotContains(t, art.CoAuthors, coauthor)
+}
+
+func TestDeleteCoAuthor2(t *testing.T) {
+	user := *exampleUser
+	art, _ := NewArticle("title", user, "pub", "url")
+
+	coauthor := *exampleStu
+
+	err := art.DeleteCoAuthor(coauthor)
+
+	assert.NotNil(t, err)
+	assert.EqualError(t, err, "Cannot find co-author")
+}
+
+func TestDeleteCoAuthor3(t *testing.T) {
+	user := *exampleUser
+	art, _ := NewArticle("title", user, "pub", "url")
+
+	err := art.DeleteCoAuthor(user)
+
+	assert.NotNil(t, err)
+	assert.EqualError(t, err, "Cannot delete the first author")
+}
+
+func TestDeleteCoAuthors1(t *testing.T) {
+	user := *exampleUser
+	art, _ := NewArticle("title", user, "pub", "url")
+
+	coauthors := []User{*exampleStu, *exampleOrg}
+	art.AddCoAuthors(coauthors)
+
+	count := art.DeleteCoAuthors(coauthors)
+
+	assert.Equal(t, 2, count)
+	assert.Len(t, art.CoAuthors, 0)
+}
+
+func TestDeleteCoAuthors2(t *testing.T) {
+	user := *exampleUser
+	art, _ := NewArticle("title", user, "pub", "url")
+
+	coauthor := *exampleStu
+	art.AddCoAuthor(coauthor)
+
+	count := art.DeleteCoAuthors([]User{coauthor, *exampleOrg})
+
+	assert.Equal(t, 1, count)
+	assert.Len(t, art.CoAuthors, 0)
+}
