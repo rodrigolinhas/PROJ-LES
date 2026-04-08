@@ -3,9 +3,9 @@ package api
 import (
 	db "LES/server/internal/database"
 	"LES/server/internal/models"
+	"errors"
 	"net/http"
 	"strings"
-	"errors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,15 +16,15 @@ type ArticleResponse struct {
 }
 
 type Article struct {
-	ID				uint		`json:"id"`
-	Title           string 		`json:"title"`
-	FirstAuthorID   uint   		`json:"firstAuthorID"`
-	CoAuthorsID     []uint 		`json:"coAuthorsID"`
-	Publisher       string 		`json:"publisher"`
-	DOI             string		`json:"doi"`
-	ISBN            string		`json:"isbn"`
-	URL             string      `json:"url"`
-	Tags            []string    `json:"tags"`
+	ID            uint     `json:"id"`
+	Title         string   `json:"title"`
+	FirstAuthorID uint     `json:"firstAuthorID"`
+	CoAuthorsID   []uint   `json:"coAuthorsID"`
+	Publisher     string   `json:"publisher"`
+	DOI           string   `json:"doi"`
+	ISBN          string   `json:"isbn"`
+	URL           string   `json:"url"`
+	Tags          []string `json:"tags"`
 }
 
 // ArticleCreate
@@ -141,16 +141,17 @@ func ArticleCreate(c *gin.Context) {
 
 // Procedure shared across endpoints that deals with article editing.
 // This procedure deals with:
-//  - User authentication and authorization
-//  - Fetching article model from the database (articleID : formData)
-//  - Checking if the user can edit the article
+//   - User authentication and authorization
+//   - Fetching article model from the database (articleID : formData)
+//   - Checking if the user can edit the article
+//
 // Returns:
-//	- Article model with the given ID, obtained from the FormData (articleID)
-//  - Error
+//   - Article model with the given ID, obtained from the FormData (articleID)
+//   - Error
 func articleEditPreface(c *gin.Context) (*models.Article, error) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
 		return nil, errors.New("Error sent")
 	}
 
@@ -205,7 +206,7 @@ func ArticleEdit(c *gin.Context) {
 	isbn := c.Request.FormValue("isbn")
 	url := c.Request.FormValue("url")
 
-	if(firstAuthorID != "") {
+	if firstAuthorID != "" {
 		firstAuthor := &models.User{}
 		dberr := db.DB.Where("id = ?", firstAuthorID).Take(firstAuthor)
 		if dberr.Error != nil || dberr.RowsAffected != 1 {
@@ -213,7 +214,7 @@ func ArticleEdit(c *gin.Context) {
 			return
 		}
 
-		article.FirstAuthor = *firstAuthor;
+		article.FirstAuthor = *firstAuthor
 	}
 
 	if title != "" {
@@ -289,8 +290,8 @@ func ArticleDelete(c *gin.Context) {
 // @Accept		plain
 // @Produce 	json
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
-// @Param 		activityID		query		string	true	"ID of the associated activity" 
-// @Param 		filter			query		string	false	"Filter the name of the events shown" 
+// @Param 		activityID		query		string	true	"ID of the associated activity"
+// @Param 		filter			query		string	false	"Filter the name of the events shown"
 // @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
 // @Param 		offset			query		int		false	"Number of events to skip in the search" default(0)
 // @Success 	200 {array} Article
@@ -300,7 +301,9 @@ func ArticleDelete(c *gin.Context) {
 // @Router 		/article/list [get]
 func ArticleList(c *gin.Context) {
 	user, limit, offset, filter, err := eventListPreface(c)
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	actID := c.Query("activityID")
 
@@ -318,11 +321,11 @@ func ArticleList(c *gin.Context) {
 
 	var articles []models.Article
 	err = db.DB.Model(&activity).
-				 Limit(limit).
-				 Offset(offset).
-				 Where("title LIKE ?", "%"+filter+"%").
-				 Association("Articles").
-				 Find(&articles)
+		Limit(limit).
+		Offset(offset).
+		Where("title LIKE ?", "%"+filter+"%").
+		Association("Articles").
+		Find(&articles)
 	//TODO: Check error
 
 	res := []Article{}
@@ -346,15 +349,15 @@ func ArticleList(c *gin.Context) {
 		}
 
 		res = append(res, Article{
-			ID				: v.ID,
-			Title           : v.Title,
-			FirstAuthorID	: v.FirstAuthorID, 
-			CoAuthorsID     : coauthors,
-			Publisher       : v.Publisher,
-			DOI             : v.DOI,
-			ISBN            : v.ISBN,
-			URL             : v.URL,
-			Tags            : tags, 
+			ID:            v.ID,
+			Title:         v.Title,
+			FirstAuthorID: v.FirstAuthorID,
+			CoAuthorsID:   coauthors,
+			Publisher:     v.Publisher,
+			DOI:           v.DOI,
+			ISBN:          v.ISBN,
+			URL:           v.URL,
+			Tags:          tags,
 		})
 	}
 
@@ -466,7 +469,7 @@ func ArticleGetById(c *gin.Context) {
 // @Param       X-CSRF-Token  header    string  true   "User's CSRF Token"
 // @Param       articleID     formData  string  true   "Article ID"
 // @Param       coAuthorsID   formData  string  true   "IDs of the co-authors, separated by commas"
-// @Success     200 {object} map[string]interface{}
+// @Success     200 {object} ArticleResponse
 // @Failure     401 {string} string "Invalid credentials"
 // @Failure     404 {string} string "Article/User not found"
 // @Failure     500 {string} string "Error updating co-authors"
@@ -531,7 +534,7 @@ func ArticleAddAuthors(c *gin.Context) {
 // @Param       X-CSRF-Token  header    string  true   "User's CSRF Token"
 // @Param       articleID     formData  string  true   "Article ID"
 // @Param       coAuthorsID   formData  string  true   "IDs of the co-authors to remove, separated by commas"
-// @Success     200 {object} map[string]interface{}
+// @Success     200 {object} ArticleResponse
 // @Failure     401 {string} string "Invalid credentials"
 // @Failure     404 {string} string "Article/User not found"
 // @Failure     500 {string} string "Error removing co-authors"
