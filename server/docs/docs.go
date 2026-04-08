@@ -15,6 +15,71 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/article/add-authors": {
+            "post": {
+                "description": "Adds one or more co-authors to an existing article",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Article"
+                ],
+                "summary": "Add co-authors to article",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Article ID",
+                        "name": "articleID",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "IDs of the co-authors, separated by commas",
+                        "name": "coAuthorsID",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Article/User not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error updating co-authors",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/article/addTags": {
             "post": {
                 "description": "While the user is logged in, adds one or more tags to an article",
@@ -337,9 +402,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/article/edit": {
+        "/article/remove-authors": {
             "post": {
-                "description": "While the user is logged in, edits an article associated to an event which the user is the organizer",
+                "description": "Removes one or more co-authors from an existing article",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -349,7 +414,7 @@ const docTemplate = `{
                 "tags": [
                     "Article"
                 ],
-                "summary": "Edit an article",
+                "summary": "Remove co-authors from article",
                 "parameters": [
                     {
                         "type": "string",
@@ -360,59 +425,25 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "ID of the article",
+                        "description": "Article ID",
                         "name": "articleID",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "Title of the article",
-                        "name": "title",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "ID of the article's first author",
-                        "name": "firstAuthorID",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "The IDs of the co-authors, separated by commas",
+                        "description": "IDs of the co-authors to remove, separated by commas",
                         "name": "coAuthorsID",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Publisher of the article",
-                        "name": "publisher",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Article's DOI",
-                        "name": "doi",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Article's ISBN",
-                        "name": "isbn",
-                        "in": "formData"
-                    },
-                    {
-                        "type": "string",
-                        "description": "URL where the article is accessible",
-                        "name": "url",
-                        "in": "formData"
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.ArticleResponse"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "401": {
@@ -421,101 +452,14 @@ const docTemplate = `{
                             "type": "string"
                         }
                     },
-                    "403": {
-                        "description": "User is not the event organizer",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     "404": {
-                        "description": "Article/user/event/activity not found",
+                        "description": "Article/User not found",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Error found during article edition",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/article/list": {
-            "get": {
-                "description": "A user can view and filter the articles associated to an activity of a event that was published or which the user is the organizer",
-                "consumes": [
-                    "text/plain"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Article"
-                ],
-                "summary": "List the articles associated to an activity",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User's CSRF Token",
-                        "name": "X-CSRF-Token",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "ID of the associated activity",
-                        "name": "activityID",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filter the name of the events shown",
-                        "name": "filter",
-                        "in": "query"
-                    },
-                    {
-                        "maximum": 50,
-                        "type": "integer",
-                        "default": 20,
-                        "description": "Number of events shown",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 0,
-                        "description": "Number of events to skip in the search",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/api.Article"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid credentials",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "403": {
-                        "description": "Event was not published yet and the user is not the orgaziner",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "No article found",
+                        "description": "Error removing co-authors",
                         "schema": {
                             "type": "string"
                         }
@@ -1388,6 +1332,12 @@ const docTemplate = `{
                         "name": "price",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comma-separated list of benefits",
+                        "name": "benefits",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -1564,6 +1514,12 @@ const docTemplate = `{
                         "description": "Price of the registration type",
                         "name": "price",
                         "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comma-separated list of benefits",
+                        "name": "benefits",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -1662,6 +1618,66 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "No event found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/view/:id/benefits": {
+            "get": {
+                "description": "A user can view the benefits associated with an event that they own or was published",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "List the benefits of an event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Event was not published yet and the user is not the orgaziner",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found",
                         "schema": {
                             "type": "string"
                         }
@@ -2491,6 +2507,16 @@ const docTemplate = `{
         "api.RegistrationType": {
             "type": "object",
             "properties": {
+                "benefits": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"Lunch\"",
+                        " \"Wi-Fi Access\"]"
+                    ]
+                },
                 "description": {
                     "type": "string",
                     "example": "Pass Description"

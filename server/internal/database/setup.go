@@ -27,6 +27,7 @@ func ConnectDB() {
 		&models.EventRegistration{},
 		&models.RegistrationType{},
 		&models.Article{},
+		&models.Benefit{},
 		&models.Tag{},
 	)
 

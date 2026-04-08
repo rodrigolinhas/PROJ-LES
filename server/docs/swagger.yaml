@@ -88,6 +88,13 @@ definitions:
     type: object
   api.RegistrationType:
     properties:
+      benefits:
+        example:
+        - '["Lunch"'
+        - ' "Wi-Fi Access"]'
+        items:
+          type: string
+        type: array
       description:
         example: Pass Description
         type: string
@@ -175,6 +182,50 @@ info:
   title: Scientific Event Manager API
   version: "0.1"
 paths:
+  /article/add-authors:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Adds one or more co-authors to an existing article
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: Article ID
+        in: formData
+        name: articleID
+        required: true
+        type: string
+      - description: IDs of the co-authors, separated by commas
+        in: formData
+        name: coAuthorsID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "404":
+          description: Article/User not found
+          schema:
+            type: string
+        "500":
+          description: Error updating co-authors
+          schema:
+            type: string
+      summary: Add co-authors to article
+      tags:
+      - Article
   /article/addTags:
     post:
       consumes:
@@ -395,50 +446,26 @@ paths:
       summary: Get article by ID
       tags:
       - Article
-  /article/edit:
+  /article/remove-authors:
     post:
       consumes:
       - multipart/form-data
-      description: While the user is logged in, edits an article associated to an
-        event which the user is the organizer
+      description: Removes one or more co-authors from an existing article
       parameters:
       - description: User's CSRF Token
         in: header
         name: X-CSRF-Token
         required: true
         type: string
-      - description: ID of the article
+      - description: Article ID
         in: formData
         name: articleID
         required: true
         type: string
-      - description: Title of the article
-        in: formData
-        name: title
-        type: string
-      - description: ID of the article's first author
-        in: formData
-        name: firstAuthorID
-        type: string
-      - description: The IDs of the co-authors, separated by commas
+      - description: IDs of the co-authors to remove, separated by commas
         in: formData
         name: coAuthorsID
-        type: string
-      - description: Publisher of the article
-        in: formData
-        name: publisher
-        type: string
-      - description: Article's DOI
-        in: formData
-        name: doi
-        type: string
-      - description: Article's ISBN
-        in: formData
-        name: isbn
-        type: string
-      - description: URL where the article is accessible
-        in: formData
-        name: url
+        required: true
         type: string
       produces:
       - application/json
@@ -446,80 +473,21 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.ArticleResponse'
+            additionalProperties: true
+            type: object
         "401":
           description: Invalid credentials
           schema:
             type: string
-        "403":
-          description: User is not the event organizer
-          schema:
-            type: string
         "404":
-          description: Article/user/event/activity not found
+          description: Article/User not found
           schema:
             type: string
         "500":
-          description: Error found during article edition
+          description: Error removing co-authors
           schema:
             type: string
-      summary: Edit an article
-      tags:
-      - Article
-  /article/list:
-    get:
-      consumes:
-      - text/plain
-      description: A user can view and filter the articles associated to an activity
-        of a event that was published or which the user is the organizer
-      parameters:
-      - description: User's CSRF Token
-        in: header
-        name: X-CSRF-Token
-        required: true
-        type: string
-      - description: ID of the associated activity
-        in: query
-        name: activityID
-        required: true
-        type: string
-      - description: Filter the name of the events shown
-        in: query
-        name: filter
-        type: string
-      - default: 20
-        description: Number of events shown
-        in: query
-        maximum: 50
-        name: limit
-        type: integer
-      - default: 0
-        description: Number of events to skip in the search
-        in: query
-        name: offset
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/api.Article'
-            type: array
-        "401":
-          description: Invalid credentials
-          schema:
-            type: string
-        "403":
-          description: Event was not published yet and the user is not the orgaziner
-          schema:
-            type: string
-        "404":
-          description: No article found
-          schema:
-            type: string
-      summary: List the articles associated to an activity
+      summary: Remove co-authors from article
       tags:
       - Article
   /article/removeTags:
@@ -1307,6 +1275,10 @@ paths:
         name: price
         required: true
         type: number
+      - description: Comma-separated list of benefits
+        in: formData
+        name: benefits
+        type: string
       produces:
       - application/json
       responses:
@@ -1427,6 +1399,10 @@ paths:
         in: formData
         name: price
         type: number
+      - description: Comma-separated list of benefits
+        in: formData
+        name: benefits
+        type: string
       produces:
       - application/json
       responses:
@@ -1498,6 +1474,47 @@ paths:
           schema:
             type: string
       summary: View event information
+      tags:
+      - Event
+  /event/view/:id/benefits:
+    get:
+      consumes:
+      - text/plain
+      description: A user can view the benefits associated with an event that they
+        own or was published
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: Event was not published yet and the user is not the orgaziner
+          schema:
+            type: string
+        "404":
+          description: Event not found
+          schema:
+            type: string
+      summary: List the benefits of an event
       tags:
       - Event
   /event/view/:id/regtypes:

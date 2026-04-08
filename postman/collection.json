@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "d7edaf5f-0103-4cd6-901d-3a0cf8640fab",
+    "_postman_id": "9b00181a-18c7-4c94-a03c-3ced91d21f78",
     "name": "00 - LES API (Runner)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "52830737",
-    "_collection_link": "https://go.postman.co/collection/52830737-d7edaf5f-0103-4cd6-901d-3a0cf8640fab?source=collection_link"
+    "_exporter_id": "52499161",
+    "_collection_link": "https://go.postman.co/collection/52499161-9b00181a-18c7-4c94-a03c-3ced91d21f78?source=collection_link"
   },
   "item": [
     {
@@ -2391,6 +2391,12 @@
                   "value": "{{regtype_price}}",
                   "type": "text",
                   "uuid": "7553a344-9975-49f2-a085-faf46b95d2cd"
+                },
+                {
+                  "key": "benefits",
+                  "value": "{{benefits}}",
+                  "type": "text",
+                  "uuid": "034bdee9-43a5-4834-a623-26a86896ac36"
                 }
               ]
             },
@@ -2776,6 +2782,12 @@
                   "value": "{{regtype_price}}",
                   "type": "text",
                   "uuid": "7553a344-9975-49f2-a085-faf46b95d2cd"
+                },
+                {
+                  "key": "benefits",
+                  "value": "{{benefits}}",
+                  "type": "text",
+                  "uuid": "bedda50c-95b0-4092-9972-80f6b73ca85e"
                 }
               ]
             },
@@ -2850,6 +2862,74 @@
                 "view",
                 "{{event_id}}",
                 "regtypes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "regtype_benefits",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Benefits list -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  const res = pm.response.json();",
+                  "",
+                  "  pm.test(\"Benefits list -> returns array\", function () {",
+                  "    pm.expect(res).to.be.an(\"array\");",
+                  "  });",
+                  "",
+                  "  pm.test(\"Benefits list -> array is not empty\", function () {",
+                  "    pm.expect(res.length).to.be.greaterThan(0);",
+                  "  });",
+                  "",
+                  "  const expectedRaw = pm.environment.get(\"benefits\");",
+                  "",
+                  "  if (expectedRaw) {",
+                  "    const expected = expectedRaw",
+                  "      .split(\",\")",
+                  "      .map(b => b.trim())",
+                  "      .filter(Boolean);",
+                  "",
+                  "    pm.test(\"Benefits list -> contains expected benefits\", function () {",
+                  "      expected.forEach(b => {",
+                  "        pm.expect(res).to.include(b);",
+                  "      });",
+                  "    });",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}/benefits",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}",
+                "benefits"
               ]
             }
           },

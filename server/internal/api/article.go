@@ -456,3 +456,133 @@ func ArticleGetById(c *gin.Context) {
 		"updatedAt":     article.UpdatedAt,
 	})
 }
+
+// ArticleAddAuthors
+// @Summary     Add co-authors to article
+// @Description Adds one or more co-authors to an existing article
+// @Tags        Article
+// @Accept      mpfd
+// @Produce     json
+// @Param       X-CSRF-Token  header    string  true   "User's CSRF Token"
+// @Param       articleID     formData  string  true   "Article ID"
+// @Param       coAuthorsID   formData  string  true   "IDs of the co-authors, separated by commas"
+// @Success     200 {object} map[string]interface{}
+// @Failure     401 {string} string "Invalid credentials"
+// @Failure     404 {string} string "Article/User not found"
+// @Failure     500 {string} string "Error updating co-authors"
+// @Router      /article/add-authors [post]
+func ArticleAddAuthors(c *gin.Context) {
+	_, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid credentials")
+		return
+	}
+
+	articleID := c.PostForm("articleID")
+	coAuthorsID := c.PostForm("coAuthorsID")
+
+	var article models.Article
+	if err := db.DB.Preload("CoAuthors").
+		Where("id = ?", articleID).
+		Take(&article).Error; err != nil {
+		c.String(http.StatusNotFound, "Article not found")
+		return
+	}
+
+	ids := strings.Split(coAuthorsID, ",")
+	var authors []models.User
+
+	for _, v := range ids {
+		v = strings.TrimSpace(v)
+		if v == "" {
+			continue
+		}
+
+		var user models.User
+		if err := db.DB.Where("id = ?", v).Take(&user).Error; err != nil {
+			c.String(http.StatusNotFound, "User not found")
+			return
+		}
+
+		authors = append(authors, user)
+	}
+
+	added := article.AddCoAuthors(authors)
+
+	if err := db.DB.Model(&article).
+		Association("CoAuthors").
+		Append(authors); err != nil {
+		c.String(http.StatusInternalServerError, "Error updating co-authors")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Authors added",
+		"added":   added,
+	})
+}
+
+// ArticleDeleteAuthors
+// @Summary     Remove co-authors from article
+// @Description Removes one or more co-authors from an existing article
+// @Tags        Article
+// @Accept      mpfd
+// @Produce     json
+// @Param       X-CSRF-Token  header    string  true   "User's CSRF Token"
+// @Param       articleID     formData  string  true   "Article ID"
+// @Param       coAuthorsID   formData  string  true   "IDs of the co-authors to remove, separated by commas"
+// @Success     200 {object} map[string]interface{}
+// @Failure     401 {string} string "Invalid credentials"
+// @Failure     404 {string} string "Article/User not found"
+// @Failure     500 {string} string "Error removing co-authors"
+// @Router      /article/remove-authors [post]
+func ArticleDeleteAuthors(c *gin.Context) {
+	_, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid credentials")
+		return
+	}
+
+	articleID := c.PostForm("articleID")
+	coAuthorsID := c.PostForm("coAuthorsID")
+
+	var article models.Article
+	if err := db.DB.Preload("CoAuthors").
+		Where("id = ?", articleID).
+		Take(&article).Error; err != nil {
+		c.String(http.StatusNotFound, "Article not found")
+		return
+	}
+
+	ids := strings.Split(coAuthorsID, ",")
+	var authors []models.User
+
+	for _, v := range ids {
+		v = strings.TrimSpace(v)
+		if v == "" {
+			continue
+		}
+
+		var user models.User
+		if err := db.DB.Where("id = ?", v).Take(&user).Error; err != nil {
+			c.String(http.StatusNotFound, "User not found")
+			return
+		}
+
+		authors = append(authors, user)
+	}
+
+	removed := article.DeleteCoAuthors(authors)
+
+	if err := db.DB.Model(&article).
+		Association("CoAuthors").
+		Delete(authors); err != nil {
+		c.String(http.StatusInternalServerError, "Error removing co-authors")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Authors removed",
+		"removed": removed,
+	})
+}
