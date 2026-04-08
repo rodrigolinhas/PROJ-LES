@@ -229,7 +229,8 @@
 			"value": "Article Presentation",
       "type": "default",
 			"enabled": true
-    }
+    	},
+		{
 			"key": "benefits",
 			"value": "Gala Dinner, tests",
 			"type": "default",
