@@ -1,4 +1,3 @@
-
 package models
 
 import (
@@ -12,7 +11,7 @@ var exampleOrg, _ = NewUser("Org", "Test", "EventOrganizer", "testorg@mail.com",
 var exampleStu, _ = NewUser("Student", "Test", "Student", "teststu@mail.com", examplePass)
 var exampleEvent, _ = NewEvent("Event", "sci", "desc", "org", *exampleOrg, time.Now(), time.Now().Add(time.Hour), "Faro")
 var exampleDisc, _ = NewDiscountCode("123", "percentage", 10, 5)
-var exampleReg, _ = NewRegistrationType(0, "Pass", "PassDesc", 5)
+var exampleReg, _ = NewRegistrationType(0, "Pass", "PassDesc", 5, []Benefit{{Name: "Wi-Fi Access"}})
 
 func TestNewEventRegistration1(t *testing.T) {
 	exampleEvent.RegTypes = append(exampleEvent.RegTypes, *exampleReg)

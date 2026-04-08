@@ -63,6 +63,13 @@ definitions:
     type: object
   api.RegistrationType:
     properties:
+      benefits:
+        example:
+        - '["Lunch"'
+        - ' "Wi-Fi Access"]'
+        items:
+          type: string
+        type: array
       description:
         example: Pass Description
         type: string
@@ -1112,6 +1119,10 @@ paths:
         name: price
         required: true
         type: number
+      - description: Comma-separated list of benefits
+        in: formData
+        name: benefits
+        type: string
       produces:
       - application/json
       responses:
@@ -1232,6 +1243,10 @@ paths:
         in: formData
         name: price
         type: number
+      - description: Comma-separated list of benefits
+        in: formData
+        name: benefits
+        type: string
       produces:
       - application/json
       responses:
@@ -1303,6 +1318,47 @@ paths:
           schema:
             type: string
       summary: View event information
+      tags:
+      - Event
+  /event/view/:id/benefits:
+    get:
+      consumes:
+      - text/plain
+      description: A user can view the benefits associated with an event that they
+        own or was published
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: Event was not published yet and the user is not the orgaziner
+          schema:
+            type: string
+        "404":
+          description: Event not found
+          schema:
+            type: string
+      summary: List the benefits of an event
       tags:
       - Event
   /event/view/:id/regtypes:
