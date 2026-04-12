@@ -391,3 +391,61 @@ func EventBenefitsList(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, benefits)
 }
+
+type UserCSV struct {
+	ID			uint
+	FirstName	string
+	LastName	string
+	Email		string
+}
+
+func EventBenefitsParticipants(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
+		return
+	}
+
+	eventID := c.Param("id")
+
+	var event models.Event
+	res := db.DB.Preload("RegTypes.Benefits").Model(&models.Event{}).Where("ID = ?", eventID).Take(&event)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "User isn't the event orgaziner")
+		return
+	}
+
+	benefitID := c.Param("benefitID")	
+
+	subquery := db.DB.Table("registration_type_benefits").
+				Joins("LEFT OUTER JOIN registration_types ON registration_type_id = registration_types.id").
+				Joins("LEFT OUTER JOIN events ON registration_types.event_id = events.id").
+				Where("event_id = ? AND benefit_id = ?", eventID, benefitID).
+				Select("registration_type_id")
+	if subquery.Error != nil {
+		c.String(http.StatusNotFound, "Error found in DB")
+		return
+	}
+
+	var participants []UserCSV
+	//var participants []map[string]interface{};
+	query := db.DB.Table("event_registrations").
+			 Joins("LEFT OUTER JOIN users ON user_id = users.id").
+			 Where("confirmed = ? AND reg_type_id IN (?)", true, subquery).
+			 Scan(&participants)
+	if query.Error != nil {
+		c.String(http.StatusNotFound, "Error found in DB")
+		return
+	}
+
+	if len(participants) == 0 {
+		c.String(http.StatusNotFound, "No participant found")
+	}
+
+	c.IndentedJSON(http.StatusOK, participants)
+}
