@@ -81,6 +81,17 @@ definitions:
         example: CompSci
         type: string
     type: object
+  api.ParticipantInfo:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+    type: object
   api.PayTokenJSON:
     properties:
       payToken:
@@ -1599,6 +1610,56 @@ paths:
           schema:
             type: string
       summary: View event information
+      tags:
+      - Event
+  /event/view/:id/benefit_participants/:benefitID:
+    get:
+      consumes:
+      - text/plain
+      description: A event organizer can view a list of all the users eligible for
+        a benefit given in one of their events.
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ID of the benefit
+        in: path
+        name: benefitID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.ParticipantInfo'
+            type: array
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: User isn't the event orgaziner
+          schema:
+            type: string
+        "404":
+          description: Event not found/No participant found
+          schema:
+            type: string
+        "500":
+          description: Error found in DB
+          schema:
+            type: string
+      summary: List the users eligible for a benefit in a event
       tags:
       - Event
   /event/view/:id/benefits:
