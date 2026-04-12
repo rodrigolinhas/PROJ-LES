@@ -1,5 +1,6 @@
-import {Link, useNavigate} from "react-router-dom";
-import {useUserRole} from "../../../shared/hooks/useUserRole";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useUserRole } from "@/shared/hooks/useUserRole";
 
 /**
  * Main home page displayed after authentication.
@@ -11,11 +12,15 @@ export default function HomePage() {
     const navigate = useNavigate();
     const role = useUserRole();
 
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+
     return (
         <div>
             <h1>Home Page</h1>
             <button
                 type="button"
+                className="margin-button"
                 onClick={() => {
                     localStorage.removeItem("userEmail");
                     navigate("/");
@@ -25,26 +30,34 @@ export default function HomePage() {
             </button>
 
             {role === "EventOrganizer" && (
-                <>
-                    <button>
-                        <Link to="/event/create">Create Event</Link>
+                <div className="dropdown-container">
+                    <button onClick={() => setIsCreateOpen(!isCreateOpen)}>
+                        Create {isCreateOpen ? "▲" : "▼"}
                     </button>
-                    <button>
-                        <Link to="/article/create">Create Article</Link>
-                    </button>
-                </>
+                    {isCreateOpen && (
+                        <div className="dropdown-menu">
+                            <Link to="/event/create" className="dropdown-item">Event</Link>
+                            <Link to="/article/create" className="dropdown-item">Article</Link>
+                        </div>
+                    )}
+                </div>
             )}
 
-            <button>
+            <button className="margin-button">
                 <Link to="/events">View Events</Link>
             </button>
-            <button>
-                <Link to="/user/me">User Information</Link>
-            </button>
-            <button>
-                <Link to="/settings">Settings</Link>
-            </button>
+
+            <div className="dropdown-container">
+                <button onClick={() => setIsProfileOpen(!isProfileOpen)}>
+                    Profile {isProfileOpen ? "▲" : "▼"}
+                </button>
+                {isProfileOpen && (
+                    <div className="dropdown-menu">
+                        <Link to="/user/me" className="dropdown-item">User Information</Link>
+                        <Link to="/settings" className="dropdown-item">Settings</Link>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
-
