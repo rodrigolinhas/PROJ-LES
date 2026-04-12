@@ -58,12 +58,13 @@ export default function ViewActivityPage() {
             <p><strong>Start:</strong> {new Date(activity.StartDate).toLocaleString()}</p>
             <p><strong>End:</strong> {new Date(activity.EndDate).toLocaleString()}</p>
 
+            <Link to={`/event/${eventId}/activity/${id}/article/list`}>View Articles</Link>
+
+            <br />
             <Link to={`/event/${eventId}/activity/edit/${id}`}>Edit</Link>
 
             <br />
             <Link to={`/event/${eventId}/activity/list`}>Back to list</Link>
-
-
         </div>
     );
 }

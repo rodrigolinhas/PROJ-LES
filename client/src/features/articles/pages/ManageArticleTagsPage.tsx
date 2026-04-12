@@ -18,7 +18,12 @@ function normalizeTag(tag: any): AppTag {
 }
 
 export default function ManageArticleTagsPage() {
-    const { id } = useParams<{ id: string }>();
+    const { eventId, activityId, articleId } = useParams<{
+        eventId: string;
+        activityId: string;
+        articleId: string;
+    }>();
+
     const [articleTitle, setArticleTitle] = useState("");
     const [currentTags, setCurrentTags] = useState<AppTag[]>([]);
     const [availableTags, setAvailableTags] = useState<AppTag[]>([]);
@@ -33,15 +38,14 @@ export default function ManageArticleTagsPage() {
         const csrfToken = getCookie("csrf_token");
 
         try {
-            // Fetch article details
-            const articleRes = await fetch(`http://${envHostBackend()}/article/details?id=${id}`, {
+            const articleRes = await fetch(`http://${envHostBackend()}/article/details?id=${articleId}`, {
                 headers: { "X-CSRF-Token": csrfToken },
                 credentials: "include"
             });
 
             if (articleRes.status === 200) {
                 const articleData = await articleRes.json();
-                setArticleTitle(articleData.title || `Article ${id}`);
+                setArticleTitle(articleData.title || `Article ${articleId}`);
                 const tags = (articleData.tags || []).map(normalizeTag);
                 setCurrentTags(tags);
             } else {
@@ -49,7 +53,6 @@ export default function ManageArticleTagsPage() {
                 setIsError(true);
             }
 
-            // Fetch all available tags
             const tagsRes = await fetch(`http://${envHostBackend()}/tags/list`, {
                 headers: { "X-CSRF-Token": csrfToken },
                 credentials: "include"
@@ -62,7 +65,7 @@ export default function ManageArticleTagsPage() {
                 setMessage("Failed to load tags list");
                 setIsError(true);
             }
-        } catch (error) {
+        } catch {
             setMessage("Server error while fetching data");
             setIsError(true);
         } finally {
@@ -72,7 +75,7 @@ export default function ManageArticleTagsPage() {
 
     useEffect(() => {
         fetchArticleAndTags();
-    }, [id]);
+    }, [articleId]);
 
     const handleAddTag = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -81,7 +84,7 @@ export default function ManageArticleTagsPage() {
 
         const csrfToken = getCookie("csrf_token");
         const formData = new FormData();
-        formData.append("articleID", id || "");
+        formData.append("articleID", articleId || "");
         formData.append("tagsID", selectedTagId);
 
         try {
@@ -112,7 +115,7 @@ export default function ManageArticleTagsPage() {
         setMessage("");
         const csrfToken = getCookie("csrf_token");
         const formData = new FormData();
-        formData.append("articleID", id || "");
+        formData.append("articleID", articleId || "");
         formData.append("tagsID", tagId.toString());
 
         try {
@@ -142,7 +145,6 @@ export default function ManageArticleTagsPage() {
         return <p>Loading...</p>;
     }
 
-    // Filter available tags to only show those not currently attached
     const unattachedTags = availableTags.filter(
         (at) => !currentTags.find((ct) => ct.id === at.id)
     );
@@ -159,9 +161,19 @@ export default function ManageArticleTagsPage() {
                 ) : (
                     <ul style={{ listStyle: "none", padding: 0 }}>
                         {currentTags.map((tag) => (
-                            <li key={tag.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", padding: "10px", border: "1px solid #ddd", borderRadius: "4px" }}>
+                            <li
+                                key={tag.id}
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    marginBottom: "10px",
+                                    padding: "10px",
+                                    border: "1px solid #ddd",
+                                    borderRadius: "4px"
+                                }}
+                            >
                                 <span><strong>{tag.name}</strong> ({tag.code})</span>
-                                <button onClick={() => handleRemoveTag(tag.id)} style={{ backgroundColor: "#ff4d4f", color: "white", border: "none", padding: "5px 10px", borderRadius: "4px", cursor: "pointer" }}>
+                                <button onClick={() => handleRemoveTag(tag.id)}>
                                     Remove
                                 </button>
                             </li>
@@ -189,19 +201,21 @@ export default function ManageArticleTagsPage() {
                                 </option>
                             ))}
                         </select>
-                        <button type="submit" style={{ padding: "8px 16px" }}>Add Tag</button>
+                        <button type="submit">Add Tag</button>
                     </form>
                 )}
             </div>
 
             {message && (
-                <p className={isError ? "error" : "success"} style={{ marginTop: "10px", fontWeight: "bold" }}>
+                <p className={isError ? "error" : "success"}>
                     {message}
                 </p>
             )}
 
             <div style={{ marginTop: "30px" }}>
-                <Link to="/home">Back to Home</Link>
+                <Link to={`/event/${eventId}/activity/${activityId}/article/view/${articleId}`}>
+                    Back to Article
+                </Link>
             </div>
         </div>
     );
