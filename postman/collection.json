@@ -910,12 +910,13 @@
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/event/activity/create",
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/create",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "event",
+                "{{event_id}}",
                 "activity",
                 "create"
               ]
@@ -971,21 +972,15 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/event/activity/list?eventID={{event_id}}",
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/list",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "event",
+                "{{event_id}}",
                 "activity",
                 "list"
-              ],
-              "query": [
-                {
-                  "key": "eventID",
-                  "value": "{{event_id}}",
-                  "type": "text"
-                }
               ]
             }
           },
