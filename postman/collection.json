@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "9b00181a-18c7-4c94-a03c-3ced91d21f78",
+    "_postman_id": "134f5035-55d6-465d-88fb-cafaee5346b3",
     "name": "00 - LES API (Runner)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "52499161",
-    "_collection_link": "https://go.postman.co/collection/52499161-9b00181a-18c7-4c94-a03c-3ced91d21f78?source=collection_link"
+    "_exporter_id": "49772394",
+    "_collection_link": "https://go.postman.co/collection/49772394-134f5035-55d6-465d-88fb-cafaee5346b3?source=collection_link"
   },
   "item": [
     {
@@ -910,13 +910,12 @@
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/create",
+              "raw": "{{baseUrl}}/event/activity/create",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "event",
-                "{{event_id}}",
                 "activity",
                 "create"
               ]
@@ -972,13 +971,12 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/list?eventID={{event_id}}",
+              "raw": "{{baseUrl}}/event/activity/list?eventID={{event_id}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "event",
-                "{{event_id}}",
                 "activity",
                 "list"
               ],
@@ -988,129 +986,6 @@
                   "value": "{{event_id}}",
                   "type": "text"
                 }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "activity_view",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"View Activity -> 200\", function () {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "const activity = pm.response.json();",
-                  "",
-                  "pm.test(\"Correct activity returned\", function () {",
-                  "  pm.expect(activity.ID).to.eql(Number(pm.environment.get(\"activity_id\")));",
-                  "  pm.expect(activity.Name).to.eql(pm.environment.get(\"activity_name\"));",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/view/{{activity_id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "event",
-                "{{event_id}}",
-                "activity",
-                "view",
-                "{{activity_id}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "activity_edit",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Edit Activity -> 200\", function () {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Edit Activity -> success message\", function () {",
-                  "  pm.expect(pm.response.text()).to.include(\"Activity updated\");",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "eventID",
-                  "value": "{{event_id}}",
-                  "type": "text"
-                },
-                {
-                  "key": "name",
-                  "value": "{{activity_name}}_edited",
-                  "type": "text"
-                },
-                {
-                  "key": "description",
-                  "value": "Edited description",
-                  "type": "text"
-                },
-                {
-                  "key": "startDate",
-                  "value": "{{event_start}}",
-                  "type": "text"
-                },
-                {
-                  "key": "endDate",
-                  "value": "{{event_end}}",
-                  "type": "text"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/edit/{{activity_id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "event",
-                "{{event_id}}",
-                "activity",
-                "edit",
-                "{{activity_id}}"
               ]
             }
           },
@@ -1597,335 +1472,6 @@
           "response": []
         },
         {
-          "name": "article_edit",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status is 200\", function () {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "});\r",
-                  "\r",
-                  "pm.test(\"Correct success message\", function () {\r",
-                  "    pm.expect(pm.response.json().message).to.eql(\"Article edited successfully\");\r",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "articleID",
-                  "value": "{{article_id}}",
-                  "type": "text",
-                  "uuid": "b64fb8d7-b91f-4bae-8a7d-ac96c68efac5"
-                },
-                {
-                  "key": "title",
-                  "value": "{{article_title_edited}}",
-                  "type": "text",
-                  "uuid": "d213355e-97e6-4231-ab66-0b3f0fd57a23"
-                },
-                {
-                  "key": "url",
-                  "value": "{{article_url_edited}}",
-                  "type": "text",
-                  "uuid": "bd09ed3e-679a-418a-be43-b86edcfed847"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/article/edit",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "article",
-                "edit"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "article_list",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Get Articles -> 200\", function () {\r",
-                  "  pm.response.to.have.status(200);\r",
-                  "});\r",
-                  "\r",
-                  "const res = pm.response.json();\r",
-                  "\r",
-                  "pm.test(\"Article has edited fields\", function () {\r",
-                  "  pm.expect(res[0].title).to.eql(pm.environment.get(\"article_title_edited\"));\r",
-                  "  pm.expect(res[0].url).to.eql(pm.environment.get(\"article_url_edited\"));\r",
-                  "});\r",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "url": {
-              "raw": "{{baseUrl}}/article/list?activityID={{activity_id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "article",
-                "list"
-              ],
-              "query": [
-                {
-                  "key": "activityID",
-                  "value": "{{activity_id}}"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "article_delete",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Delete Article -> 200\", function () {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Delete Article -> success message\", function () {",
-                  "  pm.expect(pm.response.text()).to.include(\"Article deleted successfully\");",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "articleID",
-                  "value": "{{article_id}}",
-                  "type": "text"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/article/delete",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "article",
-                "delete"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "article_list_after_delete",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"List Articles -> 404\", function () {\r",
-                  "  pm.response.to.have.status(404);\r",
-                  "});\r",
-                  "\r",
-                  "pm.test(\"List Articles -> 'not found' message\", function () {\r",
-                  "  pm.expect(pm.response.text()).to.include(\"No article found\");\r",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "url": {
-              "raw": "{{baseUrl}}/article/list?activityID={{activity_id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "article",
-                "list"
-              ],
-              "query": [
-                {
-                  "key": "activityID",
-                  "value": "{{activity_id}}"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "activity_delete",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Delete Activity -> 200\", function () {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Delete Activity -> success message\", function () {",
-                  "  pm.expect(pm.response.text()).to.include(\"Activity deleted\");",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "eventID",
-                  "value": "{{event_id}}",
-                  "type": "text"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/delete/{{activity_id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "event",
-                "{{event_id}}",
-                "activity",
-                "delete",
-                "{{activity_id}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "activity_view_after_delete",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Deleted activity cannot be viewed\", function () {",
-                  "  pm.response.to.have.status(404);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/view/{{activity_id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "event",
-                "{{event_id}}",
-                "activity",
-                "view",
-                "{{activity_id}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "event_publish",
           "event": [
             {
@@ -2391,12 +1937,6 @@
                   "value": "{{regtype_price}}",
                   "type": "text",
                   "uuid": "7553a344-9975-49f2-a085-faf46b95d2cd"
-                },
-                {
-                  "key": "benefits",
-                  "value": "{{benefits}}",
-                  "type": "text",
-                  "uuid": "034bdee9-43a5-4834-a623-26a86896ac36"
                 }
               ]
             },
@@ -2782,12 +2322,6 @@
                   "value": "{{regtype_price}}",
                   "type": "text",
                   "uuid": "7553a344-9975-49f2-a085-faf46b95d2cd"
-                },
-                {
-                  "key": "benefits",
-                  "value": "{{benefits}}",
-                  "type": "text",
-                  "uuid": "bedda50c-95b0-4092-9972-80f6b73ca85e"
                 }
               ]
             },
@@ -2862,74 +2396,6 @@
                 "view",
                 "{{event_id}}",
                 "regtypes"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "regtype_benefits",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Benefits list -> 200\", function () {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "if (pm.response.code === 200) {",
-                  "  const res = pm.response.json();",
-                  "",
-                  "  pm.test(\"Benefits list -> returns array\", function () {",
-                  "    pm.expect(res).to.be.an(\"array\");",
-                  "  });",
-                  "",
-                  "  pm.test(\"Benefits list -> array is not empty\", function () {",
-                  "    pm.expect(res.length).to.be.greaterThan(0);",
-                  "  });",
-                  "",
-                  "  const expectedRaw = pm.environment.get(\"benefits\");",
-                  "",
-                  "  if (expectedRaw) {",
-                  "    const expected = expectedRaw",
-                  "      .split(\",\")",
-                  "      .map(b => b.trim())",
-                  "      .filter(Boolean);",
-                  "",
-                  "    pm.test(\"Benefits list -> contains expected benefits\", function () {",
-                  "      expected.forEach(b => {",
-                  "        pm.expect(res).to.include(b);",
-                  "      });",
-                  "    });",
-                  "  }",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/event/view/{{event_id}}/benefits",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "event",
-                "view",
-                "{{event_id}}",
-                "benefits"
               ]
             }
           },
@@ -3275,6 +2741,139 @@
               "path": [
                 "event",
                 "pay"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login_toSee_event_participants",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Login -> 200\", function () {\r",
+                  "  pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const setCookies = pm.response.headers.all()\r",
+                  "  .filter(h => h.key.toLowerCase() === \"set-cookie\")\r",
+                  "  .map(h => h.value);\r",
+                  "\r",
+                  "function getCookieValue(name) {\r",
+                  "  const row = setCookies.find(v => v.startsWith(name + \"=\"));\r",
+                  "  if (!row) return null;\r",
+                  "  return row.split(\";\")[0].substring(name.length + 1);\r",
+                  "}\r",
+                  "\r",
+                  "const csrf = getCookieValue(\"csrf_token\");\r",
+                  "pm.test(\"CSRF cookie veio no login\", function () {\r",
+                  "  pm.expect(csrf).to.not.be.null;\r",
+                  "});\r",
+                  "\r",
+                  "if (csrf) {\r",
+                  "  pm.environment.set(\"csrfToken\", csrf);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text",
+                  "uuid": "c80fe009-1824-4fbb-9344-5904aadacce6"
+                },
+                {
+                  "key": "pass",
+                  "value": "{{password}}",
+                  "type": "text",
+                  "uuid": "ade1d20b-d44e-45da-9998-a21b71452b1e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_participants_list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Event participants list -> 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const data = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Participants response is valid\", function () {\r",
+                  "    pm.expect(data).to.be.an(\"array\");\r",
+                  "    pm.expect(data.length).to.be.greaterThan(0);\r",
+                  "    pm.expect(data[0]).to.have.property(\"ID\");\r",
+                  "    pm.expect(data[0]).to.have.property(\"FirstName\");\r",
+                  "    pm.expect(data[0]).to.have.property(\"LastName\");\r",
+                  "    pm.expect(data[0]).to.have.property(\"Email\");\r",
+                  "    pm.expect(data[0]).to.have.property(\"Confirmed\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}/participants",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}",
+                "participants"
               ]
             }
           },
