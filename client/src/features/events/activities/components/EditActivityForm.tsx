@@ -14,6 +14,7 @@ type Activity = {
     Description: string;
     StartDate: string;
     EndDate: string;
+    Place: string;
 };
 
 export default function EditActivityForm({ eventId, activityID }: Props) {
@@ -67,6 +68,7 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
         formData.append("description", activity.Description);
         formData.append("startDate", new Date(activity.StartDate).toISOString());
         formData.append("endDate", new Date(activity.EndDate).toISOString());
+        formData.append("place", activity.Place);
 
         try {
             const res = await fetch(
@@ -148,6 +150,14 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
                     setActivity({ ...activity, EndDate: e.target.value })
                 }
                 required
+            />
+
+            <label>Location</label>
+            <input
+                value={activity.Place}
+                onChange={(e) =>
+                    setActivity({ ...activity, Place: e.target.value })
+                }
             />
 
             <button type="submit">Save</button>

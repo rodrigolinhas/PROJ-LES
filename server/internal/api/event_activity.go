@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -167,14 +168,17 @@ func EventActivityEdit(c *gin.Context) {
 		return
 	}
 
-	if name := c.PostForm("name"); name != "" {
+	name := strings.TrimSpace(c.PostForm("name"))
+	desc := strings.TrimSpace(c.PostForm("description"))
+
+	if name != "" {
 		activity.Name = name
 	}
-	if desc := c.PostForm("description"); desc != "" {
+	if desc != "" {
 		activity.Description = desc
 	}
 	if place := c.PostForm("place"); place != "" {
-		activity.Place = place
+		activity.Place = strings.TrimSpace(place)
 	}
 
 	db.DB.Save(&activity)
