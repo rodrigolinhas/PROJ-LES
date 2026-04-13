@@ -19,6 +19,7 @@ import ListActivityPage from "@/features/events/activities/pages/ListActivitiesP
 
 import ProtectedRoutes from "./router/ProtectedRoutes";
 import ViewUserPage from '@/features/user/pages/UserInfoPage';
+import ListEventParticipantsPage from "@/features/events/pages/ListEventParticipantsPage.tsx";
 
 function App() {
     return (
@@ -37,6 +38,7 @@ function App() {
                     <Route path="/event/create" element={<CreateEventPage />}/>
                     <Route path="/event/edit/:id" element={<EditEventPage />}/>
                     <Route path="/event/:id" element={<ViewEventPage />} />
+                    <Route path="/event/:id/participants" element={<ListEventParticipantsPage />} />
                     <Route path="/article/create" element={<CreateArticlePage />} />
                     <Route path="/article/:id/tags" element={<ManageArticleTagsPage />} />
 

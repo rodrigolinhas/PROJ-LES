@@ -64,6 +64,12 @@ export default function ViewEventPage() {
             <p><strong>Start:</strong> {new Date(event.StartDate).toLocaleString()}</p>
             <p><strong>End:</strong> {new Date(event.EndDate).toLocaleString()}</p>
 
+            <Link to={`/event/${event.ID}/participants`}>
+                View Participants
+            </Link>
+
+            <br />
+
             <Link to={`/event/${event.ID}/activity/list`}>
                 View Activities
             </Link>
