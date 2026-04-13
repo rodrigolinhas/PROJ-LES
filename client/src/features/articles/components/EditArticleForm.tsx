@@ -99,7 +99,7 @@ export default function EditArticleForm({ eventId, activityId, articleId }: Prop
         }
 
         try {
-            const response = await fetch("http://${envHostBackend()}/article/edit", {
+            const response = await fetch(`http://${envHostBackend()}/article/edit`, {
                 method: "POST",
                 body: formData,
                 credentials: "include",
