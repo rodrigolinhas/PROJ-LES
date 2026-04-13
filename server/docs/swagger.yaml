@@ -45,6 +45,19 @@ definitions:
       startDate:
         type: string
     type: object
+  api.EventParticipant:
+    properties:
+      Confirmed:
+        type: boolean
+      Email:
+        type: string
+      FirstName:
+        type: string
+      ID:
+        type: integer
+      LastName:
+        type: string
+    type: object
   api.LongEvent:
     properties:
       closed:
@@ -1640,6 +1653,51 @@ paths:
           schema:
             type: string
       summary: List the benefits of an event
+      tags:
+      - Event
+  /event/view/:id/participants:
+    get:
+      consumes:
+      - text/plain
+      description: An event organizer can view all participants registered in one
+        of their events
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.EventParticipant'
+            type: array
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: User is not the organizer of this event
+          schema:
+            type: string
+        "404":
+          description: Event not found / No participants found
+          schema:
+            type: string
+        "500":
+          description: Error found on query
+          schema:
+            type: string
+      summary: List participants of an event
       tags:
       - Event
   /event/view/:id/regtypes:

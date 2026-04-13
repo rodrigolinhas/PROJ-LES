@@ -16,6 +16,14 @@ type PayTokenJSON struct {
 	PayToken string
 }
 
+type EventParticipant struct {
+	ID        uint   `json:"ID" gorm:"column:id"`
+	FirstName string `json:"FirstName" gorm:"column:first_name"`
+	LastName  string `json:"LastName" gorm:"column:last_name"`
+	Email     string `json:"Email" gorm:"column:email"`
+	Confirmed bool   `json:"Confirmed" gorm:"column:confirmed"`
+}
+
 // EventRegister
 // @Summary 	Enroll in a event
 // @Description A user can enroll in a event, if said enrollment expects payment, a payToken will be given.
@@ -34,7 +42,7 @@ type PayTokenJSON struct {
 func EventRegister(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
 		return
 	}
 
@@ -62,10 +70,10 @@ func EventRegister(c *gin.Context) {
 	}
 
 	var discount *models.DiscountCode
-	
+
 	if discountCode == "" {
 		discount = nil
-	} else  {
+	} else {
 		fmt.Println(discountCode)
 		res = db.DB.Where("code = ?", discountCode).First(&discount)
 		if res.Error != nil {
@@ -86,7 +94,7 @@ func EventRegister(c *gin.Context) {
 		reg.PayToken = utils.GenerateToken(32)
 	}
 
-	trans := db.DB.Transaction(func(tx *gorm.DB) error {	
+	trans := db.DB.Transaction(func(tx *gorm.DB) error {
 		err := tx.Create(reg)
 		if err.Error != nil {
 			return err.Error
@@ -116,6 +124,61 @@ func EventRegister(c *gin.Context) {
 	})
 }
 
+// EventParticipantsList
+// @Summary 	List participants of an event
+// @Description An event organizer can view all participants registered in one of their events
+// @Tags 		Event
+// @Accept		plain
+// @Produce 	json
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		id				path		string	true	"ID of the event"
+// @Success 	200 {array} EventParticipant
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		403 {string} string "User is not the organizer of this event"
+// @Failure		404 {string} string "Event not found / No participants found"
+// @Failure 	500 {string} string "Error found on query"
+// @Router 		/event/view/:id/participants [get]
+func EventParticipantsList(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
+		return
+	}
+
+	eventID := c.Param("id")
+
+	var event models.Event
+	res := db.DB.Where("id = ?", eventID).First(&event)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "User is not the organizer of this event")
+		return
+	}
+
+	var participants []EventParticipant
+	res = db.DB.Table("event_registrations").
+		Select("users.id, users.first_name, users.last_name, users.email, event_registrations.confirmed").
+		Joins("JOIN users ON users.id = event_registrations.user_id").
+		Where("event_registrations.event_id = ?", event.ID).
+		Scan(&participants)
+
+	if res.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found on query")
+		return
+	}
+
+	if len(participants) == 0 {
+		c.String(http.StatusNotFound, "No participants found")
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, participants)
+}
+
 // EventPay
 // @Summary 	Pay event enrollment fee
 // @Description Dummy endpoint for paying the fee for enrolling in a event
@@ -134,7 +197,7 @@ func EventRegister(c *gin.Context) {
 func EventPay(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
 		return
 	}
 
@@ -178,7 +241,7 @@ type ShortEventEnroll struct {
 // @Accept		plain
 // @Produce 	json
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
-// @Param 		filter			query		string	false	"Filter the name of the events shown" 
+// @Param 		filter			query		string	false	"Filter the name of the events shown"
 // @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
 // @Param 		offset			query		int		false	"Number of events to skip in the search" default(0)
 // @Success 	200 {array} ShortEventEnroll
@@ -188,18 +251,20 @@ type ShortEventEnroll struct {
 // @Router 		/event/my/enroll [get]
 func EventRegistrationList(c *gin.Context) {
 	user, limit, offset, filter, err := eventListPreface(c)
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	var events []ShortEventEnroll
 	sub := db.DB.Model(&models.EventRegistration{}).
-				 Where("user_id = ?", user.ID).
-				 Select("event_id, confirmed")
+		Where("user_id = ?", user.ID).
+		Select("event_id, confirmed")
 	res := db.DB.Table("events").
-				 Joins("RIGHT JOIN (?) ON id = event_id", sub).
-				 Limit(limit).
-				 Offset(offset).
-				 Where("name LIKE ?", "%"+filter+"%").
-				 Scan(&events)
+		Joins("RIGHT JOIN (?) ON id = event_id", sub).
+		Limit(limit).
+		Offset(offset).
+		Where("name LIKE ?", "%"+filter+"%").
+		Scan(&events)
 
 	if res.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found on query")
