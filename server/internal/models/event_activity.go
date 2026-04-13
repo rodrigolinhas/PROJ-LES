@@ -14,14 +14,15 @@ type EventActivity struct {
 	Description string    `gorm:"not null"`
 	StartDate   time.Time `gorm:"not null"`
 	EndDate     time.Time `gorm:"not null"`
+	Place		string	
 	Articles 	[]Article
 	EventID     uint      `gorm:"not null"`
 	Event       Event     `gorm:"not null"`
 }
 
 // Creates an event activity model and validates it
-func NewEventActivity(name string, description string, startDate time.Time, endDate time.Time, event Event) (*EventActivity, error) {
-	a := newEventActivity(name, description, startDate, endDate, event)
+func NewEventActivity(name string, description string, startDate time.Time, endDate time.Time, place string, event Event) (*EventActivity, error) {
+	a := newEventActivity(name, description, startDate, endDate, place, event)
 	if err := a.validate(); err != nil {
 		return nil, err
 	}
@@ -29,12 +30,13 @@ func NewEventActivity(name string, description string, startDate time.Time, endD
 }
 
 // Creates an event activity model without validating it
-func newEventActivity(name string, description string, startDate time.Time, endDate time.Time, event Event) *EventActivity {
+func newEventActivity(name string, description string, startDate time.Time, endDate time.Time, place string, event Event) *EventActivity {
 	a := &EventActivity{
 		Name:        strings.TrimSpace(name),
 		Description: strings.TrimSpace(description),
 		StartDate:   startDate.Truncate(time.Minute),
 		EndDate:     endDate.Truncate(time.Minute),
+		Place:       strings.TrimSpace(place),
 		Event:       event,
 	}
 	return a
@@ -55,7 +57,6 @@ func (a EventActivity) validate() error {
 	return nil
 }
 
-//TODO: Test this method
 func (a *EventActivity) AddArticle(article Article) error {
 	for _, v := range a.Articles {
 		if article.Title == v.Title {

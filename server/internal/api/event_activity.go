@@ -14,7 +14,8 @@ import (
 type EventActivity struct {
 	ID			uint
 	Name        string    
-	Description string    
+	Description string 
+	Place		string
 	StartDate   time.Time 
 	EndDate     time.Time 
 }
@@ -31,6 +32,7 @@ type EventActivity struct {
 // @Param 		eventID 		path 	    string 	true 	"Event ID of the associated event"
 // @Param 		startDate 		formData 	string  true 	"Date/Time at which the activity starts (RFC3339/ISO8601 format)"
 // @Param 		endDate 		formData    string  true    "Date/Time at which the activity ends (RFC3339/ISO8601 format)"
+// @Param       place           formData 	string  false   "Location where the activity takes place"
 // @Success     201 {string} string "Activity created with success"
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure 	500 {string} string "Error found during activity creation"
@@ -46,6 +48,7 @@ func EventActivityCreate(c *gin.Context) {
 	desc := c.Request.FormValue("description")
 	start := c.Request.FormValue("startDate")
 	end := c.Request.FormValue("endDate")
+	place := c.Request.FormValue("place")
 	eventID := c.Param("eventId")
 
 	startt, serr := time.Parse(time.RFC3339, start)
@@ -69,7 +72,7 @@ func EventActivityCreate(c *gin.Context) {
 		return
 	}
 
-	activity, err := models.NewEventActivity(name, desc, startt, endt, event)
+	activity, err := models.NewEventActivity(name, desc, startt, endt, place, event)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
@@ -132,6 +135,7 @@ func EventActivityList(c *gin.Context) {
 // @Param 	id              path        string  true    "Activity ID"
 // @Param 	name            formData    string  false   "Name"
 // @Param 	description     formData    string  false   "Description"
+// @Param   place           formData 	string  false   "Location where the activity takes place"
 // @Success 200 {string} string "Updated"
 // @Router 	/event/{eventId}/activity/edit/{id} [post]
 func EventActivityEdit(c *gin.Context) {
@@ -168,6 +172,9 @@ func EventActivityEdit(c *gin.Context) {
 	}
 	if desc := c.PostForm("description"); desc != "" {
 		activity.Description = desc
+	}
+	if place := c.PostForm("place"); place != "" {
+		activity.Place = place
 	}
 
 	db.DB.Save(&activity)
