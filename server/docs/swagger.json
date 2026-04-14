@@ -1936,6 +1936,72 @@
                 }
             }
         },
+        "/event/view/:id/participants": {
+            "get": {
+                "description": "An event organizer can view all participants registered in one of their events",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "List participants of an event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.EventParticipant"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not the organizer of this event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found / No participants found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found on query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/event/view/:id/regtypes": {
             "get": {
                 "description": "A user can view the registration types of an event that they own or was published",
@@ -2694,6 +2760,26 @@
                     "type": "string"
                 },
                 "startDate": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.EventParticipant": {
+            "type": "object",
+            "properties": {
+                "Confirmed": {
+                    "type": "boolean"
+                },
+                "Email": {
+                    "type": "string"
+                },
+                "FirstName": {
+                    "type": "string"
+                },
+                "ID": {
+                    "type": "integer"
+                },
+                "LastName": {
                     "type": "string"
                 }
             }

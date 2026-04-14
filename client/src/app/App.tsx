@@ -19,6 +19,10 @@ import ListActivityPage from "@/features/events/activities/pages/ListActivitiesP
 
 import ProtectedRoutes from "./router/ProtectedRoutes";
 import ViewUserPage from '@/features/user/pages/UserInfoPage';
+import ListArticlesPage from "@/features/articles/pages/ListArticlesPage.tsx";
+import ViewArticlePage from "@/features/articles/pages/ViewArticlePage.tsx";
+import EditArticlePage from "@/features/articles/pages/EditArticlePage.tsx";
+import ListEventParticipantsPage from "@/features/events/pages/ListEventParticipantsPage.tsx";
 
 function App() {
     return (
@@ -37,6 +41,7 @@ function App() {
                     <Route path="/event/create" element={<CreateEventPage />}/>
                     <Route path="/event/edit/:id" element={<EditEventPage />}/>
                     <Route path="/event/:id" element={<ViewEventPage />} />
+                    <Route path="/event/:id/participants" element={<ListEventParticipantsPage />} />
                     <Route path="/article/create" element={<CreateArticlePage />} />
                     <Route path="/article/:id/tags" element={<ManageArticleTagsPage />} />
 
@@ -45,6 +50,10 @@ function App() {
                     <Route path="/event/:eventId/activity/create" element={<CreateActivityPage />}/>
                     <Route path="/event/:eventId/activity/view/:id" element={<ViewActivityPage />} />
                     <Route path="/event/:eventId/activity/list" element={<ListActivityPage />} />
+                    <Route path="/event/:eventId/activity/:activityId/article/list" element={<ListArticlesPage />} />
+                    <Route path="/event/:eventId/activity/:activityId/article/view/:articleId" element={<ViewArticlePage />} />
+                    <Route path="/event/:eventId/activity/:activityId/article/edit/:articleId" element={<EditArticlePage />} />
+                    <Route path="/event/:eventId/activity/:activityId/article/:articleId/tags" element={<ManageArticleTagsPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
