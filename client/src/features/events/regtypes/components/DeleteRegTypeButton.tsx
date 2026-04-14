@@ -24,7 +24,7 @@ export default function DeleteRegTypeButton({ eventId, regTypeId, onDeleted }: P
 
         try {
             const response = await fetch(
-                `http://localhost:8080/event/regtype/delete`,
+                "http://"+ envHostBackend() + "/event/regtype/delete",
                 {
                     method: "POST",
                     headers: {
