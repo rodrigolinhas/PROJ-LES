@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getCookie } from "../../../shared/utils/getCookie";
+import RegTypesList from "../regtypes/components/RegTypesList.tsx";
 
 type EventDetails = {
     ID: number;
@@ -63,6 +64,10 @@ export default function ViewEventPage() {
             <p><strong>Location:</strong> {event.Location}</p>
             <p><strong>Start:</strong> {new Date(event.StartDate).toLocaleString()}</p>
             <p><strong>End:</strong> {new Date(event.EndDate).toLocaleString()}</p>
+
+            <hr />
+                <RegTypesList eventId={id!} />
+            <hr />
 
             <Link to={`/event/${event.ID}/activity/list`}>
                 View Activities

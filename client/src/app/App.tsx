@@ -14,11 +14,12 @@ import ViewEventPage from "../features/events/pages/ViewEventPage";
 import SettingsPage from "../features/settings/pages/SettingsPage";
 import EditActivityPage from "../features/events/activities/pages/EditActivityPage.tsx";
 import CreateActivityPage from "../features/events/activities/pages/CreateActivityPage.tsx";
-import ViewActivityPage from "@/features/events/activities/pages/ViewActivityPage.tsx";
-import ListActivityPage from "@/features/events/activities/pages/ListActivitiesPage.tsx";
+import ViewActivityPage from "../features/events/activities/pages/ViewActivityPage.tsx";
+import ListActivityPage from "../features/events/activities/pages/ListActivitiesPage.tsx";
+import EditRegTypePage from "../features/events/regtypes/pages/EditRegTypePage";
 
 import ProtectedRoutes from "./router/ProtectedRoutes";
-import ViewUserPage from '@/features/user/pages/UserInfoPage';
+import ViewUserPage from '../features/user/pages/UserInfoPage';
 
 function App() {
     return (
@@ -45,6 +46,8 @@ function App() {
                     <Route path="/event/:eventId/activity/create" element={<CreateActivityPage />}/>
                     <Route path="/event/:eventId/activity/view/:id" element={<ViewActivityPage />} />
                     <Route path="/event/:eventId/activity/list" element={<ListActivityPage />} />
+
+                    <Route path="/event/:eventId/regtype/edit/:regTypeId" element={<EditRegTypePage />}/>
                 </Route>
             </Routes>
         </BrowserRouter>
