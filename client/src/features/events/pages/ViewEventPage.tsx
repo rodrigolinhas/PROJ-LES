@@ -68,6 +68,11 @@ export default function ViewEventPage() {
             <hr />
                 <RegTypesList eventId={id!} />
             <hr />
+            <Link to={`/event/${event.ID}/participants`}>
+                View Participants
+            </Link>
+
+            <br />
 
             <Link to={`/event/${event.ID}/activity/list`}>
                 View Activities
