@@ -2050,6 +2050,12 @@ const docTemplate = `{
                         "name": "endDate",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Location where the activity takes place",
+                        "name": "place",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -2163,6 +2169,12 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Description",
                         "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Location where the activity takes place",
+                        "name": "place",
                         "in": "formData"
                     }
                 ],
@@ -2690,6 +2702,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "place": {
                     "type": "string"
                 },
                 "startDate": {

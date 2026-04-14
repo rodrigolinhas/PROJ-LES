@@ -24,6 +24,7 @@ func TestNewActivityValid(t *testing.T) {
 		"Description",
 		time.Date(2026, time.March, 20, 10, 0, 0, 0, time.UTC),
 		time.Date(2026, time.March, 20, 12, 0, 0, 0, time.UTC),
+		"Room 123",
 		*exEvent,
 	)
 
@@ -37,6 +38,7 @@ func TestNewActivityTrim(t *testing.T) {
 		"   Description  ",
 		time.Date(2026, time.March, 20, 10, 0, 0, 0, time.UTC),
 		time.Date(2026, time.March, 20, 12, 0, 0, 0, time.UTC),
+		"",
 		*exEvent,
 	)
 
@@ -51,6 +53,7 @@ func TestActivityEmptyName(t *testing.T) {
 		"Description",
 		time.Now(),
 		time.Now().Add(time.Hour),
+		"",
 		*exEvent,
 	)
 
@@ -66,6 +69,7 @@ func TestActivityEmptyDescription(t *testing.T) {
 		"",
 		time.Now(),
 		time.Now().Add(time.Hour),
+		"",
 		*exEvent,
 	)
 
@@ -80,6 +84,7 @@ func TestActivityInvalidDates(t *testing.T) {
 		"Description",
 		time.Date(2026, time.March, 20, 12, 0, 0, 0, time.UTC),
 		time.Date(2026, time.March, 20, 10, 0, 0, 0, time.UTC),
+		"",
 		*exEvent,
 	)
 
@@ -94,6 +99,7 @@ func TestActivityBeforeEpoch(t *testing.T) {
 		"Description",
 		time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC),
 		time.Now(),
+		"",
 		*exEvent,
 	)
 
@@ -108,6 +114,7 @@ func TestActivityAddArticle(t *testing.T) {
 		"Description",
 		time.Date(2026, time.March, 20, 10, 0, 0, 0, time.UTC),
 		time.Date(2026, time.March, 20, 12, 0, 0, 0, time.UTC),
+		"",
 		*exEvent,
 	)
 
@@ -125,6 +132,7 @@ func TestActivityAddArticleDuplicate(t *testing.T) {
 		"Description",
 		time.Date(2026, time.March, 20, 10, 0, 0, 0, time.UTC),
 		time.Date(2026, time.March, 20, 12, 0, 0, 0, time.UTC),
+		"",
 		*exEvent,
 	)
 

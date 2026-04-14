@@ -9,6 +9,7 @@ export default function CreateActivityForm() {
     const [description, setDescription] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [place, setPlace] = useState("");
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
     const [activityCreated, setActivityCreated] = useState(false);
@@ -23,6 +24,7 @@ export default function CreateActivityForm() {
         formData.append("description", description);
         formData.append("startDate", new Date(startDate).toISOString()); // convreter p rfc3339
         formData.append("endDate", new Date(endDate).toISOString());
+        formData.append("place", place);
 
         try {
             const response = await fetch(`http://localhost:8080/event/${eventId}/activity/create`, {
@@ -93,6 +95,12 @@ export default function CreateActivityForm() {
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                     required
+                />
+                <label>Location</label>
+                <input
+                    placeholder="Activity Location"
+                    value={place}
+                    onChange={(e) => setPlace(e.target.value)}
                 />
                 <button type = "submit">Create Activity</button>
                 <p className={isError ? "error" : "success"}>
