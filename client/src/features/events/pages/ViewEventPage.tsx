@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getCookie } from "../../../shared/utils/getCookie";
+import RegTypesList from "../regtypes/components/RegTypesList.tsx";
 import { envHostBackend } from "@/shared/utils/env";
 import { useUserID } from "@/shared/hooks/useUserID";
 
@@ -120,6 +121,9 @@ export default function ViewEventPage() {
             <p><strong>Start:</strong> {new Date(event.StartDate).toLocaleString()}</p>
             <p><strong>End:</strong> {new Date(event.EndDate).toLocaleString()}</p>
 
+            <hr />
+                <RegTypesList eventId={id!} />
+            <hr />
             <Link to={`/event/${event.ID}/participants`}>
                 View Participants
             </Link>

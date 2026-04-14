@@ -100,6 +100,7 @@ func setEndpoints(router *gin.Engine) {
 	router.POST("/event/regtype/delete", api.RegistrationTypeDelete)
 	router.GET("/event/view/:id/regtypes", api.RegistrationTypeList)
 	router.GET("/event/view/:id/benefits", api.EventBenefitsList)
+	router.GET("/event/view/:id/regtype/:regid", api.RegistrationTypeView)
 	router.GET("/event/view/:id/benefit_participants/:benefitID", api.EventBenefitParticipants)
 
 	//event activities

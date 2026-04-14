@@ -392,6 +392,72 @@ func EventBenefitsList(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, benefits)
 }
 
+// RegistrationTypeView
+// @Summary 	Get a single Registration Type of an event
+// @Description A user can view a specific registration type of an event
+// @Tags 		Event
+// @Accept		plain
+// @Produce 	json
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		id				path		string	true	"ID of the event"
+// @Param 		regid			path		string	true	"ID of the registration type"
+// @Success 	200 {object} RegistrationType
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		403 {string} string "Event was not published yet and the user is not the orgaziner"
+// @Failure		404 {string} string "Event/Registration Type not found"
+// @Router 		/event/view/:id/regtype/:regid [get]
+func RegistrationTypeView(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
+		return
+	}
+
+	eventID := c.Param("id")
+	regTypeID := c.Param("regid")
+
+	var event models.Event
+	res := db.DB.Model(&models.Event{}).Where("ID = ?", eventID).Take(&event)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if event.Published == false && event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "Event was not published yet and the user is not the orgaziner")
+		return
+	}
+
+	var rt models.RegistrationType
+	err := db.DB.Preload("Benefits").Model(&models.RegistrationType{}).
+		Where("event_id = ? AND id = ?", event.ID, regTypeID).
+		First(&rt)
+
+	if err.Error != nil {
+		c.String(http.StatusNotFound, "Registration Type not found")
+		return
+	}
+
+	var benefits []string
+	for _, b := range rt.Benefits {
+		benefits = append(benefits, b.Name)
+	}
+	if benefits == nil {
+		benefits = []string{}
+	}
+
+	response := RegistrationType{
+		ID:          rt.ID,
+		Name:        rt.Name,
+		Description: rt.Description,
+		Price:       rt.Price,
+		Benefits:    benefits,
+	}
+
+	c.IndentedJSON(http.StatusOK, response)
+}
+
+
 type ParticipantInfo struct {
 	ID			uint
 	FirstName	string
