@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "134f5035-55d6-465d-88fb-cafaee5346b3",
+    "_postman_id": "4c66920a-2c78-4f89-a938-976364f986be",
     "name": "00 - LES API (Runner)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "49772394",
-    "_collection_link": "https://go.postman.co/collection/49772394-134f5035-55d6-465d-88fb-cafaee5346b3?source=collection_link"
+    "_exporter_id": "52830737",
+    "_collection_link": "https://go.postman.co/collection/52830737-4c66920a-2c78-4f89-a938-976364f986be?source=collection_link"
   },
   "item": [
     {
@@ -2317,6 +2317,12 @@
                   "value": "{{regtype_price}}",
                   "type": "text",
                   "uuid": "7553a344-9975-49f2-a085-faf46b95d2cd"
+                },
+                {
+                  "key": "benefits",
+                  "value": "{{regtype_benefits}}",
+                  "type": "text",
+                  "uuid": "af295fc2-9ead-43eb-9625-0ecb5061fb36"
                 }
               ]
             },
@@ -2868,6 +2874,58 @@
                 "view",
                 "{{event_id}}",
                 "participants"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "event_beneficiaries_list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Event participants list -> 200 and valid response\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "\r",
+                  "    const participants = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(participants).to.be.an(\"array\");\r",
+                  "    pm.expect(participants.length).to.be.greaterThan(0);\r",
+                  "\r",
+                  "    pm.expect(participants[0]).to.have.property(\"ID\");\r",
+                  "    pm.expect(participants[0]).to.have.property(\"FirstName\");\r",
+                  "    pm.expect(participants[0]).to.have.property(\"LastName\");\r",
+                  "    pm.expect(participants[0]).to.have.property(\"Email\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}/benefit_participants/{{benefit_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}",
+                "benefit_participants",
+                "{{benefit_id}}"
               ]
             }
           },
