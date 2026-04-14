@@ -41,7 +41,7 @@ export default function CreateArticleForm() {
         formData.append("url", url);
 
         try {
-            const response = await fetch("http://" + envHostBackend() + "/article/create", {
+            const response = await fetch(`http://${envHostBackend()}/article/create`, {
                 method: "POST",
                 body: formData,
                 headers: {
@@ -74,7 +74,7 @@ export default function CreateArticleForm() {
                 <h2 style={{ color: "green" }}>Article created successfully!</h2>
                 <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "20px" }}>
                     <button type="button">
-                        <Link to={`/article/${createdArticleId}/tags`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                        <Link to={`/event/${eventID}/activity/${activityID}/article/${createdArticleId}/tags`}>
                             Manage Tags for this Article
                         </Link>
                     </button>
