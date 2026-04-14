@@ -456,3 +456,77 @@ func RegistrationTypeView(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, response)
 }
+
+
+type ParticipantInfo struct {
+	ID			uint
+	FirstName	string
+	LastName	string
+	Email		string
+}
+
+// EventBenefitParticipants
+// @Summary 	List the users eligible for a benefit in a event
+// @Description A event organizer can view a list of all the users eligible for a benefit given in one of their events.
+// @Tags 		Event
+// @Accept		plain
+// @Produce 	json
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		id				path		string	true	"ID of the event"
+// @Param 		benefitID		path		string	true	"ID of the benefit"
+// @Success 	200 {array} ParticipantInfo
+// @Failure		401 {string} string "Invalid credentials"
+// @Failure		403 {string} string "User isn't the event orgaziner"
+// @Failure		404 {string} string "Event not found/No participant found"
+// @Failure		500 {string} string "Error found in DB"
+// @Router 		/event/view/:id/benefit_participants/:benefitID [get]
+func EventBenefitParticipants(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
+		return
+	}
+
+	eventID := c.Param("id")
+
+	var event models.Event
+	res := db.DB.Preload("RegTypes.Benefits").Model(&models.Event{}).Where("ID = ?", eventID).Take(&event)
+	if res.Error != nil || res.RowsAffected != 1 {
+		c.String(http.StatusNotFound, "Event not found")
+		return
+	}
+
+	if event.OrganizerID != user.ID {
+		c.String(http.StatusForbidden, "User isn't the event orgaziner")
+		return
+	}
+
+	benefitID := c.Param("benefitID")	
+
+	subquery := db.DB.Table("registration_type_benefits").
+				Joins("LEFT OUTER JOIN registration_types ON registration_type_id = registration_types.id").
+				Joins("LEFT OUTER JOIN events ON registration_types.event_id = events.id").
+				Where("event_id = ? AND benefit_id = ?", eventID, benefitID).
+				Select("registration_type_id")
+	if subquery.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found in DB")
+		return
+	}
+
+	var participants []ParticipantInfo
+	query := db.DB.Table("event_registrations").
+			 Joins("LEFT OUTER JOIN users ON user_id = users.id").
+			 Where("confirmed = ? AND reg_type_id IN (?)", true, subquery).
+			 Scan(&participants)
+	if query.Error != nil {
+		c.String(http.StatusInternalServerError, "Error found in DB")
+		return
+	}
+
+	if len(participants) == 0 {
+		c.String(http.StatusNotFound, "No participant found")
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, participants)
+}

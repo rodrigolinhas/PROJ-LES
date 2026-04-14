@@ -11,6 +11,7 @@ import (
 )
 
 type UserInfo struct {
+	ID			uint
 	FirstName 	string
 	LastName 	string
 	Email		string
@@ -34,6 +35,7 @@ func UserMe(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, UserInfo{
+		ID:		   user.ID,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		Email:     user.Email,

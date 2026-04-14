@@ -6,6 +6,7 @@ type Activity = {
     ID: number;
     Name: string;
     Description: string;
+    Place: string;
     StartDate: string;
     EndDate: string;
 };
@@ -44,7 +45,7 @@ export default function ListActivityPage() {
             return;
         }
 
-        const headers = ["ID", "Name", "Description", "Start Date", "End Date"];
+        const headers = ["ID", "Name", "Description", "Start Date", "End Date", "Location"];
         const csvRows = [headers.join(",")];
 
         activities.forEach((a) => {
@@ -53,7 +54,8 @@ export default function ListActivityPage() {
                 `"${(a.Name || "").replace(/"/g, '""')}"`,
                 `"${(a.Description || "").replace(/"/g, '""')}"`,
                 `"${a.StartDate || ""}"`,
-                `"${a.EndDate || ""}"`
+                `"${a.EndDate || ""}"`,
+                `"${(a.Place || "").replace(/"/g, '""')}"`
             ];
             csvRows.push(row.join(","));
         });

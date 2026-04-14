@@ -1809,6 +1809,79 @@ const docTemplate = `{
                 }
             }
         },
+        "/event/view/:id/benefit_participants/:benefitID": {
+            "get": {
+                "description": "A event organizer can view a list of all the users eligible for a benefit given in one of their events.",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "List the users eligible for a benefit in a event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the benefit",
+                        "name": "benefitID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.ParticipantInfo"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User isn't the event orgaziner",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found/No participant found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error found in DB",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/event/view/:id/benefits": {
             "get": {
                 "description": "A user can view the benefits associated with an event that they own or was published",
@@ -2050,6 +2123,12 @@ const docTemplate = `{
                         "name": "endDate",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Location where the activity takes place",
+                        "name": "place",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -2163,6 +2242,12 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Description",
                         "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Location where the activity takes place",
+                        "name": "place",
                         "in": "formData"
                     }
                 ],
@@ -2692,6 +2777,9 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "place": {
+                    "type": "string"
+                },
                 "startDate": {
                     "type": "string"
                 }
@@ -2763,6 +2851,23 @@ const docTemplate = `{
                 "theme": {
                     "type": "string",
                     "example": "CompSci"
+                }
+            }
+        },
+        "api.ParticipantInfo": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lastName": {
+                    "type": "string"
                 }
             }
         },
@@ -2880,6 +2985,9 @@ const docTemplate = `{
                 },
                 "firstName": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "lastName": {
                     "type": "string"

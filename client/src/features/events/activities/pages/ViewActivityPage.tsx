@@ -6,6 +6,7 @@ type Activity = {
     ID: number;
     Name: string;
     Description: string;
+    Place: string;
     StartDate: string;
     EndDate: string;
 };
@@ -57,6 +58,7 @@ export default function ViewActivityPage() {
             <p>{activity.Description}</p>
             <p><strong>Start:</strong> {new Date(activity.StartDate).toLocaleString()}</p>
             <p><strong>End:</strong> {new Date(activity.EndDate).toLocaleString()}</p>
+            {activity.Place && <p><strong>Location:</strong> {activity.Place}</p>}
 
             <Link to={`/event/${eventId}/activity/${id}/article/list`}>View Articles</Link>
 
