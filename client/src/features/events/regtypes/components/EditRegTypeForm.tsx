@@ -31,7 +31,7 @@ export default function EditRegTypeForm({ eventId, regTypeId }: Props) {
 
             try {
                 const res = await fetch(
-                    `http://localhost:8080/event/view/${eventId}/regtype/${regTypeId}`,
+                    "http://"+ envHostBackend() + "/event/view/${eventId}/regtype/${regTypeId}",
                     {
                         credentials: "include",
                         headers: {
@@ -74,7 +74,7 @@ export default function EditRegTypeForm({ eventId, regTypeId }: Props) {
 
         try {
             const res = await fetch(
-                `http://localhost:8080/event/regtype/edit`,
+                "http://"+ envHostBackend() + "/event/regtype/edit",
                 {
                     method: "POST",
                     body: formData,
