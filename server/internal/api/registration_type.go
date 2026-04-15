@@ -138,7 +138,7 @@ func RegistrationTypeCreate(c *gin.Context) {
 // @Success 	200 {string} string "Event Registration Type edited successfully"
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		404 {string} string "Event not found"
-// @Failure		403 {string} string "User is not the orgaziner of the event"
+// @Failure		403 {string} string "User is not the organizer of the event"
 // @Failure		400 {string} string "Can't parse the price"
 // @Failure		409 {string} string "Can't edit the registration type of a published event"
 // @Failure 	500 {string} string "Error found during registration type creation"
@@ -173,7 +173,7 @@ func RegistrationTypeEdit(c *gin.Context) {
 
 	if name != "" {
 		arr := []models.RegistrationType{}
-		dberr := db.DB.Where("event_id = ? AND name = ?", event.ID, name).
+		dberr := db.DB.Where("event_id = ? AND name = ? AND id != ?", event.ID, name, regType.ID).
 			Find(&arr)
 		if dberr.Error != nil {
 			c.String(http.StatusInternalServerError, "Error found in DB")
@@ -457,12 +457,11 @@ func RegistrationTypeView(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, response)
 }
 
-
 type ParticipantInfo struct {
-	ID			uint
-	FirstName	string
-	LastName	string
-	Email		string
+	ID        uint
+	FirstName string
+	LastName  string
+	Email     string
 }
 
 // EventBenefitParticipants
@@ -501,13 +500,13 @@ func EventBenefitParticipants(c *gin.Context) {
 		return
 	}
 
-	benefitID := c.Param("benefitID")	
+	benefitID := c.Param("benefitID")
 
 	subquery := db.DB.Table("registration_type_benefits").
-				Joins("LEFT OUTER JOIN registration_types ON registration_type_id = registration_types.id").
-				Joins("LEFT OUTER JOIN events ON registration_types.event_id = events.id").
-				Where("event_id = ? AND benefit_id = ?", eventID, benefitID).
-				Select("registration_type_id")
+		Joins("LEFT OUTER JOIN registration_types ON registration_type_id = registration_types.id").
+		Joins("LEFT OUTER JOIN events ON registration_types.event_id = events.id").
+		Where("event_id = ? AND benefit_id = ?", eventID, benefitID).
+		Select("registration_type_id")
 	if subquery.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found in DB")
 		return
@@ -515,9 +514,9 @@ func EventBenefitParticipants(c *gin.Context) {
 
 	var participants []ParticipantInfo
 	query := db.DB.Table("event_registrations").
-			 Joins("LEFT OUTER JOIN users ON user_id = users.id").
-			 Where("confirmed = ? AND reg_type_id IN (?)", true, subquery).
-			 Scan(&participants)
+		Joins("LEFT OUTER JOIN users ON user_id = users.id").
+		Where("confirmed = ? AND reg_type_id IN (?)", true, subquery).
+		Scan(&participants)
 	if query.Error != nil {
 		c.String(http.StatusInternalServerError, "Error found in DB")
 		return

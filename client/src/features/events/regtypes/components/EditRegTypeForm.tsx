@@ -1,13 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DeleteRegTypeButton from "./DeleteRegTypeButton";
 import { Link } from "react-router-dom";
 import { getCookie } from "@/shared/utils/getCookie";
 import { envHostBackend } from '@/shared/utils/env';
-
-type Props = {
-    eventId: number;
-    regTypeId: number;
-};
 
 type RegType = {
     ID: number;
@@ -17,66 +12,68 @@ type RegType = {
     Benefits: string[];
 };
 
-export default function EditRegTypeForm({ eventId, regTypeId }: Props) {
-    const [regType, setRegType] = useState<RegType | null>(null);
+async function loadRegTypeInfo(eventID: number, regTypeID: number): Promise<RegType> {
+    const csrfToken = getCookie("csrf_token") || "";
 
-    const [benefitsStr, setBenefitsStr] = useState("");
+    const res = await fetch(`http://`+ envHostBackend() + `/event/view/${eventID}/regtype/${regTypeID}`, {
+            method: "GET",
+            headers: {
+                "X-CSRF-Token": csrfToken
+            },
+            credentials: "include"
+    })
+
+    let pro = new Promise<RegType>((resolve, reject) => {
+        if(res.status === 200) {
+            resolve(res.json())
+        }
+        else {
+            reject()
+        }
+    })
+
+    return pro
+}
+
+export default function EditRegTypeForm(props: any) {
+    let eventID: number = props.eventID;
+    let regTypeID: number = props.regTypeID;
+
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [price, setPrice] = useState(0);
+    const [benefits, setBenefits] = useState<string[]>([]);
 
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
-    const [deleted, setDeleted] = useState(false);
+    const [regTypeDeleted, setRegTypeDeleted] = useState(false);
+    const [loaded, setLoaded] = useState(false);
 
-    useEffect(() => {
-        async function fetchRegType() {
-            const csrfToken = getCookie("csrf_token") || "";
+    function loadRegTypeState(regType: RegType) {
+        setName(regType.Name)
+        setDescription(regType.Description)
+        setPrice(regType.Price)
+        setBenefits(regType.Benefits || [])
+    }
 
-            try {
-                const res = await fetch(
-                    `http://`+ envHostBackend() + `/event/view/${eventId}/regtype/${regTypeId}`,
-                    {
-                        credentials: "include",
-                        headers: {
-                            "X-CSRF-Token": csrfToken
-                        }
-                    }
-                );
-
-                if (res.status === 200) {
-                    const data = await res.json();
-                    setRegType(data);
-                    setBenefitsStr(data.Benefits ? data.Benefits.join(", ") : "");
-                } else {
-                    setIsError(true);
-                    setMessage("Failed to load registration type");
-                }
-            } catch {
-                setIsError(true);
-                setMessage("Server error");
-            }
-        }
-
-        fetchRegType();
-    }, [eventId, regTypeId]);
-
-    async function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        if (!regType) return;
-
         const csrfToken = getCookie("csrf_token") || "";
-
         const formData = new FormData();
-        formData.append("eventID", eventId.toString());
-        formData.append("regTypeID", regTypeId.toString());
-        formData.append("name", regType.Name);
-        formData.append("description", regType.Description);
-        formData.append("price", regType.Price.toString());
-        formData.append("benefits", benefitsStr);
+
+        formData.append("eventID", eventID.toString());
+        formData.append("regTypeID", regTypeID.toString());
+
+        formData.append("name", name);
+        formData.append("description", description);
+        formData.append("price", price.toString());
+
+        const cleanBenefits = benefits.map(b => b.trim()).filter(b => b !== "").join(", ");
+        formData.append("benefits", cleanBenefits);
 
         try {
-            const res = await fetch(
-                `http://`+ envHostBackend() + `/event/regtype/edit`,
-                {
+            const res = await fetch(`http://`+ envHostBackend() + `/event/regtype/edit`, {
                     method: "POST",
                     body: formData,
                     headers: {
@@ -93,81 +90,86 @@ export default function EditRegTypeForm({ eventId, regTypeId }: Props) {
                 setMessage(await res.text());
                 setIsError(true);
             }
-        } catch {
+        }
+        catch(error) {
             setMessage("Server error");
             setIsError(true);
         }
     }
-    if (deleted) {
+    if (!loaded) {
+        loadRegTypeInfo(eventID, regTypeID).then((value) => {loadRegTypeState(value); setLoaded(true)})
+                                           .catch((err) => {console.log(err)})
+        return(
+            <h1>Loading Registration Type...</h1>
+        )
+    }
+    if (regTypeDeleted) {
         return (
             <div>
                 <h2>Registration Type deleted successfully!</h2>
-                <Link to={`/event/view/${eventId}`}>
-                    Back to Event
+                <Link to={`/event/edit/${eventID}`}>
+                    Back to Edit Event
                 </Link>
             </div>
         );
     }
+    else{
+        return (
+            <form onSubmit={handleSubmit}>
+                <h2>Edit Registration Type</h2>
 
-    if (!regType) return <p>Loading...</p>;
+                <label className="required">Name</label>
+                <input
+                    type="text"
+                    placeholder="Registration Type Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                />
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <h2>Edit Registration Type</h2>
+                <label className="required">Description</label>
+                <textarea
+                    placeholder="Description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
+                />
 
-            <label>Name</label>
-            <input
-                type="text"
-                value={regType.Name}
-                onChange={(e) =>
-                    setRegType({ ...regType, Name: e.target.value })
-                }
-                required
-            />
+                <label className="required">Price (€)</label>
+                <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="Price(€)"
+                    value={price}
+                    onChange={(e) => setPrice(parseFloat(e.target.value) || 0) }
+                    required
+                />
 
-            <label>Description</label>
-            <textarea
-                value={regType.Description}
-                onChange={(e) =>
-                    setRegType({ ...regType, Description: e.target.value })
-                }
-                required
-            />
+                <label className="required">Benefits (comma-separated)</label>
+                <input
+                    type="text"
+                    placeholder="e.g. 'Lunch, Wi-Fi Access'"
+                    value={benefits.join(",")}
+                    onChange={(e) => setBenefits(e.target.value.split(","))}
+                    required
+                />
 
-            <label>Price (€)</label>
-            <input
-                type="number"
-                step="0.01"
-                min="0"
-                value={regType.Price}
-                onChange={(e) =>
-                    setRegType({ ...regType, Price: parseFloat(e.target.value) })
-                }
-                required
-            />
+                <button type="submit">Edit Registration Type</button>
 
-            <label>Benefits (comma-separated)</label>
-            <input
-                type="text"
-                placeholder="e.g. Lunch, T-Shirt, VIP Pass"
-                value={benefitsStr}
-                onChange={(e) => setBenefitsStr(e.target.value)}
-            />
+                <p className={isError ? "error" : "success"}>
+                    {message}
+                </p>
 
-            <button type="submit">Save</button>
+                <hr />
 
-            <p style={{ color: isError ? "red" : "green" }}>
-                {message}
-            </p>
-
-            <hr />
-
-            <DeleteRegTypeButton
-                eventId={eventId}
-                regTypeId={regTypeId}
-                onDeleted={() => setDeleted(true)}
-            />
-            <Link to={`/event/view/${eventId}`} style={{ marginLeft: "10px" }}>Back to Event</Link>
-        </form>
-    );
+                <DeleteRegTypeButton
+                    eventID={eventID}
+                    regTypeID={regTypeID}
+                    setRegTypeDeleted={setRegTypeDeleted}
+                />
+                <Link to={`/event/edit/${eventID}`}>Back to Edit Event</Link>
+            </form>
+        );
+    }
 }

@@ -55,11 +55,11 @@ export default function RegTypesList({ eventId }: { eventId: string }) {
 
     return (
         <div>
-            <h3>Registration Types</h3>
+            <h2>Registration Types</h2>
 
             {regTypes.map((rt) => (
                 <div key={rt.ID} style={{ border: "1px solid #ccc", margin: "10px", padding: "10px" }}>
-                    <h4>{rt.Name}</h4>
+                    <h3>{rt.Name}</h3>
                     <p>{rt.Description}</p>
                     <p><strong>Price:</strong> {rt.Price}€</p>
 

@@ -11,8 +11,8 @@ export default function EditRegTypePage() {
     return (
         <div>
             <EditRegTypeForm
-                eventId={Number(eventId)}
-                regTypeId={Number(regTypeId)}
+                eventID={eventId}
+                regTypeID={regTypeId}
             />
         </div>
     );
