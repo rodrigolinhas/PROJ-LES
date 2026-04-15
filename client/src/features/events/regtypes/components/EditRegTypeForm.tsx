@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import DeleteRegTypeButton from "./DeleteRegTypeButton";
 import { Link } from "react-router-dom";
 import { getCookie } from "@/shared/utils/getCookie";
+import { envHostBackend } from '@/shared/utils/env';
 
 type Props = {
     eventId: number;
@@ -31,7 +32,7 @@ export default function EditRegTypeForm({ eventId, regTypeId }: Props) {
 
             try {
                 const res = await fetch(
-                    "http://"+ envHostBackend() + "/event/view/${eventId}/regtype/${regTypeId}",
+                    `http://`+ envHostBackend() + `/event/view/${eventId}/regtype/${regTypeId}`,
                     {
                         credentials: "include",
                         headers: {
@@ -74,7 +75,7 @@ export default function EditRegTypeForm({ eventId, regTypeId }: Props) {
 
         try {
             const res = await fetch(
-                "http://"+ envHostBackend() + "/event/regtype/edit",
+                `http://`+ envHostBackend() + `/event/regtype/edit`,
                 {
                     method: "POST",
                     body: formData,

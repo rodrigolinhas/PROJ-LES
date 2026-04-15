@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getCookie } from "@/shared/utils/getCookie.ts";
+import { envHostBackend } from '@/shared/utils/env';
 
 type Props = {
     eventId: string | number;
@@ -24,7 +25,7 @@ export default function DeleteRegTypeButton({ eventId, regTypeId, onDeleted }: P
 
         try {
             const response = await fetch(
-                "http://"+ envHostBackend() + "/event/regtype/delete",
+                `http://`+ envHostBackend() + `/event/regtype/delete`,
                 {
                     method: "POST",
                     headers: {

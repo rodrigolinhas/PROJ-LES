@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCookie } from "../../../../shared/utils/getCookie.ts";
+import { envHostBackend } from '@/shared/utils/env';
 
 type RegType = {
     ID: number;
@@ -12,7 +13,7 @@ type RegType = {
 export async function getEventRegTypes(eventId: string) {
     const csrfToken = getCookie("csrf_token") || "";
 
-    const res = await fetch("http://" + envHostBackend() + "/event/view/${eventId}/regtypes", {
+    const res = await fetch(`http://` + envHostBackend() + `/event/view/${eventId}/regtypes`, {
         method: "GET",
         credentials: "include",
         headers: {
