@@ -1580,7 +1580,7 @@ paths:
           schema:
             type: string
         "403":
-          description: User is not the orgaziner of the event
+          description: User is not the organizer of the event
           schema:
             type: string
         "404":
@@ -1771,6 +1771,49 @@ paths:
           schema:
             type: string
       summary: List participants of an event
+      tags:
+      - Event
+  /event/view/:id/regtype/:regid:
+    get:
+      consumes:
+      - text/plain
+      description: A user can view a specific registration type of an event
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ID of the registration type
+        in: path
+        name: regid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.RegistrationType'
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+        "403":
+          description: Event was not published yet and the user is not the orgaziner
+          schema:
+            type: string
+        "404":
+          description: Event/Registration Type not found
+          schema:
+            type: string
+      summary: Get a single Registration Type of an event
       tags:
       - Event
   /event/view/:id/regtypes:

@@ -2012,6 +2012,65 @@
           "response": []
         },
         {
+          "name": "regtype_view",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"View RegType -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  const regtype = pm.response.json();",
+                  "",
+                  "  pm.test(\"RegType object has correct properties\", function () {",
+                  "    pm.expect(regtype).to.be.an(\"object\");",
+                  "    pm.expect(regtype).to.have.property(\"ID\");",
+                  "    pm.expect(regtype).to.have.property(\"Name\");",
+                  "    pm.expect(regtype).to.have.property(\"Description\");",
+                  "    pm.expect(regtype).to.have.property(\"Price\");",
+                  "    pm.expect(regtype).to.have.property(\"Benefits\");",
+                  "  });",
+                  "",
+                  "  pm.test(\"Fetched RegType matches environment ID\", function () {",
+                  "    pm.expect(regtype.ID).to.eql(Number(pm.environment.get(\"regtype_id\")));",
+                  "  });",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}/regtype/{{regtype_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}",
+                "regtype",
+                "{{regtype_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "regtype_edit",
           "event": [
             {

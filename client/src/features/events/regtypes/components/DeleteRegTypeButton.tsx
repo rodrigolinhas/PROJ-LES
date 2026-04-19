@@ -1,31 +1,26 @@
 import { useState } from "react";
 import { getCookie } from "@/shared/utils/getCookie.ts";
+import { envHostBackend } from '@/shared/utils/env';
 
-type Props = {
-    eventId: string | number;
-    regTypeId: number;
-    onDeleted: () => void;
-};
+export default function DeleteRegTypeButton(props: any) {
+    let eventID: number = props.eventID;
+    let regTypeID: number = props.regTypeID;
+    let setRegTypeDeleted = props.setRegTypeDeleted;
 
-export default function DeleteRegTypeButton({ eventId, regTypeId, onDeleted }: Props) {
-    const [loading, setLoading] = useState(false);
+    const [title, setTitle] = useState("Delete Registration Type");
 
-    async function handleDelete() {
+    async function handleClick() {
         const confirmDelete = window.confirm("Are you sure you want to delete this registration type?");
         if (!confirmDelete) return;
 
-        setLoading(true);
-
         const csrfToken = getCookie("csrf_token") || "";
-
         const formData = new FormData();
-        formData.append("eventID", eventId.toString());
-        formData.append("regTypeID", regTypeId.toString());
+
+        formData.append("eventID", eventID.toString());
+        formData.append("regTypeID", regTypeID.toString());
 
         try {
-            const response = await fetch(
-                "http://"+ envHostBackend() + "/event/regtype/delete",
-                {
+            const response = await fetch(`http://`+ envHostBackend() + `/event/regtype/delete`, {
                     method: "POST",
                     headers: {
                         "X-CSRF-Token": csrfToken
@@ -36,20 +31,25 @@ export default function DeleteRegTypeButton({ eventId, regTypeId, onDeleted }: P
             );
 
             if (response.status === 200) {
-                onDeleted();
+                setTitle("Registration Type Deleted!");
+                setRegTypeDeleted(true)
             } else {
-                alert(await response.text());
+                setTitle(await response.text());
             }
-        } catch {
-            alert("Server error");
-        } finally {
-            setLoading(false);
+        }
+        catch(error) {
+            setTitle("Server error");
         }
     }
 
     return (
-        <button onClick={handleDelete} disabled={loading} style={{ color: "red", marginLeft: "10px" }}>
-            {loading ? "Deleting..." : "Delete"}
-        </button>
+        <div>
+            <button
+                type='button'
+                onClick={handleClick}
+            >
+            {title}
+            </button>
+        </div>
     );
 }

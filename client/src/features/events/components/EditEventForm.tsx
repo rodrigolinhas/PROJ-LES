@@ -3,12 +3,15 @@ import PublishEventButton from "../components/PublishEventButton.tsx";
 import DeleteEventButton from '../components/DeleteEventButton.tsx';
 import { Link } from 'react-router-dom';
 import { envHostBackend } from '@/shared/utils/env.ts';
+import { getCookie } from "@/shared/utils/getCookie.ts";
 
-function getCookie(name: string) {
-    const value = "; " + document.cookie;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(";").shift();
-}
+type RegType = {
+    ID: number;
+    Name: string;
+    Description: string;
+    Price: number;
+    Benefits: string[];
+};
 
 async function loadEventInfo(id: number): Promise<LongEvent> {
     const csrfToken = getCookie("csrf_token") || "";
@@ -24,6 +27,31 @@ async function loadEventInfo(id: number): Promise<LongEvent> {
     let pro = new Promise<LongEvent>((resolve, reject) => {
         if(res.status === 200) {
             resolve(res.json())
+        }
+        else {
+            reject()
+        }
+    })
+
+    return pro
+}
+
+async function loadRegTypes(id: number): Promise<RegType[]> {
+    const csrfToken = getCookie("csrf_token") || "";
+    const res = await fetch(`http://${envHostBackend()}/event/view/${id}/regtypes`, {
+        method: "GET",
+        headers: {
+            "X-CSRF-Token": csrfToken
+        },
+        credentials: "include"
+    })
+
+    let pro = new Promise<RegType[]>((resolve, reject) => {
+        if(res.status === 200) {
+            resolve(res.json())
+        }
+        else if(res.status === 404) {
+            return [];
         }
         else {
             reject()
@@ -63,6 +91,8 @@ export default function EditEventForm(props: any) {
     const [isError, setIsError] = useState(false);
     const [eventLoaded, setEventLoaded] = useState(false);
     const [eventDeleted, setEventDeleted] = useState(false);
+
+    const [regTypes, setRegTypes] = useState<RegType[]>([]);
 
     function loadEventState(event: LongEvent) {
         let start = new Date(event.StartDate)
@@ -118,8 +148,13 @@ export default function EditEventForm(props: any) {
     }
 
     if (!eventLoaded) {
-        loadEventInfo(eventID).then((value) => {loadEventState(value); setEventLoaded(true)})
-                              .catch((err) => {console.log(err)})
+        Promise.all([loadEventInfo(eventID), loadRegTypes(eventID)])
+            .then(([event, types]) => {
+                loadEventState(event);
+                setRegTypes(types);
+                setEventLoaded(true);
+            })
+            .catch((err) => console.log(err));
         return (
             <h1>Loading Event...</h1>
         )
@@ -198,6 +233,23 @@ export default function EditEventForm(props: any) {
                 <hr/>
                 <PublishEventButton eventID={eventID} published={published}/>
                 <DeleteEventButton eventID={eventID} setEventDeleted={setEventDeleted}/>
+
+                <hr />
+                <h3>Registration Types</h3>
+                <Link to={`/event/regtype/create`} style={{ fontSize: "0.9em" }}>+ Add New Registration Type</Link>
+
+                <div>
+                    {regTypes.length === 0 ? (
+                        <p>No registration types found.</p>
+                    ) : (
+                        regTypes.map(rt => (
+                            <div key={rt.ID}>
+                                <span><strong>{rt.Name}</strong> - {rt.Price}€</span>
+                                <Link to={`/event/${eventID}/regtype/edit/${rt.ID}`}> Edit</Link>
+                            </div>
+                        ))
+                    )}
+                </div>
 
                 <hr />
 

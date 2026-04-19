@@ -1720,7 +1720,7 @@
                         }
                     },
                     "403": {
-                        "description": "User is not the orgaziner of the event",
+                        "description": "User is not the organizer of the event",
                         "schema": {
                             "type": "string"
                         }
@@ -1995,6 +1995,70 @@
                     },
                     "500": {
                         "description": "Error found on query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/event/view/:id/regtype/:regid": {
+            "get": {
+                "description": "A user can view a specific registration type of an event",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Get a single Registration Type of an event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User's CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the event",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID of the registration type",
+                        "name": "regid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.RegistrationType"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Event was not published yet and the user is not the orgaziner",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event/Registration Type not found",
                         "schema": {
                             "type": "string"
                         }

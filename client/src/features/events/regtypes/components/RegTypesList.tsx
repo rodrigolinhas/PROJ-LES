@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCookie } from "../../../../shared/utils/getCookie.ts";
+import { envHostBackend } from '@/shared/utils/env';
 
 type RegType = {
     ID: number;
@@ -12,7 +13,7 @@ type RegType = {
 export async function getEventRegTypes(eventId: string) {
     const csrfToken = getCookie("csrf_token") || "";
 
-    const res = await fetch("http://" + envHostBackend() + "/event/view/${eventId}/regtypes", {
+    const res = await fetch(`http://` + envHostBackend() + `/event/view/${eventId}/regtypes`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -54,11 +55,11 @@ export default function RegTypesList({ eventId }: { eventId: string }) {
 
     return (
         <div>
-            <h3>Registration Types</h3>
+            <h2>Registration Types</h2>
 
             {regTypes.map((rt) => (
                 <div key={rt.ID} style={{ border: "1px solid #ccc", margin: "10px", padding: "10px" }}>
-                    <h4>{rt.Name}</h4>
+                    <h3>{rt.Name}</h3>
                     <p>{rt.Description}</p>
                     <p><strong>Price:</strong> {rt.Price}€</p>
 
