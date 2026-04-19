@@ -2,7 +2,7 @@
 # STEP 1: Build
 # ============================================
 # Use a lightweight Node.js image based on Alpine Linux
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copy dependency files first, before source code.
