@@ -148,13 +148,13 @@ export default function EditEventForm(props: any) {
     }
 
     if (!eventLoaded) {
-        Promise.all([loadEventInfo(eventID), loadRegTypes(eventID)])
-            .then(([event, types]) => {
-                loadEventState(event);
-                setRegTypes(types);
-                setEventLoaded(true);
-            })
-            .catch((err) => console.log(err));
+        loadEventInfo(eventID).then(event => {
+            loadEventState(event)
+            setEventLoaded(true);
+        })
+        loadRegTypes(eventID).then(types => {
+            setRegTypes(types);
+        })
         return (
             <h1>Loading Event...</h1>
         )
