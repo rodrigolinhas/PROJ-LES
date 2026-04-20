@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PublishEventButton from "../components/PublishEventButton.tsx";
 import DeleteEventButton from '../components/DeleteEventButton.tsx';
 import { Link } from 'react-router-dom';
@@ -51,7 +51,7 @@ async function loadRegTypes(id: number): Promise<RegType[]> {
             resolve(res.json())
         }
         else if(res.status === 404) {
-            return [];
+            resolve([]);
         }
         else {
             reject()
@@ -123,7 +123,7 @@ export default function EditEventForm(props: any) {
 
         try {
             const response = await fetch("http://" + envHostBackend() + "/event/edit", {
-                method: "POST", 
+                method: "POST",
                 body: formData,
                 headers: {
                     "X-CSRF-Token": csrfToken
@@ -147,7 +147,7 @@ export default function EditEventForm(props: any) {
         }
     }
 
-    if (!eventLoaded) {
+    useEffect(() => {
         Promise.all([loadEventInfo(eventID), loadRegTypes(eventID)])
             .then(([event, types]) => {
                 loadEventState(event);
@@ -155,6 +155,9 @@ export default function EditEventForm(props: any) {
                 setEventLoaded(true);
             })
             .catch((err) => console.log(err));
+    }, [eventID]);
+
+    if (!eventLoaded) {
         return (
             <h1>Loading Event...</h1>
         )
@@ -166,9 +169,9 @@ export default function EditEventForm(props: any) {
                 <h2 style={{ color: "green" }}>Event deleted successfully!</h2>
                 <Link to ="/home">Go back to Home</Link>
             </div>
-        ); 
+        );
     }
-    else 
+    else
     {
         return (
             <form onSubmit={handleSubmit}>
