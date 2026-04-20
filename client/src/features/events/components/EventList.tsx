@@ -7,6 +7,9 @@ type ShortEvent = {
     ID: number;
     Name: string;
     Theme: string;
+    Location: string;
+    StartDate: string;
+    EndDate: string;
 };
 
 /** Props accepted by the {@link EventList} component. */
@@ -112,17 +115,20 @@ export default function EventList({
             {!loading && !error && events.length > 0 && (
                 <div className="my-4">
                     {events.map((event) => (
-                        <div className="mt-3 font-sans" key={event.ID}>
-                            <Link className="text-xl" to={`/event/${event.ID}`}>
-                                <strong>{event.Name}</strong>
-                            </Link> – {event.Theme}
+                        <Link className="block mt-3 font-sans border p-2 rounded-lg w-fit no-underline text-black" to={`/event/${event.ID}`}>
+                            <strong className="text-2xl">{event.Name}</strong> – {event.Theme}
+                            <br />
+                            <strong>Location:</strong> {event.Location}
+                            <br />
+                            <strong>Date/Time:</strong> {new Date(event.StartDate).toLocaleString()} — {new Date(event.EndDate).toLocaleString()}
+                            {/* TODO: Add more info */}
                             {showEditButton && (
                                 <>
                                     {" "}
                                     <Link className="font-sans" to={`/event/edit/${event.ID}`}>Edit</Link>
                                 </>
                             )}
-                        </div>
+                        </Link>
                     ))}
                 </div>
             )}

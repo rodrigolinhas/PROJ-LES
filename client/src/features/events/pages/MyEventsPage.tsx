@@ -17,14 +17,10 @@ export default function MyEventsPage() {
     const [tab, setTab] = useState(Tabs.Published);
 
     return (
+        // TODO: Add header
         <div>
-            <h1 className="font-sans">Events</h1>
-            <p className="font-sans">Here you can filter published events and also see your own events.</p>
-
-            {/* TODO: The user should return to the home page through the header instead */}
-            <button>
-                <Link to="/home">Back Home</Link>             
-            </button>
+            <h1 className="font-sans text-center text-4xl">Events</h1>
+            <p className="font-sans text-center">Here you can filter published events and also see your own events.</p>
 
             {role === "EventOrganizer" && (
                 <div className="flex items-center content-center mx-auto my-5 w-fit [&_button]:w-45 ">
@@ -59,6 +55,12 @@ export default function MyEventsPage() {
             {role === "EventOrganizer" && (
                 <Link className="mt-5 mx-auto w-35 text-center font-sans block items-center gap-2 rounded-md bg-black px-5 py-3 text-white no-underline" to="/event/create">Create Event</Link>
             )}
+
+            {/* TODO: The user should return to the home page through the header instead */}
+            <button>
+                <Link to="/home">Back Home</Link>             
+            </button>
+
         </div>
     );
 }
