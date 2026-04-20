@@ -1,7 +1,19 @@
 import { envHostBackend } from '@/shared/utils/env';
 import { getCookie } from '@/shared/utils/getCookie';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+
+type ShortEvent = {
+    ID: number;
+    Name: string;
+    Theme: string;
+};
+
+type ShortActivity = {
+    ID: number;
+    Name: string;
+    Description: string;
+};
 
 /**
  * Form component for creating a new article and associating it
@@ -23,6 +35,73 @@ export default function CreateArticleForm() {
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
     const [createdArticleId, setCreatedArticleId] = useState<number | null>(null);
+
+    const [events, setEvents] = useState<ShortEvent[]>([]);
+    const [activities, setActivities] = useState<ShortActivity[]>([]);
+    const [loadingEvents, setLoadingEvents] = useState(true);
+    const [loadingActivities, setLoadingActivities] = useState(false);
+
+    // Fetch the organizer's events on mount
+    useEffect(() => {
+        async function fetchEvents() {
+            const csrfToken = getCookie("csrf_token");
+            try {
+                const response = await fetch(
+                    `http://${envHostBackend()}/event/my`,
+                    {
+                        credentials: "include",
+                        headers: { "X-CSRF-Token": csrfToken },
+                    }
+                );
+                if (response.status === 200) {
+                    const data = await response.json();
+                    setEvents(data);
+                } else {
+                    setEvents([]);
+                }
+            } catch {
+                setEvents([]);
+            } finally {
+                setLoadingEvents(false);
+            }
+        }
+        fetchEvents();
+    }, []);
+
+    // Fetch activities when event changes
+    useEffect(() => {
+        if (!eventID) {
+            setActivities([]);
+            setActivityID("");
+            return;
+        }
+
+        async function fetchActivities() {
+            setLoadingActivities(true);
+            setActivityID("");
+            const csrfToken = getCookie("csrf_token");
+            try {
+                const response = await fetch(
+                    `http://${envHostBackend()}/event/${eventID}/activity/list`,
+                    {
+                        credentials: "include",
+                        headers: { "X-CSRF-Token": csrfToken },
+                    }
+                );
+                if (response.status === 200) {
+                    const data = await response.json();
+                    setActivities(data);
+                } else {
+                    setActivities([]);
+                }
+            } catch {
+                setActivities([]);
+            } finally {
+                setLoadingActivities(false);
+            }
+        }
+        fetchActivities();
+    }, [eventID]);
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -91,23 +170,47 @@ export default function CreateArticleForm() {
             <form onSubmit={handleSubmit}>
                 <h2>Create Article</h2>
 
-                <label className="required">Event ID</label>
-                <input
-                    type="text"
-                    placeholder="Associated event ID"
-                    value={eventID}
-                    onChange={(e) => setEventID(e.target.value)}
-                    required
-                />
+                <label className="required">Event</label>
+                {loadingEvents ? (
+                    <p>Loading events...</p>
+                ) : events.length === 0 ? (
+                    <p>No events found. You need to create an event first.</p>
+                ) : (
+                    <select
+                        value={eventID}
+                        onChange={(e) => setEventID(e.target.value)}
+                        required
+                    >
+                        <option value="">-- Select an event --</option>
+                        {events.map((ev) => (
+                            <option key={ev.ID} value={ev.ID}>
+                                {ev.Name} ({ev.Theme})
+                            </option>
+                        ))}
+                    </select>
+                )}
 
-                <label className="required">Activity ID</label>
-                <input
-                    type="text"
-                    placeholder="Associated activity ID"
-                    value={activityID}
-                    onChange={(e) => setActivityID(e.target.value)}
-                    required
-                />
+                <label className="required">Activity</label>
+                {!eventID ? (
+                    <p>Please select an event first.</p>
+                ) : loadingActivities ? (
+                    <p>Loading activities...</p>
+                ) : activities.length === 0 ? (
+                    <p>No activities found for this event. Create an activity first.</p>
+                ) : (
+                    <select
+                        value={activityID}
+                        onChange={(e) => setActivityID(e.target.value)}
+                        required
+                    >
+                        <option value="">-- Select an activity --</option>
+                        {activities.map((act) => (
+                            <option key={act.ID} value={act.ID}>
+                                {act.Name}
+                            </option>
+                        ))}
+                    </select>
+                )}
 
                 <label className="required">Title</label>
                 <input
