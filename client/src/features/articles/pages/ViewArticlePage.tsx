@@ -12,6 +12,8 @@ type ArticleTag = {
 
 type AuthorRef = {
     id?: number;
+    first_name?: string;
+    last_name?: string;
 };
 
 type ArticleDetails = {
@@ -28,10 +30,11 @@ type ArticleDetails = {
     updatedAt?: string;
 };
 
-function getAuthorId(author: AuthorRef | number | undefined): string {
-    if (typeof author === "number") return String(author);
-    if (author?.id) return String(author.id);
-    return "";
+function getAuthorName(author: AuthorRef | number | undefined): string {
+    if (typeof author === "number") return `ID ${author}`;
+    if (!author) return "";
+    const name = [author.first_name, author.last_name].filter(Boolean).join(" ");
+    return name || (author.id ? `ID ${author.id}` : "");
 }
 
 function getTagLabel(tag: ArticleTag | string): string {
@@ -86,11 +89,11 @@ export default function ViewArticlePage() {
             <h1>{article.title}</h1>
 
             <p><strong>Publisher:</strong> {article.publisher}</p>
-            <p><strong>First Author ID:</strong> {getAuthorId(article.firstAuthor) || "-"}</p>
+            <p><strong>First Author:</strong> {getAuthorName(article.firstAuthor) || "-"}</p>
             <p>
                 <strong>Co-Authors:</strong>{" "}
                 {article.coAuthors && article.coAuthors.length > 0
-                    ? article.coAuthors.map(getAuthorId).join(", ")
+                    ? article.coAuthors.map(getAuthorName).join(", ")
                     : "-"}
             </p>
             <p><strong>DOI:</strong> {article.doi || "-"}</p>
