@@ -92,7 +92,7 @@ export default function ActivitiesList({ eventId }: Props) {
                             </li>
                         ))}
                     </ul>
-                    <button onClick={handleExportCSV} style={{ marginBottom: "1rem" }}>
+                    <button onClick={handleExportCSV} className="mr-3 mt-5 mb-1 w-40 border-2 border-black gap-2 rounded-md bg-white px-5 py-3 text-black">
                         Export as CSV
                     </button>
                 </>}

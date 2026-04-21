@@ -141,7 +141,7 @@ export default function ViewEventPage() {
                 onChange={(e) => setBenefitID(e.target.value)}
                 required
             />
-            <button onClick={handleBeneficiariesCSV}>
+            <button className="mr-3 mt-5 w-60 border-2 items-center gap-2 rounded-md bg-white px-5 py-3 text-black" onClick={handleBeneficiariesCSV}>
                 Export Beneficiaries CSV
             </button>
             </>)}
