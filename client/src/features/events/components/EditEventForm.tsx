@@ -253,12 +253,6 @@ export default function EditEventForm(props: any) {
 
                 <hr />
 
-                <Link to={`/event/${eventID}/activity/list`}>
-                    View Activities
-                </Link>
-
-                <br />
-
                 <Link to={`/event/${eventID}/activity/create`}>
                     Add Activity
                 </Link>

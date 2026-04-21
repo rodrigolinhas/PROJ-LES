@@ -4,9 +4,7 @@ import { getCookie } from "../../../shared/utils/getCookie";
 import RegTypesList from "../regtypes/components/RegTypesList.tsx";
 import { envHostBackend } from "@/shared/utils/env";
 import { useUserID } from "@/shared/hooks/useUserID";
-import { Italic } from "lucide-react";
-import ViewArticlePage from "@/features/articles/pages/ViewArticlePage.tsx";
-import ListActivityPage from "../activities/pages/ListActivitiesPage.tsx";
+import ActivitiesList from "../activities/components/ActivitiesList.tsx";
 
 type EventDetails = {
     ID: number;
@@ -18,6 +16,7 @@ type EventDetails = {
     StartDate: string;
     EndDate: string;
     OrganizerID: number;
+    Published: boolean;
 };
 
 type Beneficiary = {
@@ -115,8 +114,11 @@ export default function ViewEventPage() {
     if (!event) return null;
 
     return (
-        <div className="m-auto max-w-[80%] border-3 p-5 rounded-xl">
-            <h1 className="font-sans text-4xl my-2">{event.Name}</h1>
+        <div className="m-auto max-w-[80%] border-3 p-5 rounded-xl bg-white">
+            <h1 className="text-4xl my-2">{event.Name}</h1>
+            { !event.Published &&
+                <span className="italic">(Unpublished)</span>
+            }
             <p className="text-2xl"><strong>{event.Theme}</strong></p>
             <p>{event.Description}</p>
             <p>From <strong>{new Date(event.StartDate).toLocaleString()}</strong> until <strong>{new Date(event.EndDate).toLocaleString()}</strong></p>
@@ -124,23 +126,12 @@ export default function ViewEventPage() {
             <p><i>Organized by {event.Organization}</i></p>
 
             <hr />
-                <RegTypesList eventId={id!} />
+                <RegTypesList eventId={id!} organizer={userID == event.OrganizerID} published={event.Published}/>
             <hr />
-                {/*TODO: List Activities*/}
+                <ActivitiesList eventId={Number.parseInt(id!) || 0} />
             <hr />
-            <Link to={`/event/${event.ID}/participants`}>
-                View Participants
-            </Link>
 
-            <br />
-
-            <Link to={`/event/${event.ID}/activity/list`}>
-                View Activities
-            </Link>
-
-            <Link to="/events">Back</Link>
-
-            {/* TODO: Remove this section */}
+            {/* TODO: Remove this section once #132 is solved*/}
             {userID == event.OrganizerID && (<>
             <h2>Beneficiaries</h2>
             <input
@@ -154,6 +145,19 @@ export default function ViewEventPage() {
                 Export Beneficiaries CSV
             </button>
             </>)}
+
+            {/*TODO: Turn this into a style in order to remove repetition*/}
+            <div className="flex">
+            <Link className="mr-3 mt-5 w-10 text-center block items-center gap-2 rounded-md bg-black px-5 py-3 text-white" to="/events">Back</Link>
+            {event.OrganizerID == userID &&
+                <Link className="mr-3 mt-5 w-20 border-2 text-center block items-center gap-2 rounded-md bg-white px-5 py-3 text-black" to={`/event/edit/${event.ID}`}>
+                    Edit Event
+                </Link>
+            }
+            <Link className="mr-3 mt-5 w-35 border-2 text-center block items-center gap-2 rounded-md bg-white px-5 py-3 text-black" to={`/event/${event.ID}/participants`}>
+                View Participants
+            </Link>
+            </div>
         </div>
     );
 }

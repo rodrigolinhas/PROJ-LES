@@ -95,7 +95,7 @@ export default function EventList({
 
     return (
         <div>
-            <h2 className="text-center mt-0 font-sans">{title}</h2>
+            <h2 className="text-center mt-0">{title}</h2>
 
             <form onSubmit={handleSearch} className="flex m-0! flex-row! w-full max-w-none!">
                 <input
@@ -108,14 +108,14 @@ export default function EventList({
                 <button type="submit" className="flex-none w-20 bg-black text-white border-0 rounded-md">Search</button>
             </form>
 
-            {loading && <p className="font-sans">Loading events...</p>}
-            {!loading && error && <p className="error font-sans">{error}</p>}
-            {!loading && !error && events.length === 0 && <p className="font-sans">{emptyMessage}</p>}
+            {loading && <p>Loading events...</p>}
+            {!loading && error && <p className="error">{error}</p>}
+            {!loading && !error && events.length === 0 && <p>{emptyMessage}</p>}
 
             {!loading && !error && events.length > 0 && (
                 <div className="my-4">
                     {events.map((event) => (
-                        <Link className="block mt-3 font-sans border p-2 rounded-lg w-fit no-underline text-black" to={`/event/${event.ID}`}>
+                        <Link className="block mt-3 border p-2 rounded-lg w-fit no-underline text-black" to={`/event/${event.ID}`}>
                             <strong className="text-2xl">{event.Name}</strong> – {event.Theme}
                             <br />
                             <strong>Location:</strong> {event.Location}
@@ -125,7 +125,7 @@ export default function EventList({
                             {showEditButton && (
                                 <>
                                     {" "}
-                                    <Link className="font-sans" to={`/event/edit/${event.ID}`}>Edit</Link>
+                                    <Link to={`/event/edit/${event.ID}`}>Edit</Link>
                                 </>
                             )}
                         </Link>
@@ -144,7 +144,7 @@ export default function EventList({
                     </svg> 
                 </button>
 
-                <span className="px-5 font-sans">Page {page + 1}</span>
+                <span className="px-5">Page {page + 1}</span>
 
                 <button className="border-2 rounded-full size-10"
                     type="button"

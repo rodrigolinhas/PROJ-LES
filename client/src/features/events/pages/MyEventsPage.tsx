@@ -19,8 +19,8 @@ export default function MyEventsPage() {
     return (
         // TODO: Add header
         <div>
-            <h1 className="font-sans text-center text-4xl">Events</h1>
-            <p className="font-sans text-center">Here you can filter published events and also see your own events.</p>
+            <h1 className="text-center text-4xl">Events</h1>
+            <p className="text-center">Here you can filter published events and also see your own events.</p>
 
             {role === "EventOrganizer" && (
                 <div className="flex items-center content-center mx-auto my-5 w-fit [&_button]:w-45 ">
@@ -33,7 +33,7 @@ export default function MyEventsPage() {
                 </div>
             )}
 
-            <div className="max-w-[80%] m-auto rounded-xl p-5 border-3">
+            <div className="max-w-[80%] m-auto rounded-xl p-5 border-3 bg-white">
                 {tab === Tabs.Published && (
                     <EventList
                         title="Published Events"
@@ -47,13 +47,12 @@ export default function MyEventsPage() {
                         title="My Events"
                         endpoint="http://localhost:8080/event/my"
                         emptyMessage="You have no events yet."
-                        showEditButton    //TODO: Edit button should be displayed in event details
                     />
                 )}
             </div>
 
             {role === "EventOrganizer" && (
-                <Link className="mt-5 mx-auto w-35 text-center font-sans block items-center gap-2 rounded-md bg-black px-5 py-3 text-white no-underline" to="/event/create">Create Event</Link>
+                <Link className="mt-5 mx-auto w-35 text-center block items-center gap-2 rounded-md bg-black px-5 py-3 text-white no-underline" to="/event/create">Create Event</Link>
             )}
 
             {/* TODO: The user should return to the home page through the header instead */}

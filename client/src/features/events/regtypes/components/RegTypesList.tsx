@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getCookie } from "../../../../shared/utils/getCookie.ts";
 import { envHostBackend } from '@/shared/utils/env';
+import { Link } from "react-router-dom";
 
 type RegType = {
     ID: number;
@@ -38,7 +39,7 @@ export async function getEventRegTypes(eventId: string) {
     }
 }
 
-export default function RegTypesList({ eventId }: { eventId: string }) {
+export default function RegTypesList({ eventId, organizer, published }: { eventId: string, organizer: boolean, published: boolean }) {
     const [regTypes, setRegTypes] = useState<RegType[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -62,17 +63,26 @@ export default function RegTypesList({ eventId }: { eventId: string }) {
                     <p>This event does not have registration types</p>
                 )}
                 {regTypes.map((rt) => (
-                    <div key={rt.ID} className="border border-[#181818] m-3 px-5 py-1 w-60 min-h-90 rounded-xl">
-                        <h2 className="text-2xl my-4">{rt.Name}</h2>
-                        <h3 className="text-1xl my-0"><strong>{rt.Price}€</strong></h3>
-                        <p>{rt.Description}</p>
-                        <hr className="text-[#ddd]"/>
-                        <ul className="pl-6">
-                            {rt.Benefits.map((b, i) => (
-                                <li className="my-2" key={i}>{b}</li>
-                            ))}
-                        </ul>
-                        {/*TODO: Add enroll button*/}
+                    <div key={rt.ID} className="flex flex-col border border-[#181818] m-3 px-5 py-1 w-60 min-h-90 rounded-xl">
+                        <div className="grow min-w-full">
+                            <h2 className="text-2xl my-4">{rt.Name}</h2>
+                            <h3 className="text-1xl my-0"><strong>{rt.Price}€</strong></h3>
+                            <p>{rt.Description}</p>
+                            <hr className="text-[#ddd]"/>
+                            <ul className="pl-6 list-disc mt-4">
+                                {rt.Benefits.map((b, i) => (
+                                    <li className="my-2" key={i}>{b}</li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="flex-none my-2">
+                            { (organizer && !published) &&
+                                <Link className="align-bottom m-auto w-10 border-2 text-center block items-center gap-2 rounded-md bg-white px-5 py-3 text-black" to={`/event/${eventId}/regtype/edit/${rt.ID}`}>
+                                    Edit
+                                </Link>
+                            }
+                            {/*TODO: Add enroll button*/}
+                        </div>
                     </div>
                 ))}
             </div>
