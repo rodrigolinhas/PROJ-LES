@@ -121,7 +121,6 @@ export default function EventList({
                             <strong>Location:</strong> {event.Location}
                             <br />
                             <strong>Date/Time:</strong> {new Date(event.StartDate).toLocaleString()} — {new Date(event.EndDate).toLocaleString()}
-                            {/* TODO: Add more info */}
                             {showEditButton && (
                                 <>
                                     {" "}
