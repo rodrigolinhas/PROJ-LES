@@ -57,20 +57,25 @@ export default function RegTypesList({ eventId }: { eventId: string }) {
         <div>
             <h2>Registration Types</h2>
 
-            {regTypes.map((rt) => (
-                <div key={rt.ID} style={{ border: "1px solid #ccc", margin: "10px", padding: "10px" }}>
-                    <h3>{rt.Name}</h3>
-                    <p>{rt.Description}</p>
-                    <p><strong>Price:</strong> {rt.Price}€</p>
-
-                    <p><strong>Benefits:</strong></p>
-                    <ul>
-                        {rt.Benefits.map((b, i) => (
-                            <li key={i}>{b}</li>
-                        ))}
-                    </ul>
-                </div>
-            ))}
+            <div className="flex">
+                {(!regTypes || regTypes.length == 0) && (
+                    <p>This event does not have registration types</p>
+                )}
+                {regTypes.map((rt) => (
+                    <div key={rt.ID} className="border border-[#181818] m-3 px-5 py-1 w-60 min-h-90 rounded-xl">
+                        <h2 className="text-2xl my-4">{rt.Name}</h2>
+                        <h3 className="text-1xl my-0"><strong>{rt.Price}€</strong></h3>
+                        <p>{rt.Description}</p>
+                        <hr className="text-[#ddd]"/>
+                        <ul className="pl-6">
+                            {rt.Benefits.map((b, i) => (
+                                <li className="my-2" key={i}>{b}</li>
+                            ))}
+                        </ul>
+                        {/*TODO: Add enroll button*/}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

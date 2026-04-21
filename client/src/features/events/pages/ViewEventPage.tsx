@@ -4,6 +4,9 @@ import { getCookie } from "../../../shared/utils/getCookie";
 import RegTypesList from "../regtypes/components/RegTypesList.tsx";
 import { envHostBackend } from "@/shared/utils/env";
 import { useUserID } from "@/shared/hooks/useUserID";
+import { Italic } from "lucide-react";
+import ViewArticlePage from "@/features/articles/pages/ViewArticlePage.tsx";
+import ListActivityPage from "../activities/pages/ListActivitiesPage.tsx";
 
 type EventDetails = {
     ID: number;
@@ -112,17 +115,18 @@ export default function ViewEventPage() {
     if (!event) return null;
 
     return (
-        <div>
-            <h1>{event.Name}</h1>
-            <p><strong>Theme:</strong> {event.Theme}</p>
-            <p><strong>Description:</strong> {event.Description}</p>
-            <p><strong>Organization:</strong> {event.Organization}</p>
-            <p><strong>Location:</strong> {event.Location}</p>
-            <p><strong>Start:</strong> {new Date(event.StartDate).toLocaleString()}</p>
-            <p><strong>End:</strong> {new Date(event.EndDate).toLocaleString()}</p>
+        <div className="m-auto max-w-[80%] border-3 p-5 rounded-xl">
+            <h1 className="font-sans text-4xl my-2">{event.Name}</h1>
+            <p className="text-2xl"><strong>{event.Theme}</strong></p>
+            <p>{event.Description}</p>
+            <p>From <strong>{new Date(event.StartDate).toLocaleString()}</strong> until <strong>{new Date(event.EndDate).toLocaleString()}</strong></p>
+            <p>Takes place in <strong>{event.Location}</strong></p>
+            <p><i>Organized by {event.Organization}</i></p>
 
             <hr />
                 <RegTypesList eventId={id!} />
+            <hr />
+                {/*TODO: List Activities*/}
             <hr />
             <Link to={`/event/${event.ID}/participants`}>
                 View Participants
@@ -136,6 +140,7 @@ export default function ViewEventPage() {
 
             <Link to="/events">Back</Link>
 
+            {/* TODO: Remove this section */}
             {userID == event.OrganizerID && (<>
             <h2>Beneficiaries</h2>
             <input
