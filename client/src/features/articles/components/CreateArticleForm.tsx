@@ -1,33 +1,34 @@
 import { envHostBackend } from '@/shared/utils/env';
 import { getCookie } from '@/shared/utils/getCookie';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-type ShortEvent = {
-    ID: number;
-    Name: string;
-    Theme: string;
+type AppUser = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
 };
 
-type ShortActivity = {
-    ID: number;
-    Name: string;
-    Description: string;
-};
+function normalizeUser(u: any): AppUser {
+    return {
+        id: u.ID || u.id,
+        firstName: u.FirstName || u.firstName || u.first_name || "",
+        lastName: u.LastName || u.lastName || u.last_name || "",
+        email: u.Email || u.email || "",
+    };
+}
 
 /**
  * Form component for creating a new article and associating it
  * with an event activity via the `/article/create` endpoint.
- *
- * Required fields: eventID, activityID, title, firstAuthorID, publisher, url.
- * Optional fields: coAuthorsID, doi, isbn.
  */
 export default function CreateArticleForm() {
     const [eventID, setEventID] = useState("");
     const [activityID, setActivityID] = useState("");
     const [title, setTitle] = useState("");
     const [firstAuthorID, setFirstAuthorID] = useState("");
-    const [coAuthorsID, setCoAuthorsID] = useState("");
+    const [selectedCoAuthors, setSelectedCoAuthors] = useState<string[]>([]);
     const [publisher, setPublisher] = useState("");
     const [doi, setDoi] = useState("");
     const [isbn, setIsbn] = useState("");
@@ -36,53 +37,19 @@ export default function CreateArticleForm() {
     const [isError, setIsError] = useState(false);
     const [createdArticleId, setCreatedArticleId] = useState<number | null>(null);
 
-    const [events, setEvents] = useState<ShortEvent[]>([]);
-    const [activities, setActivities] = useState<ShortActivity[]>([]);
-    const [loadingEvents, setLoadingEvents] = useState(true);
-    const [loadingActivities, setLoadingActivities] = useState(false);
+    const [participants, setParticipants] = useState<AppUser[]>([]);
 
-    // Fetch the organizer's events on mount
     useEffect(() => {
-        async function fetchEvents() {
-            const csrfToken = getCookie("csrf_token");
-            try {
-                const response = await fetch(
-                    `http://${envHostBackend()}/event/my`,
-                    {
-                        credentials: "include",
-                        headers: { "X-CSRF-Token": csrfToken },
-                    }
-                );
-                if (response.status === 200) {
-                    const data = await response.json();
-                    setEvents(data);
-                } else {
-                    setEvents([]);
-                }
-            } catch {
-                setEvents([]);
-            } finally {
-                setLoadingEvents(false);
-            }
-        }
-        fetchEvents();
-    }, []);
-
-    // Fetch activities when event changes
-    useEffect(() => {
-        if (!eventID) {
-            setActivities([]);
-            setActivityID("");
+        if (!eventID || isNaN(Number(eventID))) {
+            setParticipants([]);
             return;
         }
 
-        async function fetchActivities() {
-            setLoadingActivities(true);
-            setActivityID("");
+        async function fetchParticipants() {
             const csrfToken = getCookie("csrf_token");
             try {
                 const response = await fetch(
-                    `http://${envHostBackend()}/event/${eventID}/activity/list`,
+                    `http://${envHostBackend()}/event/view/${eventID}/participants`,
                     {
                         credentials: "include",
                         headers: { "X-CSRF-Token": csrfToken },
@@ -90,17 +57,16 @@ export default function CreateArticleForm() {
                 );
                 if (response.status === 200) {
                     const data = await response.json();
-                    setActivities(data);
+                    setParticipants(data.map(normalizeUser));
                 } else {
-                    setActivities([]);
+                    setParticipants([]);
                 }
             } catch {
-                setActivities([]);
-            } finally {
-                setLoadingActivities(false);
+                setParticipants([]);
             }
         }
-        fetchActivities();
+
+        fetchParticipants();
     }, [eventID]);
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -113,7 +79,7 @@ export default function CreateArticleForm() {
         formData.append("activityID", activityID);
         formData.append("title", title);
         formData.append("firstAuthorID", firstAuthorID);
-        formData.append("coAuthorsID", coAuthorsID);
+        formData.append("coAuthorsID", selectedCoAuthors.join(","));
         formData.append("publisher", publisher);
         formData.append("doi", doi);
         formData.append("isbn", isbn);
@@ -170,47 +136,23 @@ export default function CreateArticleForm() {
             <form onSubmit={handleSubmit}>
                 <h2>Create Article</h2>
 
-                <label className="required">Event</label>
-                {loadingEvents ? (
-                    <p>Loading events...</p>
-                ) : events.length === 0 ? (
-                    <p>No events found. You need to create an event first.</p>
-                ) : (
-                    <select
-                        value={eventID}
-                        onChange={(e) => setEventID(e.target.value)}
-                        required
-                    >
-                        <option value="">-- Select an event --</option>
-                        {events.map((ev) => (
-                            <option key={ev.ID} value={ev.ID}>
-                                {ev.Name} ({ev.Theme})
-                            </option>
-                        ))}
-                    </select>
-                )}
+                <label className="required">Event ID</label>
+                <input
+                    type="text"
+                    placeholder="Associated event ID"
+                    value={eventID}
+                    onChange={(e) => setEventID(e.target.value)}
+                    required
+                />
 
-                <label className="required">Activity</label>
-                {!eventID ? (
-                    <p>Please select an event first.</p>
-                ) : loadingActivities ? (
-                    <p>Loading activities...</p>
-                ) : activities.length === 0 ? (
-                    <p>No activities found for this event. Create an activity first.</p>
-                ) : (
-                    <select
-                        value={activityID}
-                        onChange={(e) => setActivityID(e.target.value)}
-                        required
-                    >
-                        <option value="">-- Select an activity --</option>
-                        {activities.map((act) => (
-                            <option key={act.ID} value={act.ID}>
-                                {act.Name}
-                            </option>
-                        ))}
-                    </select>
-                )}
+                <label className="required">Activity ID</label>
+                <input
+                    type="text"
+                    placeholder="Associated activity ID"
+                    value={activityID}
+                    onChange={(e) => setActivityID(e.target.value)}
+                    required
+                />
 
                 <label className="required">Title</label>
                 <input
@@ -221,22 +163,55 @@ export default function CreateArticleForm() {
                     required
                 />
 
-                <label className="required">First Author ID</label>
-                <input
-                    type="text"
-                    placeholder="ID of the first author"
-                    value={firstAuthorID}
-                    onChange={(e) => setFirstAuthorID(e.target.value)}
-                    required
-                />
+                <label className="required">First Author</label>
+                {participants.length > 0 ? (
+                    <select
+                        value={firstAuthorID}
+                        onChange={(e) => setFirstAuthorID(e.target.value)}
+                        required
+                    >
+                        <option value="">Select an author...</option>
+                        {participants.map((p) => (
+                            <option key={p.id} value={p.id}>
+                                {p.firstName} {p.lastName} ({p.email})
+                            </option>
+                        ))}
+                    </select>
+                ) : (
+                    <input
+                        type="text"
+                        placeholder={eventID ? "No participants found. Type ID manually." : "Enter Event ID first or type ID manually."}
+                        value={firstAuthorID}
+                        onChange={(e) => setFirstAuthorID(e.target.value)}
+                        required
+                    />
+                )}
 
-                <label>Co-Authors IDs</label>
-                <input
-                    type="text"
-                    placeholder="Comma-separated co-author IDs (e.g. 1, 2, 3)"
-                    value={coAuthorsID}
-                    onChange={(e) => setCoAuthorsID(e.target.value)}
-                />
+                <label>Co-Authors</label>
+                {participants.length > 0 ? (
+                    <select
+                        multiple
+                        value={selectedCoAuthors}
+                        onChange={(e) => {
+                            const values = Array.from(e.target.selectedOptions, option => option.value);
+                            setSelectedCoAuthors(values);
+                        }}
+                        style={{ height: "100px" }}
+                    >
+                        {participants.map((p) => (
+                            <option key={p.id} value={p.id}>
+                                {p.firstName} {p.lastName} ({p.email})
+                            </option>
+                        ))}
+                    </select>
+                ) : (
+                    <input
+                        type="text"
+                        placeholder="Comma-separated co-author IDs (e.g. 1, 2, 3)"
+                        value={selectedCoAuthors.join(",")}
+                        onChange={(e) => setSelectedCoAuthors(e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
+                    />
+                )}
 
                 <label className="required">Publisher</label>
                 <input
