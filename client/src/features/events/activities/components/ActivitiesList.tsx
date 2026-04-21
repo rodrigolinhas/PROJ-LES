@@ -80,7 +80,7 @@ export default function ActivitiesList({ eventId }: Props) {
         <div>
             <h2>Activities</h2>
                 {(!activities || activities.length == 0) ? (
-                    <p>This event does not have any activities</p>
+                    <p>This event does not have activities</p>
                 ) :
                 <>
                     <ul className="list-disc pl-6">

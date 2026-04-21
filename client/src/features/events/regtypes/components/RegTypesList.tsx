@@ -59,10 +59,10 @@ export default function RegTypesList({ eventId, organizer, published }: { eventI
             <h2>Registration Types</h2>
 
             <div className="flex">
-                {(!regTypes || regTypes.length == 0) && (
-                    <p>This event does not have registration types</p>
-                )}
-                {regTypes.map((rt) => (
+                {(!regTypes || regTypes.length == 0) ? (
+                    <p className="mt-0 mb-2">This event does not have registration types</p>
+                ) :
+                <>{regTypes.map((rt) => (
                     <div key={rt.ID} className="flex flex-col border border-[#181818] m-3 px-5 py-1 w-60 min-h-90 rounded-xl">
                         <div className="grow min-w-full">
                             <h2 className="text-2xl my-4">{rt.Name}</h2>
@@ -84,7 +84,7 @@ export default function RegTypesList({ eventId, organizer, published }: { eventI
                             {/*TODO: Add enroll button*/}
                         </div>
                     </div>
-                ))}
+                ))}</>}
             </div>
         </div>
     );
