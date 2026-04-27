@@ -256,7 +256,7 @@
 		},
 		{
 			"key": "benefit_id",
-			"value": "2",
+			"value": "dinner",
 			"type": "default",
 			"enabled": true
 		}

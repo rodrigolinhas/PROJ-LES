@@ -19,65 +19,13 @@ type EventDetails = {
     Published: boolean;
 };
 
-type Beneficiary = {
-    ID: number
-    FirstName: string
-    LastName: string
-    Email: string
-}
-
 export default function ViewEventPage() {
     const { id } = useParams();
     const [event, setEvent] = useState<EventDetails | null>(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
-    const [benefitID, setBenefitID] = useState("");
     const userID = useUserID();
     
-    async function handleBeneficiariesCSV() {
-        const csrfToken = getCookie("csrf_token")
-
-        let data: Beneficiary[] | null = null;
-
-        const response = await fetch(
-            `http://${envHostBackend()}/event/view/${id}/benefit_participants/${benefitID}`,
-            {
-                credentials: "include",
-                headers: {
-                    "X-CSRF-Token": csrfToken,
-                },
-            }
-        )
-
-        if (response.status === 200) {
-            data = await response.json();
-        } else {
-            console.log(await response.text())
-        }
-
-        if (data === null || data == undefined) { return }
-
-        const csvRows = ["ID,FirstName,LastName,Email"]
-        data.forEach(elem => {
-            const row = [
-                elem.ID,
-                `"${(elem.FirstName || "")}"`,
-                `"${(elem.LastName || "")}"`,
-                `"${(elem.Email || "")}"`
-            ]
-            csvRows.push(row.join(","))
-        })
-
-        const csvStr = csvRows.join("\n")
-        const blob = new Blob([csvStr], {type: "text/csv; charset=utf-8;"})
-        const url = URL.createObjectURL(blob)
-        const link = document.createElement("a")
-        link.href = url
-        link.download = `beneficiaries_${id}_${benefitID}.csv`
-        link.click()
-        URL.revokeObjectURL(url)
-    }
-
     useEffect(() => {
         async function fetchEvent() {
             const csrfToken = getCookie("csrf_token");
@@ -131,21 +79,6 @@ export default function ViewEventPage() {
                 <ActivitiesList eventId={Number.parseInt(id!) || 0} />
             <hr />
 
-            {/* TODO: Remove this section once #132 is solved*/}
-            {userID == event.OrganizerID && (<>
-            <h2>Beneficiaries</h2>
-            <input
-                type="text"
-                placeholder="Benefit ID"
-                value={benefitID}
-                onChange={(e) => setBenefitID(e.target.value)}
-                required
-            />
-            <button className="mr-3 mt-5 w-60 border-2 items-center gap-2 rounded-md bg-white px-5 py-3 text-black" onClick={handleBeneficiariesCSV}>
-                Export Beneficiaries CSV
-            </button>
-            </>)}
-
             {/*TODO: Turn this into a style in order to remove repetition*/}
             <div className="flex">
             <Link className="mr-3 mt-5 w-10 text-center block items-center gap-2 rounded-md bg-black px-5 py-3 text-white" to="/events">Back</Link>
@@ -156,6 +89,9 @@ export default function ViewEventPage() {
             }
             <Link className="mr-3 mt-5 w-35 border-2 text-center block items-center gap-2 rounded-md bg-white px-5 py-3 text-black" to={`/event/${event.ID}/participants`}>
                 View Participants
+            </Link>
+            <Link className="mr-3 mt-5 w-35 border-2 text-center block items-center gap-2 rounded-md bg-white px-5 py-3 text-black" to={`/event/${event.ID}/benefits`}>
+                View All Benefits
             </Link>
             </div>
         </div>
