@@ -4,6 +4,7 @@ import { getCookie } from "../../../shared/utils/getCookie";
 import RegTypesList from "../regtypes/components/RegTypesList.tsx";
 import { envHostBackend } from "@/shared/utils/env";
 import { useUserID } from "@/shared/hooks/useUserID";
+import ActivitiesList from "../activities/components/ActivitiesList.tsx";
 
 type EventDetails = {
     ID: number;
@@ -15,6 +16,7 @@ type EventDetails = {
     StartDate: string;
     EndDate: string;
     OrganizerID: number;
+    Published: boolean;
 };
 
 type Beneficiary = {
@@ -112,30 +114,24 @@ export default function ViewEventPage() {
     if (!event) return null;
 
     return (
-        <div>
-            <h1>{event.Name}</h1>
-            <p><strong>Theme:</strong> {event.Theme}</p>
-            <p><strong>Description:</strong> {event.Description}</p>
-            <p><strong>Organization:</strong> {event.Organization}</p>
-            <p><strong>Location:</strong> {event.Location}</p>
-            <p><strong>Start:</strong> {new Date(event.StartDate).toLocaleString()}</p>
-            <p><strong>End:</strong> {new Date(event.EndDate).toLocaleString()}</p>
+        <div className="m-auto max-w-[80%] border-3 p-5 rounded-xl bg-white">
+            <h1 className="text-4xl my-2">{event.Name}</h1>
+            { !event.Published &&
+                <span className="italic">(Unpublished)</span>
+            }
+            <p className="text-2xl"><strong>{event.Theme}</strong></p>
+            <p>{event.Description}</p>
+            <p>From <strong>{new Date(event.StartDate).toLocaleString()}</strong> until <strong>{new Date(event.EndDate).toLocaleString()}</strong></p>
+            <p>Takes place in <strong>{event.Location}</strong></p>
+            <p><i>Organized by {event.Organization}</i></p>
 
             <hr />
-                <RegTypesList eventId={id!} />
+                <RegTypesList eventId={id!} organizer={userID == event.OrganizerID} published={event.Published}/>
             <hr />
-            <Link to={`/event/${event.ID}/participants`}>
-                View Participants
-            </Link>
+                <ActivitiesList eventId={Number.parseInt(id!) || 0} />
+            <hr />
 
-            <br />
-
-            <Link to={`/event/${event.ID}/activity/list`}>
-                View Activities
-            </Link>
-
-            <Link to="/events">Back</Link>
-
+            {/* TODO: Remove this section once #132 is solved*/}
             {userID == event.OrganizerID && (<>
             <h2>Beneficiaries</h2>
             <input
@@ -145,10 +141,23 @@ export default function ViewEventPage() {
                 onChange={(e) => setBenefitID(e.target.value)}
                 required
             />
-            <button onClick={handleBeneficiariesCSV}>
+            <button className="mr-3 mt-5 w-60 border-2 items-center gap-2 rounded-md bg-white px-5 py-3 text-black" onClick={handleBeneficiariesCSV}>
                 Export Beneficiaries CSV
             </button>
             </>)}
+
+            {/*TODO: Turn this into a style in order to remove repetition*/}
+            <div className="flex">
+            <Link className="mr-3 mt-5 w-10 text-center block items-center gap-2 rounded-md bg-black px-5 py-3 text-white" to="/events">Back</Link>
+            {event.OrganizerID == userID &&
+                <Link className="mr-3 mt-5 w-20 border-2 text-center block items-center gap-2 rounded-md bg-white px-5 py-3 text-black" to={`/event/edit/${event.ID}`}>
+                    Edit Event
+                </Link>
+            }
+            <Link className="mr-3 mt-5 w-35 border-2 text-center block items-center gap-2 rounded-md bg-white px-5 py-3 text-black" to={`/event/${event.ID}/participants`}>
+                View Participants
+            </Link>
+            </div>
         </div>
     );
 }

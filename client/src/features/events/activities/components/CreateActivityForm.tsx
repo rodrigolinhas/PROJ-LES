@@ -59,7 +59,7 @@ export default function CreateActivityForm() {
         return (
             <div style={{ textAlign: "center", margin: "100px" }}>
                 <h2 style={{ color: "green" }}>Activity created with success!</h2>
-                <Link to = {`/event/${eventId}/activity/list`}>Go back to this event's activities list</Link>
+                <Link to = {`/event/${eventId}`}>Go back to the event page</Link>
             </div>
         );
     }

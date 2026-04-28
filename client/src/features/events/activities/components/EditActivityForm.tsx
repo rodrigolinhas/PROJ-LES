@@ -101,8 +101,8 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
         return (
             <div>
                 <h2>Activity deleted successfully!</h2>
-                <Link to={`/event/${eventId}/activity/list`}>
-                    Back to Activities
+                <Link to={`/event/${eventId}`}>
+                    Back to Event
                 </Link>
             </div>
         );
