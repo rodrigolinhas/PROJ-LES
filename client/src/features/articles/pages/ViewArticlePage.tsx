@@ -14,6 +14,9 @@ type AuthorRef = {
     id?: number;
     first_name?: string;
     last_name?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
 };
 
 type ArticleDetails = {
@@ -33,8 +36,11 @@ type ArticleDetails = {
 function getAuthorName(author: AuthorRef | number | undefined): string {
     if (typeof author === "number") return `ID ${author}`;
     if (!author) return "";
-    const name = [author.first_name, author.last_name].filter(Boolean).join(" ");
-    return name || (author.id ? `ID ${author.id}` : "");
+    const firstName = author.first_name || author.firstName || "";
+    const lastName = author.last_name || author.lastName || "";
+    const name = [firstName, lastName].filter(Boolean).join(" ");
+    const email = author.email ? ` (${author.email})` : "";
+    return (name || (author.id ? `ID ${author.id}` : "")) + email;
 }
 
 function getTagLabel(tag: ArticleTag | string): string {
@@ -123,6 +129,11 @@ export default function ViewArticlePage() {
             <br />
             <Link to={`/event/${eventId}/activity/${activityId}/article/${articleId}/tags`}>
                 Edit Tags
+            </Link>
+
+            <br />
+            <Link to={`/event/${eventId}/activity/${activityId}/article/${articleId}/authors`}>
+                Manage Authors
             </Link>
 
             <br />

@@ -10,6 +10,7 @@ import EditEventPage from "../features/events/pages/EditEventPage";
 import MyEventsPage from "../features/events/pages/MyEventsPage";
 import CreateArticlePage from "../features/articles/pages/CreateArticlePage";
 import ManageArticleTagsPage from "../features/articles/pages/ManageArticleTagsPage";
+import ManageArticleAuthorsPage from "../features/articles/pages/ManageArticleAuthorsPage";
 import ViewEventPage from "../features/events/pages/ViewEventPage";
 import SettingsPage from "../features/settings/pages/SettingsPage";
 import EditActivityPage from "../features/events/activities/pages/EditActivityPage.tsx";
@@ -35,28 +36,28 @@ function App() {
                 <Route path={"/auth/success"} element={<AuthSuccessPage />} />
 
                 <Route element={<ProtectedRoutes />}>
-                    <Route path="/home" element={<HomePage />}/>
+                    <Route path="/home" element={<HomePage />} />
                     <Route path="/user/me" element={<ViewUserPage />} />
                     <Route path="/settings" element={<SettingsPage />} />
-                    <Route path="/events" element={<MyEventsPage />}/>
-                    <Route path="/event/create" element={<CreateEventPage />}/>
-                    <Route path="/event/edit/:id" element={<EditEventPage />}/>
+                    <Route path="/events" element={<MyEventsPage />} />
+                    <Route path="/event/create" element={<CreateEventPage />} />
+                    <Route path="/event/edit/:id" element={<EditEventPage />} />
                     <Route path="/event/:id" element={<ViewEventPage />} />
                     <Route path="/event/:id/participants" element={<ListEventParticipantsPage />} />
                     <Route path="/article/create" element={<CreateArticlePage />} />
-                    <Route path="/article/:id/tags" element={<ManageArticleTagsPage />} />
 
 
-                    <Route path="/event/:eventId/activity/edit/:id" element={<EditActivityPage />}/>
-                    <Route path="/event/:eventId/activity/create" element={<CreateActivityPage />}/>
+                    <Route path="/event/:eventId/activity/edit/:id" element={<EditActivityPage />} />
+                    <Route path="/event/:eventId/activity/create" element={<CreateActivityPage />} />
                     <Route path="/event/:eventId/activity/view/:id" element={<ViewActivityPage />} />
                     <Route path="/event/:eventId/activity/list" element={<ListActivityPage />} />
 
-                    <Route path="/event/:eventId/regtype/edit/:regTypeId" element={<EditRegTypePage />}/>
+                    <Route path="/event/:eventId/regtype/edit/:regTypeId" element={<EditRegTypePage />} />
                     <Route path="/event/:eventId/activity/:activityId/article/list" element={<ListArticlesPage />} />
                     <Route path="/event/:eventId/activity/:activityId/article/view/:articleId" element={<ViewArticlePage />} />
                     <Route path="/event/:eventId/activity/:activityId/article/edit/:articleId" element={<EditArticlePage />} />
                     <Route path="/event/:eventId/activity/:activityId/article/:articleId/tags" element={<ManageArticleTagsPage />} />
+                    <Route path="/event/:eventId/activity/:activityId/article/:articleId/authors" element={<ManageArticleAuthorsPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
