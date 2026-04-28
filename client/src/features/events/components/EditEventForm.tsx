@@ -239,7 +239,7 @@ export default function EditEventForm(props: any) {
 
                 <hr />
                 <h3>Registration Types</h3>
-                <Link to={`/event/regtype/create`} style={{ fontSize: "0.9em" }}>+ Add New Registration Type</Link>
+                <Link to={`/event/${eventID}/regtype/create`} style={{ fontSize: "0.9em" }}>+ Add New Registration Type</Link>
 
                 <div>
                     {regTypes.length === 0 ? (
@@ -264,6 +264,10 @@ export default function EditEventForm(props: any) {
 
                 <Link to={`/event/${eventID}/activity/create`}>
                     Add Activity
+                </Link>
+
+                <Link to={`/events`}>
+                    Back
                 </Link>
             </form>
         );
