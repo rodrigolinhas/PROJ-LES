@@ -97,7 +97,7 @@ export default function ListBenefitsPage() {
     if (error) return <p className="error">{error}</p>;
 
     return (
-        <div className="m-auto max-w-[80%] border-3 p-5 rounded-xl bg-white">
+        <div className="m-auto max-w-[80%] border-3 p-5 pb-8 rounded-xl bg-white">
             <h2 className="mt-2">Benefits</h2>
 
             {benefits.length === 0 ? (
