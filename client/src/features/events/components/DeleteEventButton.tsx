@@ -18,7 +18,7 @@ export default function DeleteEventButton(props: any) {
     let eventID: number = props.eventID
     let setEventDeleted = props.setEventDeleted
 
-    const [title, setTitle] = useState("Delete Event");
+    const [title, setTitle] = useState("🗑 Delete Event");
 
     async function handleClick() {
         const csrfToken = getCookie("csrf_token") || "";

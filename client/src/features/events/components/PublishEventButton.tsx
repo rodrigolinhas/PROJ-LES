@@ -18,7 +18,7 @@ export default function PublishEventButton(props: any) {
     let eventID: number = props.eventID
     let published: boolean = props.published
 
-    const [title, setTitle] = useState("Publish Event");
+    const [title, setTitle] = useState("⏏ Publish Event");
     const [done, setDone] = useState(published);
 
     async function handleClick() {

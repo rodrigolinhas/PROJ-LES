@@ -4,6 +4,7 @@ import DeleteEventButton from '../components/DeleteEventButton.tsx';
 import { Link } from 'react-router-dom';
 import { envHostBackend } from '@/shared/utils/env.ts';
 import { getCookie } from "@/shared/utils/getCookie.ts";
+import { mainDivStyle, titleStyle, descriptionStyle, labelStyle, inputStyle, submitButtonStyle, errorMessageStyle } from '@/shared/styles/formStyles';
 
 type RegType = {
     ID: number;
@@ -174,102 +175,172 @@ export default function EditEventForm(props: any) {
     else 
     {
         return (
-            <form onSubmit={handleSubmit}>
-                <h2>Edit Event</h2>
-                <label className="required">Name</label>
-                <input
-                    type="text"
-                    placeholder="Event name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
-                <label className="required">Theme</label>
-                <input
-                    type="text"
-                    placeholder="Event theme"
-                    value={theme}
-                    onChange={(e) => setTheme(e.target.value)}
-                    required
-                />
-                <label className="required">Description</label>
-                <textarea
-                    placeholder="Event description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                />
-                <label className="required">Organization</label>
-                <input
-                    type="text"
-                    placeholder="Organization"
-                    value={organization}
-                    onChange={(e) => setOrganization(e.target.value)}
-                    required
-                />
-                <label className="required">Location</label>
-                <input
-                    type="text"
-                    placeholder="Location"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    required
-                />
-                <label className="required">Start Date</label>
-                <input
-                    type="datetime-local"
-                    value={(new Date(startDate)).toISOString().slice(0, -1)} //TODO: do this in a clean way
-                    onChange={(e) => setStartDate(e.target.value)}
-                    required
-                />
-                <label className="required">End Date</label>
-                <input
-                    type="datetime-local"
-                    value={(new Date(endDate)).toISOString().slice(0, -1)} //TODO: do this in a clean way
-                    onChange={(e) => setEndDate(e.target.value)}
-                    required
-                />
-                <button type = "submit">Edit Event</button>
-                <p className={isError ? "error" : "success"}>
-                    {message}
-                </p>
-                <hr/>
-                <PublishEventButton eventID={eventID} published={published}/>
-                <DeleteEventButton eventID={eventID} setEventDeleted={setEventDeleted}/>
-
-                <hr />
-                <h3>Registration Types</h3>
-                <Link to={`/event/${eventID}/regtype/create`} style={{ fontSize: "0.9em" }}>+ Add New Registration Type</Link>
-
+            <div className={mainDivStyle}>
                 <div>
-                    {regTypes.length === 0 ? (
-                        <p>No registration types found.</p>
-                    ) : (
-                        regTypes.map(rt => (
-                            <div key={rt.ID}>
-                                <span><strong>{rt.Name}</strong> - {rt.Price}€</span>
-                                <Link to={`/event/${eventID}/regtype/edit/${rt.ID}`}> Edit</Link>
-                            </div>
-                        ))
-                    )}
+                    <h2 className={titleStyle}>✎ Edit Event</h2>
+                    <p className={descriptionStyle}>
+                        Edit the event fields you want to change.
+                    </p>
                 </div>
 
-                <hr />
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label className={labelStyle}>Name</label>
+                        <input
+                            type="text"
+                            placeholder="e.g., International Summit on Artificial Intelligence"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
 
-                <Link to={`/event/${eventID}/activity/list`}>
-                    View Activities
-                </Link>
+                    <div>
+                        <label className={labelStyle}>Theme</label>
+                        <input
+                            type="text"
+                            placeholder="e.g., Machine Learning"
+                            value={theme}
+                            onChange={(e) => setTheme(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
 
-                <br />
+                    <div>
+                        <label className={labelStyle}>Description</label>
+                        <textarea
+                            placeholder="Provide a brief overview of the event, main topics, and target audience"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
 
-                <Link to={`/event/${eventID}/activity/create`}>
-                    Add Activity
-                </Link>
+                    <div>
+                        <label className={labelStyle}>Organization</label>
+                        <input
+                            type="text"
+                            placeholder="e.g., University of Algarve"
+                            value={organization}
+                            onChange={(e) => setOrganization(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
 
-                <Link to={`/events`}>
-                    Back
-                </Link>
-            </form>
+                    <div>
+                        <label className={labelStyle}>Location</label>
+                        <input
+                            type="text"
+                            placeholder="e.g., Main Auditorium, Building C"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={labelStyle}>Start Date</label>
+                        <input
+                            type="datetime-local"
+                            value={(new Date(startDate)).toISOString().slice(0, -1)} //TODO: do this in a clean way
+                            onChange={(e) => setStartDate(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={labelStyle}>End Date</label>
+                        <input
+                            type="datetime-local"
+                            value={(new Date(endDate)).toISOString().slice(0, -1)} //TODO: do this in a clean way
+                            onChange={(e) => setEndDate(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div className="flex justify-center">
+                        <button type = "submit" className={submitButtonStyle}>
+                            Edit Event
+                        </button>
+                    </div>
+
+                    {message && isError && (
+                        <p className={errorMessageStyle}>
+                            {message}
+                        </p>
+                    )}
+
+                    <div className="border-t border-gray-200 mt-8 pt-6 flex justify-center gap-4">
+                        <PublishEventButton eventID={eventID} published={published}/>
+                        <DeleteEventButton eventID={eventID} setEventDeleted={setEventDeleted}/>
+                    </div>
+
+                    <div className="border border-gray-200 bg-white rounded-lg p-5 mt-8 shadow-sm">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-bold text-gray-900">Registration Types</h3>
+                            <Link
+                                to={`/event/${eventID}/regtype/create`}
+                                className="text-sm font-medium text-gray-500 hover:underline flex items-center gap-1"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                                Add New
+                            </Link>
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            {regTypes.length === 0 ? (
+                                <p className="text-sm text-gray-500 italic text-center py-4">No registration types found.</p>
+                            ) : (
+                                regTypes.map(rt => (
+                                    <div key={rt.ID} className="flex justify-between items-center p-3 bg-gray-50 border border-gray-100 rounded hover:bg-gray-100 transition-colors">
+                                        <span className="text-sm text-gray-700">
+                                            <strong className="font-semibold text-gray-900">{rt.Name}</strong> • {rt.Price}€
+                                        </span>
+                                        <Link
+                                            to={`/event/${eventID}/regtype/edit/${rt.ID}`}
+                                            className="text-sm text-gray-500 hover:text-gray-900 font-medium underline"
+                                        >
+                                            Edit
+                                        </Link>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="border-t border-gray-200 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <Link
+                            to={`/events`}
+                            className="text-sm font-medium text-gray-700 bg-white border border-gray-300 px-4 py-2 rounded hover:bg-gray-50 transition-colors shadow-sm"
+                        >
+                            ↶ Back to Events
+                        </Link>
+
+                        <div className="flex gap-4 items-center">
+                            <Link
+                                to={`/event/${eventID}/activity/list`}
+                                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                            >
+                                View Activities
+                            </Link>
+                            <span className="text-gray-300">|</span> {/* Separador visual */}
+                            <Link
+                                to={`/event/${eventID}/activity/create`}
+                                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                            >
+                                Add Activity
+                            </Link>
+                        </div>
+                    </div>
+                </form>
+            </div>
         );
     }
 }

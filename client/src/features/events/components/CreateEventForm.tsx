@@ -2,6 +2,7 @@ import { envHostBackend } from '@/shared/utils/env';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getCookie } from "@/shared/utils/getCookie.ts";
+import { mainDivStyle, titleStyle, descriptionStyle, successOutDivStyle, successDivStyle, successMessageStyle, goHomeStyle, mandatoryLabelStyle, inputStyle, submitButtonStyle, errorMessageStyle } from '@/shared/styles/formStyles';
 
 export default function CreateEventForm() {
     const [name, setName] = useState("");
@@ -58,30 +59,29 @@ export default function CreateEventForm() {
         }
     }
 
-    const inputStyle = "w-full mt-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-slate-900 outline-none font-sans";
-    const labelStyle = "font-medium text-sm text-gray-700 after:content-['*'] after:ml-1 after:text-red-500";
-
     if (eventCreated) {
         return (
-            <div className="max-w-md mx-auto mt-20 text-center p-6 border rounded-lg shadow-sm">
-                <h2 className="text-2xl font-bold text-green-600 mb-4">Event created with success!</h2>
-                <Link to ="/home" className="text-blue-600 hover:underline">Go back to Home</Link>
+            <div className={successOutDivStyle}>
+                <div className={successDivStyle}>
+                    <h2 className={successMessageStyle}>Event created with success!</h2>
+                    <Link to ="/home" className={goHomeStyle}>Go back to Home</Link>
+                </div>
             </div>
         );
     }
     else {
         return (
-            <div className="max-w-lg mx-auto mt-10 px-10 pt-10 pb-8 bg-gray-50 rounded-lg shadow-2xl">
-                <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">Create Event</h2>
-                    <p className="text-sm text-gray-500 mt-1">
+            <div className={mainDivStyle}>
+                <div>
+                    <h2 className={titleStyle}>+ Create Event</h2>
+                    <p className={descriptionStyle}>
                         Fill the fields bellow to create a new scientific event.
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <form onSubmit={handleSubmit}>
                     <div>
-                        <label className={labelStyle}>Name</label>
+                        <label className={mandatoryLabelStyle}>Name</label>
                         <input
                             type="text"
                             placeholder="e.g., International Summit on Artificial Intelligence"
@@ -93,7 +93,7 @@ export default function CreateEventForm() {
                     </div>
 
                     <div>
-                        <label className={labelStyle}>Theme</label>
+                        <label className={mandatoryLabelStyle}>Theme</label>
                         <input
                             type="text"
                             placeholder="e.g., Machine Learning"
@@ -105,7 +105,7 @@ export default function CreateEventForm() {
                     </div>
 
                     <div>
-                        <label className={labelStyle}>Description</label>
+                        <label className={mandatoryLabelStyle}>Description</label>
                         <textarea
                             placeholder="Provide a brief overview of the event, main topics, and target audience"
                             value={description}
@@ -117,7 +117,7 @@ export default function CreateEventForm() {
                     </div>
 
                     <div>
-                        <label className={labelStyle}>Organization</label>
+                        <label className={mandatoryLabelStyle}>Organization</label>
                         <input
                             type="text"
                             placeholder="e.g., University of Algarve"
@@ -129,7 +129,7 @@ export default function CreateEventForm() {
                     </div>
 
                     <div>
-                        <label className={labelStyle}>Location</label>
+                        <label className={mandatoryLabelStyle}>Location</label>
                         <input
                             type="text"
                             placeholder="e.g., Main Auditorium, Building C"
@@ -141,7 +141,7 @@ export default function CreateEventForm() {
                     </div>
 
                     <div>
-                        <label className={labelStyle}>Start Date</label>
+                        <label className={mandatoryLabelStyle}>Start Date</label>
                         <input
                             type="datetime-local"
                             value={startDate}
@@ -152,7 +152,7 @@ export default function CreateEventForm() {
                     </div>
 
                     <div>
-                        <label className={labelStyle}>End Date</label>
+                        <label className={mandatoryLabelStyle}>End Date</label>
                         <input
                             type="datetime-local"
                             value={endDate}
@@ -163,13 +163,13 @@ export default function CreateEventForm() {
                     </div>
 
                     <div className="flex justify-center">
-                        <button type="submit" className="mt-4 min-w-[250px] px-10 py-3 bg-gray-900 text-white rounded border-none hover:bg-gray-800 transition-colors">
+                        <button type="submit" className={submitButtonStyle}>
                             Create Event
                         </button>
                     </div>
 
-                    {message && (
-                        <p className={`mt-2 text-center text-sm font-medium ${isError ? "text-red-600" : "text-green-600"}`}>
+                    {message && isError && (
+                        <p className={errorMessageStyle}>
                             {message}
                         </p>
                     )}
