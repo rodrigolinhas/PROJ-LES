@@ -136,11 +136,20 @@ definitions:
     type: object
   api.ShortEvent:
     properties:
+      endDate:
+        example: "2026-03-07T20:00:00Z"
+        type: string
       id:
         example: 1
         type: integer
+      location:
+        example: Place
+        type: string
       name:
         example: Event
+        type: string
+      startDate:
+        example: "2026-03-07T12:00:00Z"
         type: string
       theme:
         example: CompSci
@@ -151,11 +160,20 @@ definitions:
       confirmed:
         example: true
         type: boolean
+      endDate:
+        example: "2026-03-07T20:00:00Z"
+        type: string
       id:
         example: 1
         type: integer
+      location:
+        example: Place
+        type: string
       name:
         example: Event
+        type: string
+      startDate:
+        example: "2026-03-07T12:00:00Z"
         type: string
       theme:
         example: CompSci
@@ -2075,6 +2093,10 @@ paths:
             type: string
         "406":
           description: Error found on the form params
+          schema:
+            type: string
+        "409":
+          description: User already exists
           schema:
             type: string
         "500":

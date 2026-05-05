@@ -132,8 +132,12 @@ export default function EditEventForm(props: any) {
             });
 
             if(response.status === 200) {
-                setMessage("Event Edited Successfully!");
+                setMessage("Event updated successfully!");
                 setIsError(false);
+            }
+            else if (response.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
             }
             else {
                 const errorText = await response.text();

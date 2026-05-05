@@ -86,6 +86,12 @@ export default function EditRegTypeForm(props: any) {
             if (res.status === 200) {
                 setMessage("Registration Type updated successfully!");
                 setIsError(false);
+            } else if (res.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
+            } else if (res.status === 409) {
+                setMessage("A registration type with this name already exists for this event. Please choose a different name.");
+                setIsError(true);
             } else {
                 setMessage(await res.text());
                 setIsError(true);

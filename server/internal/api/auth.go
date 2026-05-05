@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -25,6 +26,7 @@ import (
 // @Param 		pass		formData	string	true	"User's plain password (must be at least 8 characters long)"	minlength(8)
 // @Success 	201 {string} string "User registered successfully"
 // @Failure		406 {string} string "Error found on the form params"
+// @Failure		409 {string} string "User already exists"
 // @Failure		500 {string} string "Error found on user registration"
 // @Router 		/user/register [post]
 func UserRegister(c *gin.Context) {
@@ -52,9 +54,20 @@ func UserRegister(c *gin.Context) {
 		return
 	}
 
+	// Check if an account with this email already exists
+	var existingUser models.User
+	if result := db.DB.Where("email = ?", email).First(&existingUser); result.Error == nil {
+		c.String(http.StatusConflict, "An account with this email already exists")
+		return
+	}
+
 	res := db.DB.Create(user)
 	if res.Error != nil {
-		c.String(http.StatusInternalServerError, "Error found during user registration in the DB")
+		if strings.Contains(res.Error.Error(), "duplicate") || strings.Contains(res.Error.Error(), "UNIQUE") {
+			c.String(http.StatusConflict, "An account with this email already exists")
+		} else {
+			c.String(http.StatusInternalServerError, "Error found during user registration in the DB")
+		}
 		return
 	}
 
@@ -189,5 +202,5 @@ func UserLogout(c *gin.Context) {
 	c.SetCookie("session_token", "", -1, "/", host, false, true)
 	c.SetCookie("csrf_token", "", -1, "/", host, false, false)
 
-	c.String(http.StatusOK, "Log out with success")
+	c.String(http.StatusOK, "Logged out successfully")
 }

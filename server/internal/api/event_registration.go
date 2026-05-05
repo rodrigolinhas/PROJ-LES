@@ -42,7 +42,7 @@ type EventParticipant struct {
 func EventRegister(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -58,7 +58,7 @@ func EventRegister(c *gin.Context) {
 	}
 
 	if event.Published == false {
-		c.String(http.StatusConflict, "Can't enroll in a unpublished event")
+		c.String(http.StatusConflict, "Cannot enroll in an unpublished event")
 		return
 	}
 
@@ -84,7 +84,7 @@ func EventRegister(c *gin.Context) {
 
 	reg, err := models.NewEventRegistration(*user, event, discount, regType)
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		c.String(http.StatusBadRequest, "Invalid registration data. Please check all required fields")
 		return
 	}
 
@@ -115,7 +115,7 @@ func EventRegister(c *gin.Context) {
 		return nil
 	})
 	if trans != nil {
-		c.String(http.StatusInternalServerError, "Error found during event registration in the DB")
+		c.String(http.StatusInternalServerError, "Failed to complete event registration")
 		return
 	}
 
@@ -141,7 +141,7 @@ func EventRegister(c *gin.Context) {
 func EventParticipantsList(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -155,7 +155,7 @@ func EventParticipantsList(c *gin.Context) {
 	}
 
 	if event.OrganizerID != user.ID {
-		c.String(http.StatusForbidden, "User is not the organizer of this event")
+		c.String(http.StatusForbidden, "You are not the organizer of this event")
 		return
 	}
 
@@ -167,7 +167,7 @@ func EventParticipantsList(c *gin.Context) {
 		Scan(&participants)
 
 	if res.Error != nil {
-		c.String(http.StatusInternalServerError, "Error found on query")
+		c.String(http.StatusInternalServerError, "Failed to load participants")
 		return
 	}
 
@@ -197,7 +197,7 @@ func EventParticipantsList(c *gin.Context) {
 func EventPay(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -212,7 +212,7 @@ func EventPay(c *gin.Context) {
 	}
 
 	if reg.Confirmed == true {
-		c.String(http.StatusConflict, "Registration has already been paid")
+		c.String(http.StatusConflict, "This registration has already been paid")
 		return
 	}
 
@@ -222,7 +222,7 @@ func EventPay(c *gin.Context) {
 	reg.PayToken = ""
 	res = db.DB.Save(reg)
 	if res.Error != nil {
-		c.String(http.StatusInternalServerError, "Error found during event payment confirmation in the DB")
+		c.String(http.StatusInternalServerError, "Failed to confirm payment")
 		return
 	}
 
@@ -267,7 +267,7 @@ func EventRegistrationList(c *gin.Context) {
 		Scan(&events)
 
 	if res.Error != nil {
-		c.String(http.StatusInternalServerError, "Error found on query")
+		c.String(http.StatusInternalServerError, "Failed to load enrolled events")
 		return
 	}
 	if res.RowsAffected == 0 {

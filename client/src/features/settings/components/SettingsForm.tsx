@@ -120,9 +120,16 @@ export default function SettingsForm() {
                     lastName,
                     email,
                 });
+            } else if (response.status === 400) {
+                const errorText = await response.text();
+                setMessage(errorText || "Invalid input. Please check your data.");
+                setIsError(true);
+            } else if (response.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
             } else {
                 const errorText = await response.text();
-                setMessage(errorText);
+                setMessage(errorText || "Failed to update settings");
                 setIsError(true);
             }
         } catch {

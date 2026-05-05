@@ -2766,6 +2766,12 @@ const docTemplate = `{
                             "type": "string"
                         }
                     },
+                    "409": {
+                        "description": "User already exists",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "500": {
                         "description": "Error found on user registration",
                         "schema": {
@@ -2977,13 +2983,25 @@ const docTemplate = `{
         "api.ShortEvent": {
             "type": "object",
             "properties": {
+                "endDate": {
+                    "type": "string",
+                    "example": "2026-03-07T20:00:00Z"
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
                 },
+                "location": {
+                    "type": "string",
+                    "example": "Place"
+                },
                 "name": {
                     "type": "string",
                     "example": "Event"
+                },
+                "startDate": {
+                    "type": "string",
+                    "example": "2026-03-07T12:00:00Z"
                 },
                 "theme": {
                     "type": "string",
@@ -2998,13 +3016,25 @@ const docTemplate = `{
                     "type": "boolean",
                     "example": true
                 },
+                "endDate": {
+                    "type": "string",
+                    "example": "2026-03-07T20:00:00Z"
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
                 },
+                "location": {
+                    "type": "string",
+                    "example": "Place"
+                },
                 "name": {
                     "type": "string",
                     "example": "Event"
+                },
+                "startDate": {
+                    "type": "string",
+                    "example": "2026-03-07T12:00:00Z"
                 },
                 "theme": {
                     "type": "string",

@@ -13,12 +13,12 @@ import (
 )
 
 type EventActivity struct {
-	ID			uint
-	Name        string    
-	Description string 
-	Place		string
-	StartDate   time.Time 
-	EndDate     time.Time 
+	ID          uint
+	Name        string
+	Description string
+	Place       string
+	StartDate   time.Time
+	EndDate     time.Time
 }
 
 // EventActivityCreate
@@ -41,7 +41,7 @@ type EventActivity struct {
 func EventActivityCreate(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -54,12 +54,12 @@ func EventActivityCreate(c *gin.Context) {
 
 	startt, serr := time.Parse(time.RFC3339, start)
 	if serr != nil {
-		c.String(http.StatusInternalServerError, "Error found parsing start time: "+serr.Error())
+		c.String(http.StatusBadRequest, "Invalid start date format. Please use ISO 8601 format")
 		return
 	}
 	endt, eerr := time.Parse(time.RFC3339, end)
 	if eerr != nil {
-		c.String(http.StatusInternalServerError, "Error found parsing end time: "+eerr.Error())
+		c.String(http.StatusBadRequest, "Invalid end date format. Please use ISO 8601 format")
 		return
 	}
 	var event models.Event
@@ -69,19 +69,19 @@ func EventActivityCreate(c *gin.Context) {
 	}
 
 	if event.OrganizerID != user.ID {
-		c.String(http.StatusForbidden, "Not your event")
+		c.String(http.StatusForbidden, "You are not the organizer of this event")
 		return
 	}
 
 	activity, err := models.NewEventActivity(name, desc, startt, endt, place, event)
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		c.String(http.StatusBadRequest, "Invalid activity data. Please check all required fields")
 		return
 	}
 
 	res := db.DB.Create(activity)
 	if res.Error != nil {
-		c.String(http.StatusInternalServerError, "Error found during activity creation in the DB")
+		c.String(http.StatusInternalServerError, "Failed to create activity: "+err.Error())
 		return
 	}
 
@@ -164,7 +164,7 @@ func EventActivityEdit(c *gin.Context) {
 	db.DB.First(&event, eventID)
 
 	if event.OrganizerID != user.ID {
-		c.String(http.StatusForbidden, "Not your event")
+		c.String(http.StatusForbidden, "You are not the organizer of this event")
 		return
 	}
 
@@ -182,7 +182,7 @@ func EventActivityEdit(c *gin.Context) {
 	}
 
 	db.DB.Save(&activity)
-	c.String(http.StatusOK, "Activity updated")
+	c.String(http.StatusOK, "Activity updated successfully")
 }
 
 // EventActivityDelete
@@ -220,12 +220,12 @@ func EventActivityDelete(c *gin.Context) {
 	db.DB.First(&event, eventID)
 
 	if event.OrganizerID != user.ID {
-		c.String(http.StatusForbidden, "Not your event")
+		c.String(http.StatusForbidden, "You are not the organizer of this event")
 		return
 	}
 
 	db.DB.Delete(&activity)
-	c.String(http.StatusOK, "Activity deleted")
+	c.String(http.StatusOK, "Activity deleted successfully")
 }
 
 // EventActivityView

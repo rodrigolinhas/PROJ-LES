@@ -57,7 +57,7 @@ type LongEvent struct {
 func EventCreate(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -71,25 +71,25 @@ func EventCreate(c *gin.Context) {
 
 	startt, serr := time.Parse(time.RFC3339, start)
 	if serr != nil {
-		c.String(http.StatusInternalServerError, "Error found parsing start time: " + serr.Error())
+		c.String(http.StatusBadRequest, "Invalid start date format. Please use ISO 8601 format")
 		return
 	}
 
 	endt, eerr := time.Parse(time.RFC3339, end)
 	if eerr != nil {
-		c.String(http.StatusInternalServerError, "Error found parsing end time: " + eerr.Error())
+		c.String(http.StatusBadRequest, "Invalid end date format. Please use ISO 8601 format")
 		return
 	}
 
 	event, err := models.NewEvent(name, theme, desc, org, *user, startt, endt, local)
 	if err != nil {
-		c.String(http.StatusInternalServerError, err.Error())
+		c.String(http.StatusBadRequest, "Invalid event data. Please check all required fields")
 		return
 	}
 
 	res := db.DB.Create(event)
 	if res.Error != nil {
-		c.String(http.StatusInternalServerError, "Error found during event creation in the DB")
+		c.String(http.StatusInternalServerError, "Failed to create event")
 		return
 	}
 
@@ -99,7 +99,7 @@ func EventCreate(c *gin.Context) {
 func eventEditPreface(c *gin.Context) (*models.Event, error) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return nil, errors.New("Error sent")
 	}
 
@@ -113,7 +113,7 @@ func eventEditPreface(c *gin.Context) (*models.Event, error) {
 	}
 
 	if event.OrganizerID != user.ID {
-		c.String(http.StatusForbidden, "User is not the organizer of this event")
+		c.String(http.StatusForbidden, "You are not the organizer of this event")
 		return nil, errors.New("Error sent")
 	}
 
@@ -124,7 +124,7 @@ func eventEditPreface(c *gin.Context) (*models.Event, error) {
 func eventListPreface(c *gin.Context) (*models.User, int, int, string, error) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return nil, 0, 0, "", errors.New("Error sent")
 	}
 
@@ -174,13 +174,13 @@ func EventPublish(c *gin.Context) {
 	if err != nil { return }
 
 	if event.Published == true {
-		c.String(http.StatusConflict, "Event was already published")
+		c.String(http.StatusConflict, "This event has already been published")
 		return
 	}
 
 	event.Published = true
 	db.DB.Save(&event)
-	c.String(http.StatusOK, "Event published with success")
+	c.String(http.StatusOK, "Event published successfully")
 }
 
 // EventList
@@ -236,11 +236,11 @@ func EventDelete(c *gin.Context) {
 
 	res := db.DB.Where("ID = ?", event.ID).Delete(&event)
 	if res.Error != nil {
-		c.String(http.StatusInternalServerError, "Error found during event deletion")
+		c.String(http.StatusInternalServerError, "Failed to delete event")
 		return
 	}
 
-	c.String(http.StatusOK, "Event deleted with success")
+	c.String(http.StatusOK, "Event deleted successfully")
 }
 
 // EventEdit
@@ -299,7 +299,7 @@ func EventEdit(c *gin.Context) {
 	if start != "" {
 		startt, serr := time.Parse(time.RFC3339, start)
 		if serr != nil {
-			c.String(http.StatusInternalServerError, "Error found parsing start time: " + serr.Error())
+			c.String(http.StatusBadRequest, "Invalid start date format. Please use ISO 8601 format")
 			return
 		}
 		event.StartDate = startt
@@ -309,7 +309,7 @@ func EventEdit(c *gin.Context) {
 	if end != "" {
 		endt, eerr := time.Parse(time.RFC3339, end)
 		if eerr != nil {
-			c.String(http.StatusInternalServerError, "Error found parsing end time: " + eerr.Error())
+			c.String(http.StatusBadRequest, "Invalid end date format. Please use ISO 8601 format")
 			return
 		}
 		event.EndDate = endt
@@ -317,7 +317,7 @@ func EventEdit(c *gin.Context) {
 
 	epoch := time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC)
 	if(event.StartDate.Before(epoch) || event.EndDate.Before(epoch) || event.StartDate.After(event.EndDate)) {
-		c.String(http.StatusInternalServerError, "Invalid start/end time")
+		c.String(http.StatusBadRequest, "Invalid dates: start date must be before end date")
 		return
 	}
 
@@ -327,7 +327,7 @@ func EventEdit(c *gin.Context) {
 	}
 
 	db.DB.Save(&event)
-	c.String(http.StatusOK, "Event edited successfully")
+	c.String(http.StatusOK, "Event updated successfully")
 }
 
 // EventMyList
@@ -379,7 +379,7 @@ func EventMyList(c *gin.Context) {
 func EventView(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: " + autherr.Error())
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -393,7 +393,7 @@ func EventView(c *gin.Context) {
 	}
 
 	if event.Published == false && event.OrganizerID != user.ID {
-		c.String(http.StatusForbidden, "Event was not published yet and the user is not the orgaziner")
+		c.String(http.StatusForbidden, "This event is not published and you are not the organizer")
 		return
 	}
 

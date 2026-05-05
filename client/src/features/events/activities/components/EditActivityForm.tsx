@@ -84,8 +84,11 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
             );
 
             if (res.status === 200) {
-                setMessage("Activity updated!");
+                setMessage("Activity updated successfully!");
                 setIsError(false);
+            } else if (res.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
             } else {
                 setMessage(await res.text());
                 setIsError(true);

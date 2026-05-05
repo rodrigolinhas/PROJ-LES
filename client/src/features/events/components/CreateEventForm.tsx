@@ -45,9 +45,14 @@ export default function CreateEventForm() {
             });
 
             if(response.status === 201) {
-                setMessage("Event Created Successfully!");
+                setMessage("Event created successfully!");
                 setIsError(false);
                 setEventCreated(true);
+            }
+            else if (response.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
+                setEventCreated(false);
             }
             else {
                 const errorText = await response.text();
@@ -66,7 +71,7 @@ export default function CreateEventForm() {
     if (eventCreated) {
         return (
             <div style={{ textAlign: "center", margin: "100px" }}>
-                <h2 style={{ color: "green" }}>Event created with success!</h2>
+                <h2 style={{ color: "green" }}>Event created successfully!</h2>
                 <Link to ="/home">Go back to Home</Link>
             </div>
         );

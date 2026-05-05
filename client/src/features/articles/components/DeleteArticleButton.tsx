@@ -9,6 +9,7 @@ type Props = {
 
 export default function DeleteArticleButton({ articleID, onDeleted }: Props) {
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     async function handleDelete() {
         const confirmDelete = window.confirm("Are you sure you want to delete this article?");
@@ -32,19 +33,24 @@ export default function DeleteArticleButton({ articleID, onDeleted }: Props) {
 
             if (response.status === 200) {
                 onDeleted();
+            } else if (response.status === 401) {
+                setError("Your session has expired. Please log in again.");
             } else {
-                alert(await response.text());
+                setError(await response.text());
             }
         } catch {
-            alert("Server error");
+            setError("Server error. Please try again later.");
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        <button type="button" onClick={handleDelete} disabled={loading}>
-            {loading ? "Deleting..." : "Delete Article"}
-        </button>
+        <>
+            <button type="button" onClick={handleDelete} disabled={loading}>
+                {loading ? "Deleting..." : "Delete Article"}
+            </button>
+            {error && <p className="error">{error}</p>}
+        </>
     );
 }

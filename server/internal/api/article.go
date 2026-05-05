@@ -104,7 +104,7 @@ func ArticleCreate(c *gin.Context) {
 
 	article, aerr := models.NewArticle(title, *firstAuthor, publisher, url)
 	if aerr != nil {
-		c.String(http.StatusInternalServerError, aerr.Error())
+		c.String(http.StatusBadRequest, "Invalid article data. Please check all required fields")
 		return
 	}
 
@@ -124,12 +124,12 @@ func ArticleCreate(c *gin.Context) {
 
 	aerr = act.AddArticle(*article)
 	if aerr != nil {
-		c.String(http.StatusInternalServerError, aerr.Error())
+		c.String(http.StatusBadRequest, "Invalid article data")
 	}
 
 	dberr = db.DB.Create(article)
 	if dberr.Error != nil {
-		c.String(http.StatusInternalServerError, "Error found in DB")
+		c.String(http.StatusInternalServerError, "Failed to create article")
 		return
 	}
 
@@ -151,7 +151,7 @@ func ArticleCreate(c *gin.Context) {
 func articleEditPreface(c *gin.Context) (*models.Article, error) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid authentication: "+autherr.Error())
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return nil, errors.New("Error sent")
 	}
 
@@ -165,7 +165,7 @@ func articleEditPreface(c *gin.Context) (*models.Article, error) {
 	}
 
 	if article.EventActivity.Event.OrganizerID != user.ID {
-		c.String(http.StatusForbidden, "User is not the organizer of this event")
+		c.String(http.StatusForbidden, "You are not the organizer of this event")
 		return nil, errors.New("Error sent")
 	}
 
@@ -244,7 +244,7 @@ func ArticleEdit(c *gin.Context) {
 
 	dberr := db.DB.Save(article)
 	if dberr.Error != nil {
-		c.String(http.StatusInternalServerError, "Error found in DB")
+		c.String(http.StatusInternalServerError, "Failed to save article changes")
 		return
 	}
 
@@ -276,7 +276,7 @@ func ArticleDelete(c *gin.Context) {
 
 	dberr := db.DB.Delete(article)
 	if dberr.Error != nil {
-		c.String(http.StatusInternalServerError, "Error found in DB")
+		c.String(http.StatusInternalServerError, "Failed to delete article")
 		return
 	}
 
@@ -310,12 +310,12 @@ func ArticleList(c *gin.Context) {
 	activity := models.EventActivity{}
 	dberr := db.DB.Preload("Event").Preload("Articles").Where("id = ?", actID).Take(&activity)
 	if dberr.Error != nil {
-		c.String(http.StatusInternalServerError, "Error found in DB")
+		c.String(http.StatusInternalServerError, "Failed to load activity data")
 		return
 	}
 
 	if !activity.Event.Published && activity.Event.OrganizerID != user.ID {
-		c.String(http.StatusForbidden, "Event was not published yet and the user is not the orgaziner")
+		c.String(http.StatusForbidden, "This event is not published and you are not the organizer")
 		return
 	}
 
@@ -334,7 +334,7 @@ func ArticleList(c *gin.Context) {
 		tags := []string{}
 		verr := db.DB.Preload("CoAuthors").Preload("Tags").Take(&v)
 		if verr.Error != nil {
-			c.String(http.StatusInternalServerError, "Error found in DB")
+			c.String(http.StatusInternalServerError, "Failed to load article details")
 			return
 		}
 
@@ -386,7 +386,7 @@ func ArticleList(c *gin.Context) {
 func ArticleGetById(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid credentials")
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -477,7 +477,7 @@ func ArticleGetById(c *gin.Context) {
 func ArticleAddAuthors(c *gin.Context) {
 	_, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid credentials")
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -542,7 +542,7 @@ func ArticleAddAuthors(c *gin.Context) {
 func ArticleDeleteAuthors(c *gin.Context) {
 	_, autherr := Authorize(c)
 	if autherr != nil {
-		c.String(http.StatusUnauthorized, "Invalid credentials")
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 

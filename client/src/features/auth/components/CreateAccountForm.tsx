@@ -51,6 +51,11 @@ export default function CreateAccountForm() {
                 setIsError(false);
                 setAccountCreated(true);
             }
+            else if (response.status === 409) {
+                setMessage("An account with this email already exists. Please use a different email or login to your existing account.");
+                setIsError(true);
+                setAccountCreated(false);
+            }
             else {
                 const errorText = await response.text();
                 setMessage(errorText);

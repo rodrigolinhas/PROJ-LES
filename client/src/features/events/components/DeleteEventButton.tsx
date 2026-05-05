@@ -40,6 +40,9 @@ export default function DeleteEventButton(props: any) {
                 setTitle("Event Deleted!");
                 setEventDeleted(true)
             }
+            else if (response.status === 401) {
+                setTitle("Your session has expired. Please log in again.");
+            }
             else {
                 const errorText = await response.text();
                 setTitle(errorText);
