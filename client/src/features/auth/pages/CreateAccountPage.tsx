@@ -1,9 +1,10 @@
-import CreateAccountForm from "../components/CreateAccountForm.tsx";
+import AuthLayout from "../components/AuthLayout";
+import CreateAccountForm from "../components/CreateAccountForm";
 
 export default function CreateAccountPage() {
     return (
-        <div>
+        <AuthLayout>
             <CreateAccountForm />
-        </div>
+        </AuthLayout>
     );
 }

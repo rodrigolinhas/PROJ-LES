@@ -1809,7 +1809,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/event/view/:id/benefit_participants/:benefitID": {
+        "/event/view/:id/benefit_participants/:benefitName": {
             "get": {
                 "description": "A event organizer can view a list of all the users eligible for a benefit given in one of their events.",
                 "consumes": [
@@ -1839,8 +1839,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "ID of the benefit",
-                        "name": "benefitID",
+                        "description": "Name of the benefit",
+                        "name": "benefitName",
                         "in": "path",
                         "required": true
                     }

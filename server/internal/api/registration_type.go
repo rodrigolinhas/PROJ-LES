@@ -472,13 +472,13 @@ type ParticipantInfo struct {
 // @Produce 	json
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		id				path		string	true	"ID of the event"
-// @Param 		benefitID		path		string	true	"ID of the benefit"
+// @Param 		benefitName		path		string	true	"Name of the benefit"
 // @Success 	200 {array} ParticipantInfo
 // @Failure		401 {string} string "Invalid credentials"
 // @Failure		403 {string} string "User isn't the event orgaziner"
 // @Failure		404 {string} string "Event not found/No participant found"
 // @Failure		500 {string} string "Error found in DB"
-// @Router 		/event/view/:id/benefit_participants/:benefitID [get]
+// @Router 		/event/view/:id/benefit_participants/:benefitName [get]
 func EventBenefitParticipants(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
@@ -500,12 +500,13 @@ func EventBenefitParticipants(c *gin.Context) {
 		return
 	}
 
-	benefitID := c.Param("benefitID")
+	benefitName := c.Param("benefitName")
 
 	subquery := db.DB.Table("registration_type_benefits").
+		Joins("LEFT OUTER JOIN benefits ON benefit_id = benefits.id").
 		Joins("LEFT OUTER JOIN registration_types ON registration_type_id = registration_types.id").
 		Joins("LEFT OUTER JOIN events ON registration_types.event_id = events.id").
-		Where("event_id = ? AND benefit_id = ?", eventID, benefitID).
+		Where("event_id = ? AND benefits.name = ?", eventID, benefitName).
 		Select("registration_type_id")
 	if subquery.Error != nil {
 		c.String(http.StatusInternalServerError, "Failed to query benefit participants")

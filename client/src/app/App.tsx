@@ -17,6 +17,7 @@ import CreateActivityPage from "../features/events/activities/pages/CreateActivi
 import ViewActivityPage from "../features/events/activities/pages/ViewActivityPage.tsx";
 import EditRegTypePage from "../features/events/regtypes/pages/EditRegTypePage";
 import CreateRegTypePage from "@/features/events/regtypes/pages/CreateRegTypePage.tsx";
+import ListBenefitsPage from "@/features/events/benefits/pages/ListBenefitsPage.tsx";
 
 import ProtectedRoutes from "./router/ProtectedRoutes";
 import ViewUserPage from '@/features/user/pages/UserInfoPage';
@@ -43,9 +44,9 @@ function App() {
                     <Route path="/event/edit/:id" element={<EditEventPage />}/>
                     <Route path="/event/:id" element={<ViewEventPage />} />
                     <Route path="/event/:id/participants" element={<ListEventParticipantsPage />} />
+                    <Route path="/event/:id/benefits" element={<ListBenefitsPage />} />
                     <Route path="/article/create" element={<CreateArticlePage />} />
                     <Route path="/article/:id/tags" element={<ManageArticleTagsPage />} />
-
 
                     <Route path="/event/:eventId/activity/edit/:id" element={<EditActivityPage />}/>
                     <Route path="/event/:eventId/activity/create" element={<CreateActivityPage />}/>

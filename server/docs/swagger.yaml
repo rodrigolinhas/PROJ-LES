@@ -1655,7 +1655,7 @@ paths:
       summary: View event information
       tags:
       - Event
-  /event/view/:id/benefit_participants/:benefitID:
+  /event/view/:id/benefit_participants/:benefitName:
     get:
       consumes:
       - text/plain
@@ -1672,9 +1672,9 @@ paths:
         name: id
         required: true
         type: string
-      - description: ID of the benefit
+      - description: Name of the benefit
         in: path
-        name: benefitID
+        name: benefitName
         required: true
         type: string
       produces:
