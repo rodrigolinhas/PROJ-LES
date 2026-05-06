@@ -66,7 +66,7 @@ export default function ViewActivityPage() {
             <Link to={`/event/${eventId}/activity/edit/${id}`}>Edit</Link>
 
             <br />
-            <Link to={`/event/${eventId}/activity/list`}>Back to list</Link>
+            <Link to={`/event/${eventId}/`}>Back to event</Link>
         </div>
     );
 }

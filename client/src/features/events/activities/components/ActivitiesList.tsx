@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getCookie } from "../../../../shared/utils/getCookie";
+
+type Props = {
+    eventId: number;
+};
 
 type Activity = {
     ID: number;
@@ -11,8 +15,7 @@ type Activity = {
     EndDate: string;
 };
 
-export default function ListActivityPage() {
-    const { eventId } = useParams();
+export default function ActivitiesList({ eventId }: Props) {
     const [activities, setActivities] = useState<Activity[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -76,22 +79,23 @@ export default function ListActivityPage() {
     return (
         <div>
             <h2>Activities</h2>
-
-            <button onClick={handleExportCSV} style={{ marginBottom: "1rem" }}>
-                Export as CSV
-            </button>
-
-            <ul>
-                {activities.map(a => (
-                    <li key={a.ID}>
-                        <Link to={`/event/${eventId}/activity/view/${a.ID}`}>
-                            {a.Name}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-
-            <Link to={`/event/${eventId}`}>Back to Event</Link>
+                {(!activities || activities.length == 0) ? (
+                    <p>This event does not have activities</p>
+                ) :
+                <>
+                    <ul className="list-disc pl-6">
+                        {activities.map(a => (
+                            <li key={a.ID} className="my-1">
+                                <Link to={`/event/${eventId}/activity/view/${a.ID}`}>
+                                    {a.Name}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                    <button onClick={handleExportCSV} className="mr-3 mt-5 mb-1 w-40 border-2 border-black gap-2 rounded-md bg-white px-5 py-3 text-black">
+                        Export as CSV
+                    </button>
+                </>}
         </div>
     );
 }

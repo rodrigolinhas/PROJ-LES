@@ -14,9 +14,12 @@ import (
 )
 
 type ShortEvent struct {
-	ID 		uint	`example:"1"`
-	Name 	string  `example:"Event"`
-	Theme 	string  `example:"CompSci"`
+	ID 			uint		`example:"1"`
+	Name 		string  	`example:"Event"`
+	Theme 		string  	`example:"CompSci"`
+	Location	string		`example:"Place"`
+	StartDate	time.Time	`example:"2026-03-07T12:00:00Z"`
+	EndDate		time.Time	`example:"2026-03-07T20:00:00Z"`
 }
 
 type LongEvent struct {
