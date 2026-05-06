@@ -51,8 +51,6 @@ function App() {
 
                     <Route path="/event/:eventId/activity/edit/:id" element={<EditActivityPage />} />
                     <Route path="/event/:eventId/activity/create" element={<CreateActivityPage />} />
-                    <Route path="/event/:eventId/activity/edit/:id" element={<EditActivityPage />}/>
-                    <Route path="/event/:eventId/activity/create" element={<CreateActivityPage />}/>
                     <Route path="/event/:eventId/activity/view/:id" element={<ViewActivityPage />} />
 
                     <Route path="/event/:eventId/regtype/edit/:regTypeId" element={<EditRegTypePage />}/>
