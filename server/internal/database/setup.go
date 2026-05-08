@@ -37,5 +37,6 @@ func ConnectDB() {
 
 	DB = database
 
+	SeedTags()
 	SeedEvalData()
 }
