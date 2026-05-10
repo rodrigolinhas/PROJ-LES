@@ -2,7 +2,20 @@ import { envHostBackend } from '@/shared/utils/env';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getCookie } from "@/shared/utils/getCookie.ts";
-import { mainDivStyle, titleStyle, descriptionStyle, successOutDivStyle, successDivStyle, successMessageStyle, goHomeStyle, mandatoryLabelStyle, inputStyle, submitButtonStyle, errorMessageStyle } from '@/shared/styles/formStyles';
+import {
+    mainDivStyle,
+    titleStyle,
+    descriptionStyle,
+    successOutDivStyle,
+    successDivStyle,
+    successMessageStyle,
+    goHomeStyle,
+    mandatoryLabelStyle,
+    inputStyle,
+    submitButtonStyle,
+    errorMessageStyle,
+    buttonsDivStyle
+} from '@/shared/styles/formStyles';
 
 export default function CreateEventForm() {
     const [name, setName] = useState("");
@@ -162,7 +175,7 @@ export default function CreateEventForm() {
                         />
                     </div>
 
-                    <div className="flex justify-center">
+                    <div className={buttonsDivStyle}>
                         <button type="submit" className={submitButtonStyle}>
                             Create Event
                         </button>

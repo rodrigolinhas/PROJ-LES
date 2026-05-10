@@ -4,7 +4,11 @@ import DeleteEventButton from '../components/DeleteEventButton.tsx';
 import { Link } from 'react-router-dom';
 import { envHostBackend } from '@/shared/utils/env.ts';
 import { getCookie } from "@/shared/utils/getCookie.ts";
-import { mainDivStyle, titleStyle, descriptionStyle, labelStyle, inputStyle, submitButtonStyle, errorMessageStyle } from '@/shared/styles/formStyles';
+import {
+    mainDivStyle, titleStyle, descriptionStyle, labelStyle, inputStyle, submitButtonStyle, errorMessageStyle,
+    otherButtonsDivStyle, backLinkStyle, buttonsDivStyle, backDivStyle, smallLinksStyle, successOutDivStyle,
+    successDivStyle, successMessageStyle, goHomeStyle
+} from '@/shared/styles/formStyles';
 
 type RegType = {
     ID: number;
@@ -93,8 +97,6 @@ export default function EditEventForm(props: any) {
     const [eventLoaded, setEventLoaded] = useState(false);
     const [eventDeleted, setEventDeleted] = useState(false);
 
-    const [regTypes, setRegTypes] = useState<RegType[]>([]);
-
     function loadEventState(event: LongEvent) {
         let start = new Date(event.StartDate)
         setName(event.Name)
@@ -150,9 +152,8 @@ export default function EditEventForm(props: any) {
 
     if (!eventLoaded) {
         Promise.all([loadEventInfo(eventID), loadRegTypes(eventID)])
-            .then(([event, types]) => {
+            .then(([event]) => {
                 loadEventState(event);
-                setRegTypes(types);
                 setEventLoaded(true);
             })
             .catch((err) => {
@@ -166,9 +167,11 @@ export default function EditEventForm(props: any) {
 
     if(eventDeleted) {
         return (
-            <div style={{ textAlign: "center", margin: "100px" }}>
-                <h2 style={{ color: "green" }}>Event deleted successfully!</h2>
-                <Link to ="/home">Go back to Home</Link>
+            <div className={successOutDivStyle}>
+                <div className={successDivStyle}>
+                    <h2 className={successMessageStyle}>Event deleted successfully!</h2>
+                    <Link to ="/home" className={goHomeStyle}>Go back to Home</Link>
+                </div>
             </div>
         ); 
     }
@@ -265,10 +268,15 @@ export default function EditEventForm(props: any) {
                         />
                     </div>
 
-                    <div className="flex justify-center">
+                    <div className={buttonsDivStyle}>
                         <button type = "submit" className={submitButtonStyle}>
-                            Edit Event
+                            Save Changes
                         </button>
+
+                        <PublishEventButton eventID={eventID} published={published}/>
+
+                        <DeleteEventButton eventID={eventID} setEventDeleted={setEventDeleted}/>
+
                     </div>
 
                     {message && isError && (
@@ -277,67 +285,48 @@ export default function EditEventForm(props: any) {
                         </p>
                     )}
 
-                    <div className="border-t border-gray-200 mt-8 pt-6 flex justify-center gap-4">
-                        <PublishEventButton eventID={eventID} published={published}/>
-                        <DeleteEventButton eventID={eventID} setEventDeleted={setEventDeleted}/>
+                    <div className={otherButtonsDivStyle}>
+                        <div className="flex flex-col gap-4 items-center w-full">
+
+                            <div className="flex gap-4 items-center">
+                                <Link
+                                    to={`/event/${eventID}/activity/list`}
+                                    className={smallLinksStyle}
+                                >
+                                    View Activities
+                                </Link>
+                                <span className="text-gray-300">|</span>
+                                <Link
+                                    to={`/event/${eventID}/activity/create`}
+                                    className={smallLinksStyle}
+                                >
+                                    Add Activity
+                                </Link>
+                            </div>
+
+                            <div className="flex gap-4 items-center">
+                                <Link
+                                    to={`/event/${eventID}/regtype/list`}
+                                    className={smallLinksStyle}
+                                >
+                                    View Registration Types
+                                </Link>
+                                <span className="text-gray-300">|</span>
+                                <Link
+                                    to={`/event/${eventID}/regtype/create`}
+                                    className={smallLinksStyle}
+                                >
+                                    Add Registration Type
+                                </Link>
+                            </div>
+
+                        </div>
                     </div>
 
-                    <div className="border border-gray-200 bg-white rounded-lg p-5 mt-8 shadow-sm">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold text-gray-900">Registration Types</h3>
-                            <Link
-                                to={`/event/${eventID}/regtype/create`}
-                                className="text-sm font-medium text-gray-500 hover:underline flex items-center gap-1"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                                Add New
-                            </Link>
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                            {regTypes.length === 0 ? (
-                                <p className="text-sm text-gray-500 italic text-center py-4">No registration types found.</p>
-                            ) : (
-                                regTypes.map(rt => (
-                                    <div key={rt.ID} className="flex justify-between items-center p-3 bg-gray-50 border border-gray-100 rounded hover:bg-gray-100 transition-colors">
-                                        <span className="text-sm text-gray-700">
-                                            <strong className="font-semibold text-gray-900">{rt.Name}</strong> • {rt.Price}€
-                                        </span>
-                                        <Link
-                                            to={`/event/${eventID}/regtype/edit/${rt.ID}`}
-                                            className="text-sm text-gray-500 hover:text-gray-900 font-medium underline"
-                                        >
-                                            Edit
-                                        </Link>
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="border-t border-gray-200 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-                        <Link
-                            to={`/events`}
-                            className="text-sm font-medium text-gray-700 bg-white border border-gray-300 px-4 py-2 rounded hover:bg-gray-50 transition-colors shadow-sm"
-                        >
+                    <div className={backDivStyle}>
+                        <Link to={`/events`} className={backLinkStyle}>
                             ↶ Back to Events
                         </Link>
-
-                        <div className="flex gap-4 items-center">
-                            <Link
-                                to={`/event/${eventID}/activity/list`}
-                                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                            >
-                                View Activities
-                            </Link>
-                            <span className="text-gray-300">|</span> {/* Separador visual */}
-                            <Link
-                                to={`/event/${eventID}/activity/create`}
-                                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                            >
-                                Add Activity
-                            </Link>
-                        </div>
                     </div>
                 </form>
             </div>

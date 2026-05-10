@@ -1,5 +1,6 @@
 import { envHostBackend } from '@/shared/utils/env';
 import { useState } from 'react';
+import {publishButtonStyle} from "@/shared/styles/formStyles.ts";
 
 function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -54,6 +55,7 @@ export default function PublishEventButton(props: any) {
     return (
         <div>
             <button
+                className={publishButtonStyle}
                 type='button'
                 onClick={handleClick}
                 disabled={done}
