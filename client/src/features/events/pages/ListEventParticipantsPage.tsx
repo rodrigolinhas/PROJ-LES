@@ -85,26 +85,25 @@ export default function ListEventParticipantsPage() {
     if (error) return <p className="error">{error}</p>;
 
     return (
-        <div>
-            <h2>Participants</h2>
-
-            <button onClick={handleExportCSV} style={{ marginBottom: "1rem" }}>
-                Export as CSV
-            </button>
+        <div className="m-auto max-w-[80%] border-3 p-5 rounded-xl bg-white">
+            <h2 className="mt-2">Participants</h2>
 
             {participants.length === 0 ? (
                 <p>No participants found.</p>
             ) : (
-                <ul>
+                <ul className="my-3">
                     {participants.map((p) => (
-                        <li key={p.ID}>
+                        <li key={p.ID} className="mb-1">
                             <strong>{p.FirstName} {p.LastName}</strong> — {p.Email} — {p.Confirmed ? "Confirmed" : "Pending"}
                         </li>
                     ))}
                 </ul>
             )}
 
-            <Link to={`/event/${id}`}>Back to Event</Link>
+            <Link className="mr-3 mt-5 w-30 text-center items-center gap-2 rounded-md bg-black px-5 py-3 text-white" to={`/event/${id}`}>Back to Event</Link>
+            <button onClick={handleExportCSV} className="my-2 w-40 border-2 border-black gap-2 rounded-md bg-white px-5 py-3 text-black">
+                Export as CSV
+            </button>
         </div>
     );
 }

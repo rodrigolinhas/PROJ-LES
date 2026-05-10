@@ -7,6 +7,9 @@ type ShortEvent = {
     ID: number;
     Name: string;
     Theme: string;
+    Location: string;
+    StartDate: string;
+    EndDate: string;
 };
 
 /** Props accepted by the {@link EventList} component. */
@@ -92,16 +95,17 @@ export default function EventList({
 
     return (
         <div>
-            <h2>{title}</h2>
+            <h2 className="text-center mt-0">{title}</h2>
 
-            <form onSubmit={handleSearch}>
+            <form onSubmit={handleSearch} className="flex m-0! flex-row! w-full max-w-none!">
                 <input
                     type="text"
                     placeholder="Filter by event name"
                     value={draftFilter}
                     onChange={(e) => setDraftFilter(e.target.value)}
+                    className="flex-1 rounded-md border-black border-2 border-solid"
                 />
-                <button type="submit">Search</button>
+                <button type="submit" className="flex-none w-20 bg-black text-white border-0 rounded-md">Search</button>
             </form>
 
             {loading && <p>Loading events...</p>}
@@ -109,40 +113,46 @@ export default function EventList({
             {!loading && !error && events.length === 0 && <p>{emptyMessage}</p>}
 
             {!loading && !error && events.length > 0 && (
-                <ul>
+                <div className="my-4">
                     {events.map((event) => (
-                        <li key={event.ID}>
-                            <Link to={`/event/${event.ID}`}>
-                                <strong>{event.Name}</strong>
-                            </Link> – {event.Theme}
+                        <Link className="block mt-3 border p-2 rounded-lg w-fit no-underline text-black" to={`/event/${event.ID}`}>
+                            <strong className="text-2xl">{event.Name}</strong> – {event.Theme}
+                            <br />
+                            <strong>Location:</strong> {event.Location}
+                            <br />
+                            <strong>Date/Time:</strong> {new Date(event.StartDate).toLocaleString()} — {new Date(event.EndDate).toLocaleString()}
                             {showEditButton && (
                                 <>
                                     {" "}
                                     <Link to={`/event/edit/${event.ID}`}>Edit</Link>
                                 </>
                             )}
-                        </li>
+                        </Link>
                     ))}
-                </ul>
+                </div>
             )}
 
-            <div>
-                <button
+            <div className="m-auto w-fit">
+                <button className="border-2 rounded-full size-10"
                     type="button"
                     onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
                     disabled={page === 0}
                 >
-                    Previous
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-left" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                    </svg> 
                 </button>
 
-                <span>Page {page + 1}</span>
+                <span className="px-5">Page {page + 1}</span>
 
-                <button
+                <button className="border-2 rounded-full size-10"
                     type="button"
                     onClick={() => setPage((prev) => prev + 1)}
                     disabled={events.length < PAGE_SIZE}
                 >
-                    Next
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                    </svg>
                 </button>
             </div>
         </div>
