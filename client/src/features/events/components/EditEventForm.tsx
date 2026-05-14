@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PublishEventButton from "../components/PublishEventButton.tsx";
 import DeleteEventButton from '../components/DeleteEventButton.tsx';
 import { Link } from 'react-router-dom';
@@ -126,7 +126,7 @@ export default function EditEventForm(props: any) {
 
         try {
             const response = await fetch("http://" + envHostBackend() + "/event/edit", {
-                method: "POST", 
+                method: "POST",
                 body: formData,
                 headers: {
                     "X-CSRF-Token": csrfToken
@@ -150,16 +150,16 @@ export default function EditEventForm(props: any) {
         }
     }
 
-    if (!eventLoaded) {
+    useEffect(() => {
         Promise.all([loadEventInfo(eventID), loadRegTypes(eventID)])
             .then(([event]) => {
                 loadEventState(event);
                 setEventLoaded(true);
             })
-            .catch((err) => {
-                console.log(err);
-                setEventLoaded(true);
-            });
+            .catch((err) => console.log(err));
+    }, [eventID]);
+
+    if (!eventLoaded) {
         return (
             <h1>Loading Event...</h1>
         )
@@ -173,9 +173,9 @@ export default function EditEventForm(props: any) {
                     <Link to ="/home" className={goHomeStyle}>Go back to Home</Link>
                 </div>
             </div>
-        ); 
+        );
     }
-    else 
+    else
     {
         return (
             <div className={mainDivStyle}>
