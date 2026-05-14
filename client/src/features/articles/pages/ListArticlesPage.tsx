@@ -7,6 +7,7 @@ import {
     ArrowRight,
     ArrowLeft,
     Tag,
+    Plus,
 } from "lucide-react";
 
 type Article = {
@@ -98,9 +99,18 @@ export default function ListArticlesPage() {
             {/* ── Page header ── */}
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-gray-900">Articles</h1>
-                <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
-                    {articles.length} {articles.length === 1 ? "article" : "articles"}
-                </span>
+                <div className="flex items-center gap-3">
+                    <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
+                        {articles.length} {articles.length === 1 ? "article" : "articles"}
+                    </span>
+                    <Link
+                        to="/article/create"
+                        className="inline-flex items-center gap-1.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow transition-all duration-200"
+                    >
+                        <Plus size={16} strokeWidth={2} />
+                        Create Article
+                    </Link>
+                </div>
             </div>
 
             {/* ── Articles list ── */}
