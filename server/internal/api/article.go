@@ -295,9 +295,10 @@ func ArticleDelete(c *gin.Context) {
 // @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
 // @Param 		offset			query		int		false	"Number of events to skip in the search" default(0)
 // @Success 	200 {array} Article
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure		403 {string} string "Event was not published yet and the user is not the orgaziner"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "This event is not published and you are not the organizer"
 // @Failure		404 {string} string "No article found"
+// @Failure		500 {string} string "Failed to load activity data"
 // @Router 		/article/list [get]
 func ArticleList(c *gin.Context) {
 	user, limit, offset, filter, err := eventListPreface(c)

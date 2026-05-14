@@ -46,13 +46,13 @@ func regTypePreface(c *gin.Context) (*models.Event, error) {
 // @Param 		description		formData	string	true	"Description of the registration type"
 // @Param 		price			formData	number	true	"Price of the registration type"
 // @Param 		benefits		formData	string	false	"Comma-separated list of benefits"
-// @Success 	200 {string} string "Event Registration Type added successfully"
-// @Failure		401 {string} string "Invalid credentials"
+// @Success 	201 {string} string "Event Registration Type added successfully"
+// @Failure		400 {string} string "Invalid registration type data"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "User is not the organizer of the event"
 // @Failure		404 {string} string "Event not found"
-// @Failure		403 {string} string "User is not the orgaziner of the event"
-// @Failure		400 {string} string "Can't parse the price"
-// @Failure		409 {string} string "Can't add a registration type to a published event"
-// @Failure 	500 {string} string "Error found during registration type creation"
+// @Failure		409 {string} string "Conflict"
+// @Failure 	500 {string} string "Failed to create registration type"
 // @Router 		/event/regtype/create [post]
 func RegistrationTypeCreate(c *gin.Context) {
 	event, err := regTypePreface(c)
@@ -136,12 +136,12 @@ func RegistrationTypeCreate(c *gin.Context) {
 // @Param 		price			formData	number	false	"Price of the registration type"
 // @Param 		benefits		formData	string	false	"Comma-separated list of benefits"
 // @Success 	200 {string} string "Event Registration Type edited successfully"
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure		404 {string} string "Event not found"
+// @Failure		400 {string} string "Invalid registration type data"
+// @Failure		401 {string} string "Unauthorized"
 // @Failure		403 {string} string "User is not the organizer of the event"
-// @Failure		400 {string} string "Can't parse the price"
-// @Failure		409 {string} string "Can't edit the registration type of a published event"
-// @Failure 	500 {string} string "Error found during registration type creation"
+// @Failure		404 {string} string "Event/Registration Type not found"
+// @Failure		409 {string} string "Conflict"
+// @Failure 	500 {string} string "Failed to save registration type changes"
 // @Router 		/event/regtype/edit [post]
 func RegistrationTypeEdit(c *gin.Context) {
 	event, err := regTypePreface(c)
@@ -241,8 +241,8 @@ func RegistrationTypeEdit(c *gin.Context) {
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		id				path		string	true	"ID of the event"
 // @Success 	200 {array} RegistrationType
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure		403 {string} string "Event was not published yet and the user is not the orgaziner"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "This event is not published and you are not the organizer"
 // @Failure		404 {string} string "Event/Registration Type not found"
 // @Router 		/event/view/:id/regtypes [get]
 func RegistrationTypeList(c *gin.Context) {
@@ -308,11 +308,11 @@ func RegistrationTypeList(c *gin.Context) {
 // @Param 		eventID			formData	string	true	"ID of the event"
 // @Param 		regTypeID		formData	string	true	"ID of the registration type"
 // @Success 	200 {string} string "Event Registration Type deleted successfully"
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure		404 {string} string "Event not found"
-// @Failure		403 {string} string "User is not the orgaziner of the event"
-// @Failure		409 {string} string "Can't delete the registration type of a published event"
-// @Failure 	500 {string} string "Error found during registration type deletion"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "User is not the organizer of the event"
+// @Failure		404 {string} string "Event/Registration Type not found"
+// @Failure		409 {string} string "Cannot modify published event"
+// @Failure 	500 {string} string "Failed to delete registration type"
 // @Router 		/event/regtype/delete [post]
 func RegistrationTypeDelete(c *gin.Context) {
 	event, err := regTypePreface(c)
@@ -347,9 +347,9 @@ func RegistrationTypeDelete(c *gin.Context) {
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		id				path		string	true	"ID of the event"
 // @Success 	200 {array} string
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure		403 {string} string "Event was not published yet and the user is not the orgaziner"
-// @Failure		404 {string} string "Event not found"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "This event is not published and you are not the organizer"
+// @Failure		404 {string} string "Event/Benefits not found"
 // @Router 		/event/view/:id/benefits [get]
 func EventBenefitsList(c *gin.Context) {
 	user, autherr := Authorize(c)
@@ -402,8 +402,8 @@ func EventBenefitsList(c *gin.Context) {
 // @Param 		id				path		string	true	"ID of the event"
 // @Param 		regid			path		string	true	"ID of the registration type"
 // @Success 	200 {object} RegistrationType
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure		403 {string} string "Event was not published yet and the user is not the orgaziner"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "This event is not published and you are not the organizer"
 // @Failure		404 {string} string "Event/Registration Type not found"
 // @Router 		/event/view/:id/regtype/:regid [get]
 func RegistrationTypeView(c *gin.Context) {
@@ -472,13 +472,13 @@ type ParticipantInfo struct {
 // @Produce 	json
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		id				path		string	true	"ID of the event"
-// @Param 		benefitName		path		string	true	"Name of the benefit"
+// @Param 		benefitID		path		string	true	"ID of the benefit"
 // @Success 	200 {array} ParticipantInfo
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure		403 {string} string "User isn't the event orgaziner"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "You are not the organizer of this event"
 // @Failure		404 {string} string "Event not found/No participant found"
-// @Failure		500 {string} string "Error found in DB"
-// @Router 		/event/view/:id/benefit_participants/:benefitName [get]
+// @Failure		500 {string} string "Failed to query benefit participants"
+// @Router 		/event/view/:id/benefit_participants/:benefitID [get]
 func EventBenefitParticipants(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
@@ -500,13 +500,12 @@ func EventBenefitParticipants(c *gin.Context) {
 		return
 	}
 
-	benefitName := c.Param("benefitName")
+	benefitID := c.Param("benefitID")
 
 	subquery := db.DB.Table("registration_type_benefits").
-		Joins("LEFT OUTER JOIN benefits ON benefit_id = benefits.id").
 		Joins("LEFT OUTER JOIN registration_types ON registration_type_id = registration_types.id").
 		Joins("LEFT OUTER JOIN events ON registration_types.event_id = events.id").
-		Where("event_id = ? AND benefits.name = ?", eventID, benefitName).
+		Where("event_id = ? AND benefit_id = ?", eventID, benefitID).
 		Select("registration_type_id")
 	if subquery.Error != nil {
 		c.String(http.StatusInternalServerError, "Failed to query benefit participants")

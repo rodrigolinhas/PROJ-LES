@@ -567,19 +567,25 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "403": {
-                        "description": "Event was not published yet and the user is not the orgaziner",
+                        "description": "This event is not published and you are not the organizer",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "404": {
                         "description": "No article found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to load activity data",
                         "schema": {
                             "type": "string"
                         }
@@ -883,14 +889,20 @@ const docTemplate = `{
                             "type": "string"
                         }
                     },
+                    "400": {
+                        "description": "Invalid event data / dates",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Error found during event creation",
+                        "description": "Failed to create event",
                         "schema": {
                             "type": "string"
                         }
@@ -935,13 +947,13 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "403": {
-                        "description": "User is not the organizer of the event",
+                        "description": "You are not the organizer of this event",
                         "schema": {
                             "type": "string"
                         }
@@ -953,7 +965,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Error found during event deletion",
+                        "description": "Failed to delete event",
                         "schema": {
                             "type": "string"
                         }
@@ -1039,14 +1051,26 @@ const docTemplate = `{
                             "type": "string"
                         }
                     },
-                    "401": {
-                        "description": "Invalid credentials",
+                    "400": {
+                        "description": "Invalid event data / dates",
                         "schema": {
                             "type": "string"
                         }
                     },
-                    "500": {
-                        "description": "Error found during event editing",
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "You are not the organizer of this event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found",
                         "schema": {
                             "type": "string"
                         }
@@ -1108,7 +1132,7 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
@@ -1176,7 +1200,7 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
@@ -1244,7 +1268,7 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
@@ -1256,7 +1280,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Error found on query",
+                        "description": "Failed to load enrolled events",
                         "schema": {
                             "type": "string"
                         }
@@ -1309,7 +1333,7 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
@@ -1321,13 +1345,13 @@ const docTemplate = `{
                         }
                     },
                     "409": {
-                        "description": "Registration has already been paid",
+                        "description": "This registration has already been paid",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Error found during event payment confirmation",
+                        "description": "Failed to confirm payment",
                         "schema": {
                             "type": "string"
                         }
@@ -1372,13 +1396,13 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "403": {
-                        "description": "User is not the organizer of the event",
+                        "description": "You are not the organizer of this event",
                         "schema": {
                             "type": "string"
                         }
@@ -1390,7 +1414,7 @@ const docTemplate = `{
                         }
                     },
                     "409": {
-                        "description": "Event already published",
+                        "description": "This event has already been published",
                         "schema": {
                             "type": "string"
                         }
@@ -1447,8 +1471,14 @@ const docTemplate = `{
                             "$ref": "#/definitions/api.PayTokenJSON"
                         }
                     },
+                    "400": {
+                        "description": "Invalid registration data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
@@ -1459,8 +1489,14 @@ const docTemplate = `{
                             "type": "string"
                         }
                     },
+                    "409": {
+                        "description": "Cannot enroll in an unpublished event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "500": {
-                        "description": "Error found during event enrollment",
+                        "description": "Failed to complete event registration",
                         "schema": {
                             "type": "string"
                         }
@@ -1525,26 +1561,26 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Event Registration Type added successfully",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "400": {
-                        "description": "Can't parse the price",
+                        "description": "Invalid registration type data",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "403": {
-                        "description": "User is not the orgaziner of the event",
+                        "description": "User is not the organizer of the event",
                         "schema": {
                             "type": "string"
                         }
@@ -1556,13 +1592,13 @@ const docTemplate = `{
                         }
                     },
                     "409": {
-                        "description": "Can't add a registration type to a published event",
+                        "description": "Conflict",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Error found during registration type creation",
+                        "description": "Failed to create registration type",
                         "schema": {
                             "type": "string"
                         }
@@ -1614,31 +1650,31 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "403": {
-                        "description": "User is not the orgaziner of the event",
+                        "description": "User is not the organizer of the event",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "404": {
-                        "description": "Event not found",
+                        "description": "Event/Registration Type not found",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "409": {
-                        "description": "Can't delete the registration type of a published event",
+                        "description": "Cannot modify published event",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Error found during registration type deletion",
+                        "description": "Failed to delete registration type",
                         "schema": {
                             "type": "string"
                         }
@@ -1714,13 +1750,13 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Can't parse the price",
+                        "description": "Invalid registration type data",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
@@ -1732,19 +1768,19 @@ const docTemplate = `{
                         }
                     },
                     "404": {
-                        "description": "Event not found",
+                        "description": "Event/Registration Type not found",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "409": {
-                        "description": "Can't edit the registration type of a published event",
+                        "description": "Conflict",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Error found during registration type creation",
+                        "description": "Failed to save registration type changes",
                         "schema": {
                             "type": "string"
                         }
@@ -1789,19 +1825,19 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "403": {
-                        "description": "Event was not published yet and the user is not the orgaziner",
+                        "description": "This event is not published and you are not the organizer",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "404": {
-                        "description": "No event found",
+                        "description": "Event not found",
                         "schema": {
                             "type": "string"
                         }
@@ -1809,7 +1845,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/event/view/:id/benefit_participants/:benefitName": {
+        "/event/view/:id/benefit_participants/:benefitID": {
             "get": {
                 "description": "A event organizer can view a list of all the users eligible for a benefit given in one of their events.",
                 "consumes": [
@@ -1839,8 +1875,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Name of the benefit",
-                        "name": "benefitName",
+                        "description": "ID of the benefit",
+                        "name": "benefitID",
                         "in": "path",
                         "required": true
                     }
@@ -1856,13 +1892,13 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "403": {
-                        "description": "User isn't the event orgaziner",
+                        "description": "You are not the organizer of this event",
                         "schema": {
                             "type": "string"
                         }
@@ -1874,7 +1910,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Error found in DB",
+                        "description": "Failed to query benefit participants",
                         "schema": {
                             "type": "string"
                         }
@@ -1922,19 +1958,19 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "403": {
-                        "description": "Event was not published yet and the user is not the orgaziner",
+                        "description": "This event is not published and you are not the organizer",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "404": {
-                        "description": "Event not found",
+                        "description": "Event/Benefits not found",
                         "schema": {
                             "type": "string"
                         }
@@ -1982,7 +2018,7 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
@@ -2000,7 +2036,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Error found on query",
+                        "description": "Failed to load participants",
                         "schema": {
                             "type": "string"
                         }
@@ -2052,13 +2088,13 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "403": {
-                        "description": "Event was not published yet and the user is not the orgaziner",
+                        "description": "This event is not published and you are not the organizer",
                         "schema": {
                             "type": "string"
                         }
@@ -2112,13 +2148,13 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "403": {
-                        "description": "Event was not published yet and the user is not the orgaziner",
+                        "description": "This event is not published and you are not the organizer",
                         "schema": {
                             "type": "string"
                         }
@@ -2202,14 +2238,32 @@ const docTemplate = `{
                             "type": "string"
                         }
                     },
+                    "400": {
+                        "description": "Invalid activity data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not the organizer of the event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Error found during activity creation",
+                        "description": "Failed to create activity",
                         "schema": {
                             "type": "string"
                         }
@@ -2255,6 +2309,30 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "Deleted",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not the organizer of the event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event/Activity not found",
                         "schema": {
                             "type": "string"
                         }
@@ -2321,6 +2399,30 @@ const docTemplate = `{
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    "400": {
+                        "description": "Invalid activity data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "User is not the organizer of the event",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Event/Activity not found",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
             }
@@ -2365,13 +2467,19 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Invalid credentials",
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Event is not published and user is not organizer",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "404": {
-                        "description": "No activity found",
+                        "description": "Event/Activities not found",
                         "schema": {
                             "type": "string"
                         }
@@ -2419,8 +2527,20 @@ const docTemplate = `{
                             "type": "object"
                         }
                     },
+                    "400": {
+                        "description": "Invalid activity data",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Event is not published and user is not organizer",
                         "schema": {
                             "type": "string"
                         }

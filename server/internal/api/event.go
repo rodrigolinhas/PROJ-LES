@@ -51,8 +51,9 @@ type LongEvent struct {
 // @Param 		endDate			formData	string	true	"Date/Time at which the event ends (RFC3339/ISO8601 format)"
 // @Param 		location		formData	string	true	"Location where the event takes place"
 // @Success 	201 {string} string "Event created with success"
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure 	500 {string} string "Error found during event creation"
+// @Failure		400 {string} string "Invalid event data / dates"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure 	500 {string} string "Failed to create event"
 // @Router 		/event/create [post]
 func EventCreate(c *gin.Context) {
 	user, autherr := Authorize(c)
@@ -164,10 +165,10 @@ func eventListPreface(c *gin.Context) (*models.User, int, int, string, error) {
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		eventID			formData	string	true	"ID of the event"
 // @Success 	200 {string} string "Event published with success"
-// @Failure		401 {string} string "Invalid credentials"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "You are not the organizer of this event"
 // @Failure		404 {string} string "Event not found"
-// @Failure		403 {string} string "User is not the organizer of the event"
-// @Failure		409 {string} string "Event already published"
+// @Failure		409 {string} string "This event has already been published"
 // @Router 		/event/publish [post]
 func EventPublish(c *gin.Context) {
 	event, err := eventEditPreface(c)
@@ -194,7 +195,7 @@ func EventPublish(c *gin.Context) {
 // @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
 // @Param 		offset			query		int		false	"Number of events to skip in the search" default(0)
 // @Success 	200 {array} ShortEvent
-// @Failure		401 {string} string "Invalid credentials"
+// @Failure		401 {string} string "Unauthorized"
 // @Failure		404 {string} string "No event found"
 // @Router 		/event/list [get]
 func EventList(c *gin.Context) {
@@ -225,10 +226,10 @@ func EventList(c *gin.Context) {
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		eventID			formData	string	true	"ID of the event"
 // @Success 	200 {string} string "Event deleted with success"
-// @Failure		401 {string} string "Invalid credentials"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "You are not the organizer of this event"
 // @Failure		404 {string} string "Event not found"
-// @Failure		403 {string} string "User is not the organizer of the event"
-// @Failure		500 {string} string "Error found during event deletion"
+// @Failure		500 {string} string "Failed to delete event"
 // @Router 		/event/delete [post]
 func EventDelete(c *gin.Context) {
 	event, err := eventEditPreface(c)
@@ -259,8 +260,10 @@ func EventDelete(c *gin.Context) {
 // @Param 		endDate			formData	string	false	"Date/Time at which the event ends (RFC3339/ISO8601 format)"
 // @Param 		location		formData	string	false	"Location where the event takes place"
 // @Success 	200 {string} string "Event edited with success"
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure 	500 {string} string "Error found during event editing"
+// @Failure		400 {string} string "Invalid event data / dates"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "You are not the organizer of this event"
+// @Failure		404 {string} string "Event not found"
 // @Router 		/event/edit [post]
 func EventEdit(c *gin.Context) {
 	event, err := eventEditPreface(c)
@@ -341,7 +344,7 @@ func EventEdit(c *gin.Context) {
 // @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
 // @Param 		offset			query		int		false	"Number of events to skip in the search" default(0)
 // @Success 	200 {array} ShortEvent
-// @Failure		401 {string} string "Invalid credentials"
+// @Failure		401 {string} string "Unauthorized"
 // @Failure		404 {string} string "No event found"
 // @Router 		/event/my [get]
 func EventMyList(c *gin.Context) {
@@ -372,9 +375,9 @@ func EventMyList(c *gin.Context) {
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		id				path		string	true	"ID of the event"
 // @Success 	200 {object} LongEvent
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure		403 {string} string "Event was not published yet and the user is not the orgaziner"
-// @Failure		404 {string} string "No event found"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "This event is not published and you are not the organizer"
+// @Failure		404 {string} string "Event not found"
 // @Router 		/event/view/:id [get]
 func EventView(c *gin.Context) {
 	user, autherr := Authorize(c)

@@ -35,9 +35,11 @@ type EventParticipant struct {
 // @Param 		regTypeID		formData	string	true	"ID of the registration type"
 // @Param 		discountCode	formData	string	false	"Discount code"
 // @Success 	200 {object} PayTokenJSON
-// @Failure		401 {string} string "Invalid credentials"
+// @Failure		400 {string} string "Invalid registration data"
+// @Failure		401 {string} string "Unauthorized"
 // @Failure		404 {string} string "Event / Discount code not found"
-// @Failure 	500 {string} string "Error found during event enrollment"
+// @Failure		409 {string} string "Cannot enroll in an unpublished event"
+// @Failure 	500 {string} string "Failed to complete event registration"
 // @Router 		/event/register [post]
 func EventRegister(c *gin.Context) {
 	user, autherr := Authorize(c)
@@ -133,10 +135,10 @@ func EventRegister(c *gin.Context) {
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		id				path		string	true	"ID of the event"
 // @Success 	200 {array} EventParticipant
-// @Failure		401 {string} string "Invalid credentials"
+// @Failure		401 {string} string "Unauthorized"
 // @Failure		403 {string} string "User is not the organizer of this event"
 // @Failure		404 {string} string "Event not found / No participants found"
-// @Failure 	500 {string} string "Error found on query"
+// @Failure 	500 {string} string "Failed to load participants"
 // @Router 		/event/view/:id/participants [get]
 func EventParticipantsList(c *gin.Context) {
 	user, autherr := Authorize(c)
@@ -189,10 +191,10 @@ func EventParticipantsList(c *gin.Context) {
 // @Param 		eventID			formData	string	true	"ID of the event"
 // @Param 		payToken		formData	string	true	"PayToken given during event enrollment"
 // @Success 	200 {string} string "Event registration paid successfully"
-// @Failure		401 {string} string "Invalid credentials"
+// @Failure		401 {string} string "Unauthorized"
 // @Failure		404 {string} string "Registration not found"
-// @Failure		409 {string} string "Registration has already been paid"
-// @Failure 	500 {string} string "Error found during event payment confirmation"
+// @Failure		409 {string} string "This registration has already been paid"
+// @Failure 	500 {string} string "Failed to confirm payment"
 // @Router 		/event/pay [post]
 func EventPay(c *gin.Context) {
 	user, autherr := Authorize(c)
@@ -245,9 +247,9 @@ type ShortEventEnroll struct {
 // @Param 		limit			query		int		false	"Number of events shown" maximum(50) default(20)
 // @Param 		offset			query		int		false	"Number of events to skip in the search" default(0)
 // @Success 	200 {array} ShortEventEnroll
-// @Failure		401 {string} string "Invalid credentials"
+// @Failure		401 {string} string "Unauthorized"
 // @Failure		404 {string} string "No event found"
-// @Failure		500 {string} string "Error found on query"
+// @Failure		500 {string} string "Failed to load enrolled events"
 // @Router 		/event/my/enroll [get]
 func EventRegistrationList(c *gin.Context) {
 	user, limit, offset, filter, err := eventListPreface(c)

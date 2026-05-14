@@ -35,8 +35,11 @@ type EventActivity struct {
 // @Param 		endDate 		formData    string  true    "Date/Time at which the activity ends (RFC3339/ISO8601 format)"
 // @Param       place           formData 	string  false   "Location where the activity takes place"
 // @Success     201 {string} string "Activity created with success"
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure 	500 {string} string "Error found during activity creation"
+// @Failure		400 {string} string "Invalid activity data"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "User is not the organizer of the event"
+// @Failure		404 {string} string "Event not found"
+// @Failure 	500 {string} string "Failed to create activity"
 // @Router /event/{eventId}/activity/create [post]
 func EventActivityCreate(c *gin.Context) {
 	user, autherr := Authorize(c)
@@ -81,7 +84,7 @@ func EventActivityCreate(c *gin.Context) {
 
 	res := db.DB.Create(activity)
 	if res.Error != nil {
-		c.String(http.StatusInternalServerError, "Failed to create activity: "+err.Error())
+		c.String(http.StatusInternalServerError, "Failed to create activity: "+res.Error.Error())
 		return
 	}
 
@@ -97,8 +100,9 @@ func EventActivityCreate(c *gin.Context) {
 // @Param 		X-CSRF-Token 	header 		string 	true 	"User's CSRF Token"
 // @Param 		eventID 		path 		string 	true 	"Event ID"
 // @Success 	200 {array} EventActivity
-// @Failure		401 {string} string "Invalid credentials"
-// @Failure		404 {string} string "No activity found"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "Event is not published and user is not organizer"
+// @Failure		404 {string} string "Event/Activities not found"
 // @Router 		/event/{eventId}/activity/list [get]
 func EventActivityList(c *gin.Context) {
 	user, err := Authorize(c)
@@ -137,7 +141,11 @@ func EventActivityList(c *gin.Context) {
 // @Param 	name            formData    string  false   "Name"
 // @Param 	description     formData    string  false   "Description"
 // @Param   place           formData 	string  false   "Location where the activity takes place"
-// @Success 200 {string} string "Updated"
+// @Success 	200 {string} string "Updated"
+// @Failure		400 {string} string "Invalid activity data"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "User is not the organizer of the event"
+// @Failure		404 {string} string "Event/Activity not found"
 // @Router 	/event/{eventId}/activity/edit/{id} [post]
 func EventActivityEdit(c *gin.Context) {
 	user, err := Authorize(c)
@@ -193,7 +201,11 @@ func EventActivityEdit(c *gin.Context) {
 // @Param   X-CSRF-Token 	header 		string 	true 	"User's CSRF Token"
 // @Param   eventId         path        string  true    "Event ID"
 // @Param   id              path        string 	true 	"Activity ID"
-// @Success 200 {string} string "Deleted"
+// @Success 	200 {string} string "Deleted"
+// @Failure		400 {string} string "Invalid event"
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		403 {string} string "User is not the organizer of the event"
+// @Failure		404 {string} string "Event/Activity not found"
 // @Router /event/{eventId}/activity/delete/{id} [post]
 func EventActivityDelete(c *gin.Context) {
 	user, err := Authorize(c)
@@ -237,7 +249,9 @@ func EventActivityDelete(c *gin.Context) {
 // @Param       eventId         path        string  true    "Event ID"
 // @Param 		id 				path		string  true    "Activity ID"
 // @Success 	200 {object} object
+// @Failure		400 {string} string "Invalid activity data"
 // @Failure 	401 {string} string "Unauthorized"
+// @Failure		403 {string} string "Event is not published and user is not organizer"
 // @Failure 	404 {string} string "Activity not found"
 // @Router 		/event/{eventId}/activity/view/{id} [get]
 func EventActivityView(c *gin.Context) {
