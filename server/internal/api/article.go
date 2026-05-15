@@ -422,7 +422,7 @@ func ArticleGetById(c *gin.Context) {
 
 	var firstAuthor map[string]interface{}
 	if err := db.DB.Model(&models.User{}).
-		Select("id").
+		Select("id, first_name, last_name, email").
 		Where("id = ?", article.FirstAuthorID).
 		Take(&firstAuthor).Error; err != nil {
 		c.String(http.StatusNotFound, "First author not found")
@@ -431,7 +431,7 @@ func ArticleGetById(c *gin.Context) {
 
 	var coAuthors []map[string]interface{}
 	if err := db.DB.Table("users").
-		Select("users.id").
+		Select("users.id, users.first_name, users.last_name, users.email").
 		Joins("JOIN article_coauthors ON article_coauthors.user_id = users.id").
 		Where("article_coauthors.article_id = ?", article.ID).
 		Scan(&coAuthors).Error; err != nil {

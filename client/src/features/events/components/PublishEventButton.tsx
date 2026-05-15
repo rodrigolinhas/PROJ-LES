@@ -1,5 +1,6 @@
 import { envHostBackend } from '@/shared/utils/env';
 import { useState } from 'react';
+import {publishButtonStyle} from "@/shared/styles/formStyles.ts";
 
 function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -18,7 +19,7 @@ export default function PublishEventButton(props: any) {
     let eventID: number = props.eventID
     let published: boolean = props.published
 
-    const [title, setTitle] = useState("Publish Event");
+    const [title, setTitle] = useState("⏏ Publish Event");
     const [done, setDone] = useState(published);
 
     async function handleClick() {
@@ -57,6 +58,7 @@ export default function PublishEventButton(props: any) {
     return (
         <div>
             <button
+                className={publishButtonStyle}
                 type='button'
                 onClick={handleClick}
                 disabled={done}

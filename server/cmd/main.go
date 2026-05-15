@@ -78,6 +78,7 @@ func setEndpoints(router *gin.Engine) {
 	//user
 	router.GET("/user/me", api.UserMe)
 	router.POST("/user/account/edit", api.UserInfoEdit)
+	router.GET("/user/search", api.UserSearch)
 
 	//event
 	router.POST("/event/create", api.EventCreate)

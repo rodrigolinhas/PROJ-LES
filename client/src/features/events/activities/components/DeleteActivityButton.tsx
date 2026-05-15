@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getCookie } from "@/shared/utils/getCookie.ts"
+import {deleteButtonStyle} from "@/shared/styles/formStyles.ts";
 
 type Props = {
     eventId: number;
@@ -46,11 +47,8 @@ export default function DeleteActivityButton({ eventId, activityID, onDeleted }:
     }
 
     return (
-        <>
-            <button onClick={handleDelete} disabled={loading}>
-                {loading ? "Deleting..." : "Delete Activity"}
-            </button>
-            {error && <p className="error">{error}</p>}
-        </>
+        <button className={deleteButtonStyle} onClick={handleDelete} disabled={loading}>
+            {loading ? "Deleting..." : "🗑 Delete Activity"}
+        </button>
     );
 }

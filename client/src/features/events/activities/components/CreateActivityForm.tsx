@@ -1,6 +1,21 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getCookie } from "@/shared/utils/getCookie.ts"
+import {
+    mainDivStyle,
+    titleStyle,
+    descriptionStyle,
+    successOutDivStyle,
+    successDivStyle,
+    successMessageStyle,
+    goHomeStyle,
+    mandatoryLabelStyle,
+    inputStyle,
+    submitButtonStyle,
+    errorMessageStyle,
+    buttonsDivStyle
+} from '@/shared/styles/formStyles';
+
 
 export default function CreateActivityForm() {
     const {eventId} = useParams();
@@ -62,56 +77,95 @@ export default function CreateActivityForm() {
 
     if (activityCreated) {
         return (
-            <div style={{ textAlign: "center", margin: "100px" }}>
-                <h2 style={{ color: "green" }}>Activity created successfully!</h2>
-                <Link to = {`/event/${eventId}`}>Go back to the event page</Link>
+            <div className={successOutDivStyle}>
+                <div className={successDivStyle}>
+                    <h2 className={successMessageStyle}>Activity created with success!</h2>
+                    <Link to = {`/event/${eventId}/activity/list`} className={goHomeStyle}>Go back to this event's activities list</Link>
+                </div>
             </div>
         );
     }
     else {
         return (
-            <form onSubmit={handleSubmit}>
-                <h2>Create Activity</h2>
-                <label className="required">Name</label>
-                <input
-                    type="text"
-                    placeholder="Activity name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
-                <label className="required">Description</label>
-                <textarea
-                    placeholder="Activity description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                />
-                <label className="required">Start Date</label>
-                <input
-                    type="datetime-local"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    required
-                />
-                <label className="required">End Date</label>
-                <input
-                    type="datetime-local"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    required
-                />
-                <label>Location</label>
-                <input
-                    placeholder="Activity Location"
-                    value={place}
-                    onChange={(e) => setPlace(e.target.value)}
-                />
-                <button type = "submit">Create Activity</button>
-                <p className={isError ? "error" : "success"}>
-                    {message}
-                </p>
-            </form>
+            <div className={mainDivStyle}>
+                <div>
+                    <h2 className={titleStyle}>+ Create Activity</h2>
+                    <p className={descriptionStyle}>
+                        Fill the fields bellow to create a new activity.
+                    </p>
+                </div>
+
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label className={mandatoryLabelStyle}>Name</label>
+                        <input
+                            type="text"
+                            placeholder="e.g., Presentation"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={mandatoryLabelStyle}>Description</label>
+                        <textarea
+                            placeholder="Provide a brief overview of the activity"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={mandatoryLabelStyle}>Location</label>
+                        <input
+                            type="text"
+                            placeholder="e.g., Main Auditorium, Building C"
+                            value={place}
+                            onChange={(e) => setPlace(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={mandatoryLabelStyle}>Start Date</label>
+                        <input
+                            type="datetime-local"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={mandatoryLabelStyle}>End Date</label>
+                        <input
+                            type="datetime-local"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div className={buttonsDivStyle}>
+                        <button type = "submit" className={submitButtonStyle}>
+                            Create Activity
+                        </button>
+                    </div>
+
+                    {message && isError && (
+                        <p className={errorMessageStyle}>
+                            {message}
+                        </p>
+                    )}
+                </form>
+            </div>
         );
     }
 }
