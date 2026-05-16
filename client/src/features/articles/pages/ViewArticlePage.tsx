@@ -134,6 +134,39 @@ export default function ViewArticlePage() {
             >
                 <ArrowLeft size={15} />
                 Back to articles
+        <div>
+            <h1>{article.title}</h1>
+
+            <p><strong>Publisher:</strong> {article.publisher}</p>
+            <p><strong>First Author:</strong> {getAuthorName(article.firstAuthor) || "-"}</p>
+            <p>
+                <strong>Co-Authors:</strong>{" "}
+                {article.coAuthors && article.coAuthors.length > 0
+                    ? article.coAuthors.map(getAuthorName).join(", ")
+                    : "-"}
+            </p>
+            <p><strong>DOI:</strong> {article.doi || "-"}</p>
+            <p><strong>ISBN:</strong> {article.isbn || "-"}</p>
+            <p>
+                <strong>URL:</strong>{" "}
+                {article.url ? (
+                    <a href={article.url} target="_blank" rel="noreferrer">
+                        {article.url}
+                    </a>
+                ) : (
+                    "-"
+                )}
+            </p>
+
+            <p>
+                <strong>Tags:</strong>{" "}
+                {article.tags && article.tags.length > 0
+                    ? article.tags.map(getTagLabel).filter(Boolean).join(", ")
+                    : "-"}
+            </p>
+
+            <Link to={`/event/${eventId}/activity/${activityId}/article/edit/${articleId}`}>
+                Edit
             </Link>
 
             {/* ── Main card ── */}
@@ -281,6 +314,15 @@ function InfoRow({
                 <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{label}</p>
                 <p className="text-sm font-semibold text-gray-900 mt-0.5 break-words">{value}</p>
             </div>
+            <br />
+            <Link to={`/event/${eventId}/activity/${activityId}/article/${articleId}/authors`}>
+                Manage Authors
+            </Link>
+
+            <br />
+            <Link to={`/event/${eventId}/activity/${activityId}/article/list`}>
+                Back to list
+            </Link>
         </div>
     );
 }

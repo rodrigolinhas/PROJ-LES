@@ -1,17 +1,19 @@
 import { FlaskConical } from "lucide-react";
 import { Link } from "react-router-dom";
-import SettingsForm from "../components/SettingsForm";
+
+interface AuthLayoutProps {
+    children: React.ReactNode;
+}
 
 /**
- * Page for editing the authenticated user's account settings.
- *
- * Renders the SettingsForm component inside the SciEvents shared
- * page layout (matching the auth pages design system).
+ * Shared layout wrapper for all auth pages (Login, Register).
+ * Mirrors the landing page design system: bg-gray-50, Inter font,
+ * white card, SciEvents top-left branding.
  */
-export default function SettingsPage() {
+export default function AuthLayout({ children }: AuthLayoutProps) {
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* ── Top bar (same style as AuthLayout / Landing Navbar) ── */}
+            {/* ── Top bar (same style as Landing Navbar) ── */}
             <header className="bg-white border-b border-gray-200">
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center">
                     <Link
@@ -24,10 +26,10 @@ export default function SettingsPage() {
                 </div>
             </header>
 
-            {/* ── Centered card ── */}
+            {/* ── Centered card — always fully rendered, scrolls on small viewports ── */}
             <main className="flex justify-center px-4 py-12">
                 <div className="w-full max-w-lg bg-white border border-gray-100 rounded-2xl shadow-sm p-8">
-                    <SettingsForm />
+                    {children}
                 </div>
             </main>
         </div>

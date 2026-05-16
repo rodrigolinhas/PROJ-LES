@@ -1809,7 +1809,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/event/view/:id/benefit_participants/:benefitID": {
+        "/event/view/:id/benefit_participants/:benefitName": {
             "get": {
                 "description": "A event organizer can view a list of all the users eligible for a benefit given in one of their events.",
                 "consumes": [
@@ -1839,8 +1839,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "ID of the benefit",
-                        "name": "benefitID",
+                        "description": "Name of the benefit",
+                        "name": "benefitName",
                         "in": "path",
                         "required": true
                     }
@@ -2774,6 +2774,57 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/search": {
+            "get": {
+                "description": "Search for users by email or name",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Search users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query (name or email)",
+                        "name": "query",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "CSRF Token",
+                        "name": "X-CSRF-Token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.UserInfo"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing query parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -2977,13 +3028,25 @@ const docTemplate = `{
         "api.ShortEvent": {
             "type": "object",
             "properties": {
+                "endDate": {
+                    "type": "string",
+                    "example": "2026-03-07T20:00:00Z"
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
                 },
+                "location": {
+                    "type": "string",
+                    "example": "Place"
+                },
                 "name": {
                     "type": "string",
                     "example": "Event"
+                },
+                "startDate": {
+                    "type": "string",
+                    "example": "2026-03-07T12:00:00Z"
                 },
                 "theme": {
                     "type": "string",
@@ -2998,13 +3061,25 @@ const docTemplate = `{
                     "type": "boolean",
                     "example": true
                 },
+                "endDate": {
+                    "type": "string",
+                    "example": "2026-03-07T20:00:00Z"
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
                 },
+                "location": {
+                    "type": "string",
+                    "example": "Place"
+                },
                 "name": {
                     "type": "string",
                     "example": "Event"
+                },
+                "startDate": {
+                    "type": "string",
+                    "example": "2026-03-07T12:00:00Z"
                 },
                 "theme": {
                     "type": "string",

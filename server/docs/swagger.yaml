@@ -136,11 +136,20 @@ definitions:
     type: object
   api.ShortEvent:
     properties:
+      endDate:
+        example: "2026-03-07T20:00:00Z"
+        type: string
       id:
         example: 1
         type: integer
+      location:
+        example: Place
+        type: string
       name:
         example: Event
+        type: string
+      startDate:
+        example: "2026-03-07T12:00:00Z"
         type: string
       theme:
         example: CompSci
@@ -151,11 +160,20 @@ definitions:
       confirmed:
         example: true
         type: boolean
+      endDate:
+        example: "2026-03-07T20:00:00Z"
+        type: string
       id:
         example: 1
         type: integer
+      location:
+        example: Place
+        type: string
       name:
         example: Event
+        type: string
+      startDate:
+        example: "2026-03-07T12:00:00Z"
         type: string
       theme:
         example: CompSci
@@ -1637,7 +1655,7 @@ paths:
       summary: View event information
       tags:
       - Event
-  /event/view/:id/benefit_participants/:benefitID:
+  /event/view/:id/benefit_participants/:benefitName:
     get:
       consumes:
       - text/plain
@@ -1654,9 +1672,9 @@ paths:
         name: id
         required: true
         type: string
-      - description: ID of the benefit
+      - description: Name of the benefit
         in: path
-        name: benefitID
+        name: benefitName
         required: true
         type: string
       produces:
@@ -2085,6 +2103,40 @@ paths:
       tags:
       - User
       - Auth
+  /user/search:
+    get:
+      description: Search for users by email or name
+      parameters:
+      - description: Search query (name or email)
+        in: query
+        name: query
+        required: true
+        type: string
+      - description: CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.UserInfo'
+            type: array
+        "400":
+          description: Missing query parameter
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: Search users
+      tags:
+      - User
 swagger: "2.0"
 tags:
 - description: Endpoints only available for development purposes
