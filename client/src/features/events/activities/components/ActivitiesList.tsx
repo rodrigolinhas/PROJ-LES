@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getCookie } from "../../../../shared/utils/getCookie";
+import {
+    Clock,
+    MapPin,
+    ArrowRight,
+    Download,
+    CalendarDays,
+} from "lucide-react";
 
 type Props = {
     eventId: number;
@@ -14,6 +21,21 @@ type Activity = {
     StartDate: string;
     EndDate: string;
 };
+
+function shortDate(iso: string) {
+    return new Date(iso).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+    });
+}
+
+function shortTime(iso: string) {
+    return new Date(iso).toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
 
 export default function ActivitiesList({ eventId }: Props) {
     const [activities, setActivities] = useState<Activity[]>([]);
@@ -74,28 +96,85 @@ export default function ActivitiesList({ eventId }: Props) {
         document.body.removeChild(link);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return (
+            <div className="py-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Activities</h2>
+                <div className="space-y-3">
+                    {[1, 2].map((i) => (
+                        <div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse" />
+                    ))}
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div>
-            <h2>Activities</h2>
-                {(!activities || activities.length == 0) ? (
-                    <p>This event does not have activities</p>
-                ) :
-                <>
-                    <ul className="list-disc pl-6">
-                        {activities.map(a => (
-                            <li key={a.ID} className="my-1">
-                                <Link to={`/event/${eventId}/activity/view/${a.ID}`}>
-                                    {a.Name}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                    <button onClick={handleExportCSV} className="mr-3 mt-5 mb-1 w-40 border-2 border-black gap-2 rounded-md bg-white px-5 py-3 text-black">
-                        Export as CSV
+        <div className="py-6">
+            {/* Section header */}
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Activities</h2>
+                {activities && activities.length > 0 && (
+                    <button
+                        onClick={handleExportCSV}
+                        className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-gray-900 border border-gray-200 hover:border-gray-300 rounded-lg px-3 py-1.5 transition-colors duration-150"
+                    >
+                        <Download size={13} strokeWidth={1.8} />
+                        Export CSV
                     </button>
-                </>}
+                )}
+            </div>
+
+            {(!activities || activities.length === 0) ? (
+                <div className="text-center py-10 border border-dashed border-gray-200 rounded-xl">
+                    <CalendarDays size={28} className="text-gray-300 mx-auto mb-2" />
+                    <p className="text-sm text-gray-400">This event does not have activities yet.</p>
+                </div>
+            ) : (
+                <div className="space-y-3">
+                    {activities.map((a) => (
+                        <Link
+                            key={a.ID}
+                            to={`/event/${eventId}/activity/view/${a.ID}`}
+                            className="group flex items-center gap-4 bg-gray-50 hover:bg-white border border-gray-200 hover:border-gray-300 rounded-xl p-4 transition-all duration-200 hover:shadow-sm"
+                        >
+                            {/* Date block */}
+                            <div className="w-12 h-12 rounded-lg bg-gray-900 text-white flex flex-col items-center justify-center shrink-0 leading-none">
+                                <span className="text-base font-bold">
+                                    {new Date(a.StartDate).getDate()}
+                                </span>
+                                <span className="text-[9px] uppercase tracking-wider opacity-70">
+                                    {new Date(a.StartDate).toLocaleString("en-GB", { month: "short" })}
+                                </span>
+                            </div>
+
+                            {/* Info */}
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-gray-900 truncate group-hover:text-gray-700 transition-colors">
+                                    {a.Name}
+                                </p>
+                                <div className="flex flex-wrap items-center gap-3 mt-1">
+                                    <span className="flex items-center gap-1 text-xs text-gray-400">
+                                        <Clock size={11} />
+                                        {shortDate(a.StartDate)} · {shortTime(a.StartDate)} – {shortTime(a.EndDate)}
+                                    </span>
+                                    {a.Place && (
+                                        <span className="flex items-center gap-1 text-xs text-gray-400">
+                                            <MapPin size={11} />
+                                            {a.Place}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+
+                            <ArrowRight
+                                size={16}
+                                className="text-gray-300 group-hover:text-gray-500 shrink-0 transition-colors"
+                            />
+                        </Link>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
