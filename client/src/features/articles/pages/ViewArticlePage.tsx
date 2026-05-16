@@ -23,6 +23,11 @@ type ArticleTag = {
 
 type AuthorRef = {
     id?: number;
+    first_name?: string;
+    last_name?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
 };
 
 type ArticleDetails = {
@@ -39,10 +44,14 @@ type ArticleDetails = {
     updatedAt?: string;
 };
 
-function getAuthorId(author: AuthorRef | number | undefined): string {
-    if (typeof author === "number") return String(author);
-    if (author?.id) return String(author.id);
-    return "";
+function getAuthorName(author: AuthorRef | number | undefined): string {
+    if (typeof author === "number") return `ID ${author}`;
+    if (!author) return "";
+    const firstName = author.first_name || author.firstName || "";
+    const lastName = author.last_name || author.lastName || "";
+    const name = [firstName, lastName].filter(Boolean).join(" ");
+    const email = author.email ? ` (${author.email})` : "";
+    return (name || (author.id ? `ID ${author.id}` : "")) + email;
 }
 
 function getTagLabel(tag: ArticleTag | string): string {
@@ -113,8 +122,8 @@ export default function ViewArticlePage() {
     if (!article) return null;
 
     const tags = article.tags?.map(getTagLabel).filter(Boolean) ?? [];
-    const coAuthorIds = article.coAuthors?.map(getAuthorId).filter(Boolean) ?? [];
-    const firstAuthorId = getAuthorId(article.firstAuthor);
+    const coAuthorNames = article.coAuthors?.map(getAuthorName).filter(Boolean) ?? [];
+    const firstAuthorName = getAuthorName(article.firstAuthor);
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-10">
@@ -165,8 +174,8 @@ export default function ViewArticlePage() {
                     <InfoRow
                         icon={<User size={15} className="text-emerald-600" />}
                         iconBg="bg-emerald-50"
-                        label="First Author ID"
-                        value={firstAuthorId || "—"}
+                        label="First Author"
+                        value={firstAuthorName || "—"}
                     />
 
                     {/* Co-Authors */}
@@ -174,7 +183,7 @@ export default function ViewArticlePage() {
                         icon={<Users size={15} className="text-amber-600" />}
                         iconBg="bg-amber-50"
                         label="Co-Authors"
-                        value={coAuthorIds.length > 0 ? coAuthorIds.join(", ") : "—"}
+                        value={coAuthorNames.length > 0 ? coAuthorNames.join(", ") : "—"}
                     />
 
                     {/* DOI */}
@@ -238,6 +247,13 @@ export default function ViewArticlePage() {
                         <Tag size={15} strokeWidth={1.8} />
                         Manage Tags
                     </Link>
+                    <Link
+                        to={`/event/${eventId}/activity/${activityId}/article/${articleId}/authors`}
+                        className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 border border-gray-300 hover:border-gray-400 rounded-lg px-4 py-2.5 transition-colors duration-150"
+                    >
+                        <Users size={15} strokeWidth={1.8} />
+                        Manage Authors
+                    </Link>
                 </div>
             </div>
         </div>
@@ -246,11 +262,11 @@ export default function ViewArticlePage() {
 
 /* ── Reusable metadata row ── */
 function InfoRow({
-    icon,
-    iconBg,
-    label,
-    value,
-}: {
+                     icon,
+                     iconBg,
+                     label,
+                     value,
+                 }: {
     icon: React.ReactNode;
     iconBg: string;
     label: string;
