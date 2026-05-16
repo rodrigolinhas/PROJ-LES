@@ -12,12 +12,17 @@ import (
 	"LES/server/internal/models"
 )
 
+type BenefitInfo struct {
+	ID   uint   `json:"ID" example:"1"`
+	Name string `json:"Name" example:"Lunch"`
+}
+
 type RegistrationType struct {
-	ID          uint     `example:"1"`
-	Name        string   `example:"Pass"`
-	Description string   `example:"Pass Description"`
-	Price       float64  `example:"7.5"`
-	Benefits    []string `example:"[\"Lunch\", \"Wi-Fi Access\"]"`
+	ID          uint          `example:"1"`
+	Name        string        `example:"Pass"`
+	Description string        `example:"Pass Description"`
+	Price       float64       `example:"7.5"`
+	Benefits    []BenefitInfo `example:"[{\"ID\":1,\"Name\":\"Lunch\"}]"`
 }
 
 func regTypePreface(c *gin.Context) (*models.Event, error) {
@@ -278,12 +283,12 @@ func RegistrationTypeList(c *gin.Context) {
 
 	var response []RegistrationType
 	for _, rt := range regtypes {
-		var benefits []string
+		var benefits []BenefitInfo
 		for _, b := range rt.Benefits {
-			benefits = append(benefits, b.Name)
+			benefits = append(benefits, BenefitInfo{ID: b.ID, Name: b.Name})
 		}
 		if benefits == nil {
-			benefits = []string{}
+			benefits = []BenefitInfo{}
 		}
 
 		response = append(response, RegistrationType{
@@ -438,12 +443,12 @@ func RegistrationTypeView(c *gin.Context) {
 		return
 	}
 
-	var benefits []string
+	var benefits []BenefitInfo
 	for _, b := range rt.Benefits {
-		benefits = append(benefits, b.Name)
+		benefits = append(benefits, BenefitInfo{ID: b.ID, Name: b.Name})
 	}
 	if benefits == nil {
-		benefits = []string{}
+		benefits = []BenefitInfo{}
 	}
 
 	response := RegistrationType{

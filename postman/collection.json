@@ -2428,6 +2428,9 @@
                   "",
                   "  if (createdRegType) {",
                   "    pm.environment.set(\"regtype_id\", String(createdRegType.ID));",
+                  "    if (createdRegType.Benefits && createdRegType.Benefits.length > 0) {",
+                  "      pm.environment.set(\"benefit_id\", String(createdRegType.Benefits[0].ID));",
+                  "    }",
                   "  }",
                   "}"
                 ],

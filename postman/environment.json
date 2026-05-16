@@ -256,8 +256,8 @@
 		},
 		{
 			"key": "benefit_id",
-			"value": "\"dinner\"",
-			"type": "default",
+			"value": "",
+			"type": "any",
 			"enabled": true
 		}
 	],
