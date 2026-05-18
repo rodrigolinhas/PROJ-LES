@@ -237,7 +237,7 @@
                   "});\r",
                   "\r",
                   "pm.test(\"UserLogout -> success message\", function () {\r",
-                  "  pm.expect(pm.response.text()).to.include(\"Log out with success\");\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Logged out successfully\");\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -729,7 +729,7 @@
                   "});\r",
                   "\r",
                   "pm.test(\"Edit Event -> success message\", function () {\r",
-                  "  pm.expect(pm.response.text()).to.include(\"Event edited successfully\");\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event updated successfully\");\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -1478,7 +1478,7 @@
                   "});\r",
                   "\r",
                   "pm.test(\"Publish Event -> success message\", function () {\r",
-                  "  pm.expect(pm.response.text()).to.include(\"Event published with success\");\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event published successfully\");\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -1606,7 +1606,7 @@
                   "});\r",
                   "\r",
                   "pm.test(\"Delete Event -> success message\", function () {\r",
-                  "  pm.expect(pm.response.text()).to.include(\"Event deleted with success\");\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event deleted successfully\");\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -2476,7 +2476,7 @@
                   "});\r",
                   "\r",
                   "pm.test(\"Publish Event -> success message\", function () {\r",
-                  "  pm.expect(pm.response.text()).to.include(\"Event published with success\");\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event published successfully\");\r",
                   "});"
                 ],
                 "type": "text/javascript",

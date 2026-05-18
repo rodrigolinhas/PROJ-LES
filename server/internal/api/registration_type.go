@@ -511,7 +511,7 @@ func EventBenefitParticipants(c *gin.Context) {
 		Joins("LEFT OUTER JOIN benefits ON benefit_id = benefits.id").
 		Joins("LEFT OUTER JOIN registration_types ON registration_type_id = registration_types.id").
 		Joins("LEFT OUTER JOIN events ON registration_types.event_id = events.id").
-		Where("event_id = ? AND benefit_name = ?", eventID, benefitName).
+		Where("event_id = ? AND benefits.name = ?", eventID, benefitName).
 		Select("registration_type_id")
 	if subquery.Error != nil {
 		c.String(http.StatusInternalServerError, "Failed to query benefit participants")
