@@ -10,6 +10,7 @@ type Props = {
 
 export default function DeleteActivityButton({ eventId, activityID, onDeleted }: Props) {
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     async function handleDelete() {
         const confirmDelete = window.confirm("Are you sure you want to delete this activity?");
@@ -33,11 +34,13 @@ export default function DeleteActivityButton({ eventId, activityID, onDeleted }:
 
             if (response.status === 200) {
                 onDeleted();
+            } else if (response.status === 401) {
+                setError("Your session has expired. Please log in again.");
             } else {
-                alert(await response.text());
+                setError(await response.text());
             }
         } catch {
-            alert("Server error");
+            setError("Server error. Please try again later.");
         } finally {
             setLoading(false);
         }

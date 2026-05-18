@@ -115,7 +115,7 @@ export default function SettingsForm() {
                 setOriginalData({ firstName, lastName, email });
             } else {
                 const errorText = await response.text();
-                setMessage(errorText);
+                setMessage(errorText || "Failed to update settings");
                 setIsError(true);
             }
         } catch {

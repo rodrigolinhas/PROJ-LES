@@ -80,7 +80,7 @@ func UserInfoEdit(c *gin.Context) {
 	if email != "" {
 		ok, _ := regexp.MatchString(models.EmailRegex, email)
 		if !ok {
-			c.String(http.StatusInternalServerError, "Invalid Email")
+			c.String(http.StatusBadRequest, "Invalid email format")
 			return
 		}
 		user.Email = email
@@ -88,7 +88,7 @@ func UserInfoEdit(c *gin.Context) {
 	if password != "" {
 		hashedPass, err := utils.HashPassword(password)
 		if err != nil {
-			c.String(http.StatusInternalServerError, "Error hashing password")
+			c.String(http.StatusInternalServerError, "Failed to update password")
 			return
 		}
 		user.HashedPassword = hashedPass
@@ -96,11 +96,11 @@ func UserInfoEdit(c *gin.Context) {
 
 	res := db.DB.Save(&user)
 	if res.Error != nil {
-		c.String(http.StatusInternalServerError, "Error updating user")
+		c.String(http.StatusInternalServerError, "Failed to update user information")
 		return
 	}
 
-	c.String(http.StatusOK, "User info updated")
+	c.String(http.StatusOK, "User information updated successfully")
 }
 
 // UserSearch

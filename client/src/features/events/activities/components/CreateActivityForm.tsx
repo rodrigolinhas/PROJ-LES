@@ -52,9 +52,14 @@ export default function CreateActivityForm() {
             });
 
             if(response.status === 201) {
-                setMessage("Activity Created Successfully!");
+                setMessage("Activity created successfully!");
                 setIsError(false);
                 setActivityCreated(true);
+            }
+            else if (response.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
+                setActivityCreated(false);
             }
             else {
                 const errorText = await response.text();

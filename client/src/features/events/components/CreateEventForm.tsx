@@ -54,9 +54,14 @@ export default function CreateEventForm() {
             });
 
             if(response.status === 201) {
-                setMessage("Event Created Successfully!");
+                setMessage("Event created successfully!");
                 setIsError(false);
                 setEventCreated(true);
+            }
+            else if (response.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
+                setEventCreated(false);
             }
             else {
                 const errorText = await response.text();

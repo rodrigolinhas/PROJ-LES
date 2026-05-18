@@ -141,6 +141,10 @@ export default function CreateArticleForm() {
                 setMessage(data.message || "Article created successfully!");
                 setIsError(false);
                 setCreatedArticleId(data.articleID);
+            } else if (response.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
+                setCreatedArticleId(null);
             } else {
                 const errorText = await response.text();
                 setMessage(errorText);

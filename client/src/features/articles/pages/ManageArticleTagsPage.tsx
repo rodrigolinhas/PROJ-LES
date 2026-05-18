@@ -100,6 +100,9 @@ export default function ManageArticleTagsPage() {
                 setIsError(false);
                 fetchArticleAndTags();
                 setSelectedTagId("");
+            } else if (response.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
             } else {
                 const errorText = await response.text();
                 setMessage(errorText || "Failed to add tag");
@@ -130,6 +133,9 @@ export default function ManageArticleTagsPage() {
                 setMessage("Tag removed successfully!");
                 setIsError(false);
                 fetchArticleAndTags();
+            } else if (response.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
             } else {
                 const errorText = await response.text();
                 setMessage(errorText || "Failed to remove tag");

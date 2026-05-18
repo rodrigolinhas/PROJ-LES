@@ -604,15 +604,19 @@ paths:
               $ref: '#/definitions/api.Article'
             type: array
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
-          description: Event was not published yet and the user is not the orgaziner
+          description: This event is not published and you are not the organizer
           schema:
             type: string
         "404":
           description: No article found
+          schema:
+            type: string
+        "500":
+          description: Failed to load activity data
           schema:
             type: string
       summary: List the articles associated to an activity
@@ -816,12 +820,24 @@ paths:
           description: Activity created with success
           schema:
             type: string
+        "400":
+          description: Invalid activity data
+          schema:
+            type: string
         "401":
-          description: Invalid credentials
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: User is not the organizer of the event
+          schema:
+            type: string
+        "404":
+          description: Event not found
           schema:
             type: string
         "500":
-          description: Error found during activity creation
+          description: Failed to create activity
           schema:
             type: string
       summary: Create activity
@@ -852,6 +868,22 @@ paths:
       responses:
         "200":
           description: Deleted
+          schema:
+            type: string
+        "400":
+          description: Invalid event
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: User is not the organizer of the event
+          schema:
+            type: string
+        "404":
+          description: Event/Activity not found
           schema:
             type: string
       summary: Delete activity
@@ -896,6 +928,22 @@ paths:
           description: Updated
           schema:
             type: string
+        "400":
+          description: Invalid activity data
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: User is not the organizer of the event
+          schema:
+            type: string
+        "404":
+          description: Event/Activity not found
+          schema:
+            type: string
       summary: Edit activity
       tags:
       - EventActivity
@@ -925,11 +973,15 @@ paths:
               $ref: '#/definitions/api.EventActivity'
             type: array
         "401":
-          description: Invalid credentials
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Event is not published and user is not organizer
           schema:
             type: string
         "404":
-          description: No activity found
+          description: Event/Activities not found
           schema:
             type: string
       summary: List activities of an event
@@ -961,8 +1013,16 @@ paths:
           description: OK
           schema:
             type: object
+        "400":
+          description: Invalid activity data
+          schema:
+            type: string
         "401":
           description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Event is not published and user is not organizer
           schema:
             type: string
         "404":
@@ -1026,12 +1086,16 @@ paths:
           description: Event created with success
           schema:
             type: string
+        "400":
+          description: Invalid event data / dates
+          schema:
+            type: string
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "500":
-          description: Error found during event creation
+          description: Failed to create event
           schema:
             type: string
       summary: Create event
@@ -1061,11 +1125,11 @@ paths:
           schema:
             type: string
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
-          description: User is not the organizer of the event
+          description: You are not the organizer of this event
           schema:
             type: string
         "404":
@@ -1073,7 +1137,7 @@ paths:
           schema:
             type: string
         "500":
-          description: Error found during event deletion
+          description: Failed to delete event
           schema:
             type: string
       summary: Delete event
@@ -1130,12 +1194,20 @@ paths:
           description: Event edited with success
           schema:
             type: string
-        "401":
-          description: Invalid credentials
+        "400":
+          description: Invalid event data / dates
           schema:
             type: string
-        "500":
-          description: Error found during event editing
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: You are not the organizer of this event
+          schema:
+            type: string
+        "404":
+          description: Event not found
           schema:
             type: string
       summary: Edit event
@@ -1177,7 +1249,7 @@ paths:
               $ref: '#/definitions/api.ShortEvent'
             type: array
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "404":
@@ -1223,7 +1295,7 @@ paths:
               $ref: '#/definitions/api.ShortEvent'
             type: array
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "404":
@@ -1269,7 +1341,7 @@ paths:
               $ref: '#/definitions/api.ShortEventEnroll'
             type: array
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "404":
@@ -1277,7 +1349,7 @@ paths:
           schema:
             type: string
         "500":
-          description: Error found on query
+          description: Failed to load enrolled events
           schema:
             type: string
       summary: List the user's enrolled event
@@ -1312,7 +1384,7 @@ paths:
           schema:
             type: string
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "404":
@@ -1320,11 +1392,11 @@ paths:
           schema:
             type: string
         "409":
-          description: Registration has already been paid
+          description: This registration has already been paid
           schema:
             type: string
         "500":
-          description: Error found during event payment confirmation
+          description: Failed to confirm payment
           schema:
             type: string
       summary: Pay event enrollment fee
@@ -1356,11 +1428,11 @@ paths:
           schema:
             type: string
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
-          description: User is not the organizer of the event
+          description: You are not the organizer of this event
           schema:
             type: string
         "404":
@@ -1368,7 +1440,7 @@ paths:
           schema:
             type: string
         "409":
-          description: Event already published
+          description: This event has already been published
           schema:
             type: string
       summary: Publish event
@@ -1407,16 +1479,24 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/api.PayTokenJSON'
+        "400":
+          description: Invalid registration data
+          schema:
+            type: string
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "404":
           description: Event / Discount code not found
           schema:
             type: string
+        "409":
+          description: Cannot enroll in an unpublished event
+          schema:
+            type: string
         "500":
-          description: Error found during event enrollment
+          description: Failed to complete event registration
           schema:
             type: string
       summary: Enroll in a event
@@ -1461,20 +1541,20 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
+        "201":
           description: Event Registration Type added successfully
           schema:
             type: string
         "400":
-          description: Can't parse the price
+          description: Invalid registration type data
           schema:
             type: string
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
-          description: User is not the orgaziner of the event
+          description: User is not the organizer of the event
           schema:
             type: string
         "404":
@@ -1482,11 +1562,11 @@ paths:
           schema:
             type: string
         "409":
-          description: Can't add a registration type to a published event
+          description: Conflict
           schema:
             type: string
         "500":
-          description: Error found during registration type creation
+          description: Failed to create registration type
           schema:
             type: string
       summary: Create a Registration Type of an event
@@ -1522,23 +1602,23 @@ paths:
           schema:
             type: string
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
-          description: User is not the orgaziner of the event
+          description: User is not the organizer of the event
           schema:
             type: string
         "404":
-          description: Event not found
+          description: Event/Registration Type not found
           schema:
             type: string
         "409":
-          description: Can't delete the registration type of a published event
+          description: Cannot modify published event
           schema:
             type: string
         "500":
-          description: Error found during registration type deletion
+          description: Failed to delete registration type
           schema:
             type: string
       summary: Delete a Registration Type of an event
@@ -1590,11 +1670,11 @@ paths:
           schema:
             type: string
         "400":
-          description: Can't parse the price
+          description: Invalid registration type data
           schema:
             type: string
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
@@ -1602,15 +1682,15 @@ paths:
           schema:
             type: string
         "404":
-          description: Event not found
+          description: Event/Registration Type not found
           schema:
             type: string
         "409":
-          description: Can't edit the registration type of a published event
+          description: Conflict
           schema:
             type: string
         "500":
-          description: Error found during registration type creation
+          description: Failed to save registration type changes
           schema:
             type: string
       summary: Edit a Registration Type of an event
@@ -1641,21 +1721,21 @@ paths:
           schema:
             $ref: '#/definitions/api.LongEvent'
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
-          description: Event was not published yet and the user is not the orgaziner
+          description: This event is not published and you are not the organizer
           schema:
             type: string
         "404":
-          description: No event found
+          description: Event not found
           schema:
             type: string
       summary: View event information
       tags:
       - Event
-  /event/view/:id/benefit_participants/:benefitName:
+  /event/view/:id/benefit_participants/:benefitID:
     get:
       consumes:
       - text/plain
@@ -1672,9 +1752,9 @@ paths:
         name: id
         required: true
         type: string
-      - description: Name of the benefit
+      - description: ID of the benefit
         in: path
-        name: benefitName
+        name: benefitID
         required: true
         type: string
       produces:
@@ -1687,11 +1767,11 @@ paths:
               $ref: '#/definitions/api.ParticipantInfo'
             type: array
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
-          description: User isn't the event orgaziner
+          description: You are not the organizer of this event
           schema:
             type: string
         "404":
@@ -1699,7 +1779,7 @@ paths:
           schema:
             type: string
         "500":
-          description: Error found in DB
+          description: Failed to query benefit participants
           schema:
             type: string
       summary: List the users eligible for a benefit in a event
@@ -1732,15 +1812,15 @@ paths:
               type: string
             type: array
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
-          description: Event was not published yet and the user is not the orgaziner
+          description: This event is not published and you are not the organizer
           schema:
             type: string
         "404":
-          description: Event not found
+          description: Event/Benefits not found
           schema:
             type: string
       summary: List the benefits of an event
@@ -1773,7 +1853,7 @@ paths:
               $ref: '#/definitions/api.EventParticipant'
             type: array
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
@@ -1785,7 +1865,7 @@ paths:
           schema:
             type: string
         "500":
-          description: Error found on query
+          description: Failed to load participants
           schema:
             type: string
       summary: List participants of an event
@@ -1820,11 +1900,11 @@ paths:
           schema:
             $ref: '#/definitions/api.RegistrationType'
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
-          description: Event was not published yet and the user is not the orgaziner
+          description: This event is not published and you are not the organizer
           schema:
             type: string
         "404":
@@ -1861,11 +1941,11 @@ paths:
               $ref: '#/definitions/api.RegistrationType'
             type: array
         "401":
-          description: Invalid credentials
+          description: Unauthorized
           schema:
             type: string
         "403":
-          description: Event was not published yet and the user is not the orgaziner
+          description: This event is not published and you are not the organizer
           schema:
             type: string
         "404":
@@ -2093,6 +2173,10 @@ paths:
             type: string
         "406":
           description: Error found on the form params
+          schema:
+            type: string
+        "409":
+          description: User already exists
           schema:
             type: string
         "500":

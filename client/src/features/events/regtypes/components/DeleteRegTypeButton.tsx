@@ -34,6 +34,8 @@ export default function DeleteRegTypeButton(props: any) {
             if (response.status === 200) {
                 setTitle("Registration Type Deleted!");
                 setRegTypeDeleted(true)
+            } else if (response.status === 401) {
+                setTitle("Your session has expired. Please log in again.");
             } else {
                 setTitle(await response.text());
             }

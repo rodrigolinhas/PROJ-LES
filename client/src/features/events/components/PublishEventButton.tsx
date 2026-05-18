@@ -42,6 +42,9 @@ export default function PublishEventButton(props: any) {
                 setTitle("Event Published!");
                 setDone(true)
             }
+            else if (response.status === 401) {
+                setTitle("Your session has expired. Please log in again.");
+            }
             else {
                 const errorText = await response.text();
                 setTitle(errorText);
