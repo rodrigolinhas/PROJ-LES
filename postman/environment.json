@@ -255,7 +255,7 @@
 			"enabled": true
 		},
 		{
-			"key": "benefit_id",
+			"key": "benefit_name",
 			"value": "",
 			"type": "any",
 			"enabled": true
