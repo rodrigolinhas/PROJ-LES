@@ -1,12 +1,21 @@
 import { envHostBackend } from '@/shared/utils/env';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-
-function getCookie(name: string) {
-    const value = "; " + document.cookie;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(";").shift();
-}
+import { getCookie } from "@/shared/utils/getCookie.ts";
+import {
+    mainDivStyle,
+    titleStyle,
+    descriptionStyle,
+    successOutDivStyle,
+    successDivStyle,
+    successMessageStyle,
+    goHomeStyle,
+    mandatoryLabelStyle,
+    inputStyle,
+    submitButtonStyle,
+    errorMessageStyle,
+    buttonsDivStyle
+} from '@/shared/styles/formStyles';
 
 export default function CreateEventForm() {
     const [name, setName] = useState("");
@@ -45,9 +54,14 @@ export default function CreateEventForm() {
             });
 
             if(response.status === 201) {
-                setMessage("Event Created Successfully!");
+                setMessage("Event created successfully!");
                 setIsError(false);
                 setEventCreated(true);
+            }
+            else if (response.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
+                setEventCreated(false);
             }
             else {
                 const errorText = await response.text();
@@ -65,74 +79,120 @@ export default function CreateEventForm() {
 
     if (eventCreated) {
         return (
-            <div style={{ textAlign: "center", margin: "100px" }}>
-                <h2 style={{ color: "green" }}>Event created with success!</h2>
-                <Link to ="/home">Go back to Home</Link>
+            <div className={successOutDivStyle}>
+                <div className={successDivStyle}>
+                    <h2 className={successMessageStyle}>Event created with success!</h2>
+                    <Link to ="/home" className={goHomeStyle}>Go back to Home</Link>
+                </div>
             </div>
         );
     }
     else {
         return (
-            <form onSubmit={handleSubmit}>
-                <h2>Create Event</h2>
-                <label className="required">Name</label>
-                <input
-                    type="text"
-                    placeholder="Event name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
-                <label className="required">Theme</label>
-                <input
-                    type="text"
-                    placeholder="Event theme"
-                    value={theme}
-                    onChange={(e) => setTheme(e.target.value)}
-                    required
-                />
-                <label className="required">Description</label>
-                <textarea
-                    placeholder="Event description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                />
-                <label className="required">Organization</label>
-                <input
-                    type="text"
-                    placeholder="Organization"
-                    value={organization}
-                    onChange={(e) => setOrganization(e.target.value)}
-                    required
-                />
-                <label className="required">Location</label>
-                <input
-                    type="text"
-                    placeholder="Location"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    required
-                />
-                <label className="required">Start Date</label>
-                <input
-                    type="datetime-local"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    required
-                />
-                <label className="required">End Date</label>
-                <input
-                    type="datetime-local"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    required
-                />
-                <button type = "submit">Create Event</button>
-                <p className={isError ? "error" : "success"}>
-                    {message}
-                </p>
-            </form>
+            <div className={mainDivStyle}>
+                <div>
+                    <h2 className={titleStyle}>+ Create Event</h2>
+                    <p className={descriptionStyle}>
+                        Fill the fields bellow to create a new scientific event.
+                    </p>
+                </div>
+
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label className={mandatoryLabelStyle}>Name</label>
+                        <input
+                            type="text"
+                            placeholder="e.g., International Summit on Artificial Intelligence"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={mandatoryLabelStyle}>Theme</label>
+                        <input
+                            type="text"
+                            placeholder="e.g., Machine Learning"
+                            value={theme}
+                            onChange={(e) => setTheme(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={mandatoryLabelStyle}>Description</label>
+                        <textarea
+                            placeholder="Provide a brief overview of the event, main topics, and target audience"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            required
+                            rows={3}
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={mandatoryLabelStyle}>Organization</label>
+                        <input
+                            type="text"
+                            placeholder="e.g., University of Algarve"
+                            value={organization}
+                            onChange={(e) => setOrganization(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={mandatoryLabelStyle}>Location</label>
+                        <input
+                            type="text"
+                            placeholder="e.g., Main Auditorium, Building C"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={mandatoryLabelStyle}>Start Date</label>
+                        <input
+                            type="datetime-local"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={mandatoryLabelStyle}>End Date</label>
+                        <input
+                            type="datetime-local"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div className={buttonsDivStyle}>
+                        <button type="submit" className={submitButtonStyle}>
+                            Create Event
+                        </button>
+                    </div>
+
+                    {message && isError && (
+                        <p className={errorMessageStyle}>
+                            {message}
+                        </p>
+                    )}
+                </form>
+            </div>
         );
     }
 }

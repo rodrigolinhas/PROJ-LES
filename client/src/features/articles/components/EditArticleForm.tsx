@@ -69,7 +69,7 @@ export default function EditArticleForm({ eventId, activityId, articleId }: Prop
                     });
                 } else {
                     setIsError(true);
-                    setMessage(await response.text());
+                    setMessage("Failed to load article data");
                 }
             } catch {
                 setIsError(true);
@@ -109,8 +109,11 @@ export default function EditArticleForm({ eventId, activityId, articleId }: Prop
             });
 
             if (response.status === 200) {
-                setMessage("Article updated!");
+                setMessage("Article updated successfully!");
                 setIsError(false);
+            } else if (response.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
             } else {
                 setMessage(await response.text());
                 setIsError(true);

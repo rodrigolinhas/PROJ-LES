@@ -80,7 +80,7 @@ func UserInfoEdit(c *gin.Context) {
 	if email != "" {
 		ok, _ := regexp.MatchString(models.EmailRegex, email)
 		if !ok {
-			c.String(http.StatusInternalServerError, "Invalid Email")
+			c.String(http.StatusBadRequest, "Invalid email format")
 			return
 		}
 		user.Email = email
@@ -88,7 +88,7 @@ func UserInfoEdit(c *gin.Context) {
 	if password != "" {
 		hashedPass, err := utils.HashPassword(password)
 		if err != nil {
-			c.String(http.StatusInternalServerError, "Error hashing password")
+			c.String(http.StatusInternalServerError, "Failed to update password")
 			return
 		}
 		user.HashedPassword = hashedPass
@@ -96,9 +96,52 @@ func UserInfoEdit(c *gin.Context) {
 
 	res := db.DB.Save(&user)
 	if res.Error != nil {
-		c.String(http.StatusInternalServerError, "Error updating user")
+		c.String(http.StatusInternalServerError, "Failed to update user information")
 		return
 	}
 
-	c.String(http.StatusOK, "User info updated")
+	c.String(http.StatusOK, "User information updated successfully")
+}
+
+// UserSearch
+// @Summary     Search users
+// @Description Search for users by email or name
+// @Tags        User
+// @Produce     json
+// @Param       query query string true "Search query (name or email)"
+// @Param       X-CSRF-Token header string true "CSRF Token"
+// @Success     200 {array} UserInfo
+// @Failure     400 {string} string "Missing query parameter"
+// @Failure     401 {string} string "Unauthorized"
+// @Router      /user/search [get]
+func UserSearch(c *gin.Context) {
+	_, err := Authorize(c)
+	if err != nil {
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	query := c.Query("query")
+	if query == "" {
+		c.String(http.StatusBadRequest, "Missing query parameter")
+		return
+	}
+
+	var users []models.User
+	like := "%" + query + "%"
+	db.DB.Where("first_name LIKE ? OR last_name LIKE ? OR email LIKE ?", like, like, like).
+		Limit(20).
+		Find(&users)
+
+	var results []UserInfo
+	for _, u := range users {
+		results = append(results, UserInfo{
+			ID:        u.ID,
+			FirstName: u.FirstName,
+			LastName:  u.LastName,
+			Email:     u.Email,
+		})
+	}
+
+	c.JSON(http.StatusOK, results)
 }

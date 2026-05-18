@@ -2,6 +2,16 @@ import { useEffect, useState } from "react";
 import DeleteActivityButton from "./DeleteActivityButton";
 import { Link } from "react-router-dom";
 import { getCookie } from "@/shared/utils/getCookie.ts"
+import {
+    backDivStyle,
+    backLinkStyle, buttonsDivStyle,
+    descriptionStyle, errorMessageStyle,
+    goHomeStyle, inputStyle, labelStyle,
+    mainDivStyle, submitButtonStyle,
+    successDivStyle,
+    successMessageStyle,
+    successOutDivStyle, titleStyle
+} from "@/shared/styles/formStyles.ts";
 
 type Props = {
     eventId: number;
@@ -23,7 +33,6 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
     const [isError, setIsError] = useState(false);
     const [deleted, setDeleted] = useState(false);
 
-    // 🔹 LOAD ACTIVITY
     useEffect(() => {
         async function fetchActivity() {
             const csrfToken = getCookie("csrf_token") || "";
@@ -55,7 +64,6 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
         fetchActivity();
     }, [eventId, activityID]);
 
-    // 🔹 EDIT ACTIVITY
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
@@ -84,8 +92,11 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
             );
 
             if (res.status === 200) {
-                setMessage("Activity updated!");
+                setMessage("Activity updated successfully!");
                 setIsError(false);
+            } else if (res.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
             } else {
                 setMessage(await res.text());
                 setIsError(true);
@@ -96,14 +107,13 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
         }
     }
 
-    // 🔹 AFTER DELETE
     if (deleted) {
         return (
-            <div>
-                <h2>Activity deleted successfully!</h2>
-                <Link to={`/event/${eventId}`}>
-                    Back to Event
-                </Link>
+            <div className={successOutDivStyle}>
+                <div className={successDivStyle}>
+                    <h2 className={successMessageStyle}>Activity deleted successfully!</h2>
+                    <Link to ={`/event/${eventId}/activity/list`} className={goHomeStyle}>Back to Activities</Link>
+                </div>
             </div>
         );
     }
@@ -111,69 +121,105 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
     if (!activity) return <p>Loading...</p>;
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Edit Activity</h2>
+        <div className={mainDivStyle}>
+            <div>
+                <h2 className={titleStyle}>✎ Edit Activity</h2>
+                <p className={descriptionStyle}>
+                    Edit the activity fields you want to change.
+                </p>
+            </div>
 
-            <label>Name</label>
-            <input
-                value={activity.Name}
-                onChange={(e) =>
-                    setActivity({ ...activity, Name: e.target.value })
-                }
-                required
-            />
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label className={labelStyle}>Name</label>
+                    <input
+                        type="text"
+                        placeholder="e.g., Presentation"
+                        value={activity.Name}
+                        onChange={(e) =>
+                            setActivity({ ...activity, Name: e.target.value })
+                        }
+                        required
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label>Description</label>
-            <textarea
-                value={activity.Description}
-                onChange={(e) =>
-                    setActivity({ ...activity, Description: e.target.value })
-                }
-                required
-            />
+                <div>
+                    <label className={labelStyle}>Description</label>
+                    <textarea
+                        placeholder="Provide a brief overview of the activity"
+                        value={activity.Description}
+                        onChange={(e) =>
+                            setActivity({ ...activity, Description: e.target.value })
+                        }
+                        required
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label>Start Date</label>
-            <input
-                type="datetime-local"
-                value={activity.StartDate.slice(0, 16)}
-                onChange={(e) =>
-                    setActivity({ ...activity, StartDate: e.target.value })
-                }
-                required
-            />
+                <div>
+                    <label className={labelStyle}>Location</label>
+                    <input
+                        type="text"
+                        placeholder="e.g., Main Auditorium, Building C"
+                        value={activity.Place}
+                        onChange={(e) =>
+                            setActivity({ ...activity, Place: e.target.value })
+                        }
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label>End Date</label>
-            <input
-                type="datetime-local"
-                value={activity.EndDate.slice(0, 16)}
-                onChange={(e) =>
-                    setActivity({ ...activity, EndDate: e.target.value })
-                }
-                required
-            />
+                <div>
+                    <label className={labelStyle}>Start Date</label>
+                    <input
+                        type="datetime-local"
+                        value={activity.StartDate.slice(0, 16)}
+                        onChange={(e) =>
+                            setActivity({ ...activity, StartDate: e.target.value })
+                        }
+                        required
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label>Location</label>
-            <input
-                value={activity.Place}
-                onChange={(e) =>
-                    setActivity({ ...activity, Place: e.target.value })
-                }
-            />
+                <div>
+                    <label className={labelStyle}>End Date</label>
+                    <input
+                        type="datetime-local"
+                        value={activity.EndDate.slice(0, 16)}
+                        onChange={(e) =>
+                            setActivity({ ...activity, EndDate: e.target.value })
+                        }
+                        required
+                        className={inputStyle}
+                    />
+                </div>
 
-            <button type="submit">Save</button>
+                <div className={buttonsDivStyle}>
+                    <button type = "submit" className={submitButtonStyle}>
+                        Save Changes
+                    </button>
 
-            <p className={isError ? "error" : "success"}>
-                {message}
-            </p>
+                    <DeleteActivityButton
+                        eventId={eventId}
+                        activityID={activityID}
+                        onDeleted={() => setDeleted(true)}
+                    />
+                </div>
 
-            <hr />
+                {message && isError && (
+                    <p className={errorMessageStyle}>
+                        {message}
+                    </p>
+                )}
 
-            <DeleteActivityButton
-                eventId={eventId}
-                activityID={activityID}
-                onDeleted={() => setDeleted(true)}
-            />
-            <Link to={`/event/${eventId}/activity/view/${activityID}`}>Back</Link>
-        </form>
+                <div className={backDivStyle}>
+                    <Link to={`/event/${eventId}/activity/view/${activityID}`}  className={backLinkStyle}>
+                        ↶ Back to Activity
+                    </Link>
+                </div>
+            </form>
+        </div>
     );
 }

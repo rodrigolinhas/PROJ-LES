@@ -1,5 +1,6 @@
 import { envHostBackend } from '@/shared/utils/env';
 import { useState } from 'react';
+import {deleteButtonStyle} from "@/shared/styles/formStyles.ts";
 
 function getCookie(name: string) {
     const value = "; " + document.cookie;
@@ -18,7 +19,7 @@ export default function DeleteEventButton(props: any) {
     let eventID: number = props.eventID
     let setEventDeleted = props.setEventDeleted
 
-    const [title, setTitle] = useState("Delete Event");
+    const [title, setTitle] = useState("🗑 Delete Event");
 
     async function handleClick() {
         const csrfToken = getCookie("csrf_token") || "";
@@ -40,6 +41,9 @@ export default function DeleteEventButton(props: any) {
                 setTitle("Event Deleted!");
                 setEventDeleted(true)
             }
+            else if (response.status === 401) {
+                setTitle("Your session has expired. Please log in again.");
+            }
             else {
                 const errorText = await response.text();
                 setTitle(errorText);
@@ -53,6 +57,7 @@ export default function DeleteEventButton(props: any) {
     return (
         <div>
             <button
+                className={deleteButtonStyle}
                 type='button'
                 onClick={handleClick}
             >

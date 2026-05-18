@@ -30,10 +30,21 @@ export default function AccountAuthForm() {
             });
 
             if (response.status === 200) {
+                setMessage("Successfully logged in!");
                 setIsError(false);
                 localStorage.setItem("userEmail", email);
                 navigate("/home");
-            } else {
+            }
+            else if (response.status === 401) {
+                const errorText = await response.text();
+                if (errorText.includes("SSO")) {
+                    setMessage(errorText);
+                } else {
+                    setMessage("Incorrect email or password. Please try again.");
+                }
+                setIsError(true);
+            }
+            else {
                 const errorText = await response.text();
                 setMessage(errorText);
                 setIsError(true);

@@ -30,7 +30,7 @@ type TagResponse struct {
 func GetTags(c *gin.Context) {
 	_, err := Authorize(c)
 	if err != nil {
-		c.String(http.StatusUnauthorized, "Invalid credentials")
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -75,7 +75,7 @@ func GetTags(c *gin.Context) {
 func ArticleAddTags(c *gin.Context) {
 	user, err := Authorize(c)
 	if err != nil {
-		c.String(http.StatusUnauthorized, "Invalid credentials")
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -168,7 +168,7 @@ func ArticleAddTags(c *gin.Context) {
 func ArticleRemoveTags(c *gin.Context) {
 	user, err := Authorize(c)
 	if err != nil {
-		c.String(http.StatusUnauthorized, "Invalid credentials")
+		c.String(http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 

@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { getCookie } from "@/shared/utils/getCookie.ts";
 import { envHostBackend } from '@/shared/utils/env';
+import {deleteButtonStyle} from "@/shared/styles/formStyles.ts";
 
 export default function DeleteRegTypeButton(props: any) {
     let eventID: number = props.eventID;
     let regTypeID: number = props.regTypeID;
     let setRegTypeDeleted = props.setRegTypeDeleted;
 
-    const [title, setTitle] = useState("Delete Registration Type");
+    const [title, setTitle] = useState("🗑 Delete Registration Type");
 
     async function handleClick() {
         const confirmDelete = window.confirm("Are you sure you want to delete this registration type?");
@@ -33,6 +34,8 @@ export default function DeleteRegTypeButton(props: any) {
             if (response.status === 200) {
                 setTitle("Registration Type Deleted!");
                 setRegTypeDeleted(true)
+            } else if (response.status === 401) {
+                setTitle("Your session has expired. Please log in again.");
             } else {
                 setTitle(await response.text());
             }
@@ -45,6 +48,7 @@ export default function DeleteRegTypeButton(props: any) {
     return (
         <div>
             <button
+                className={deleteButtonStyle}
                 type='button'
                 onClick={handleClick}
             >

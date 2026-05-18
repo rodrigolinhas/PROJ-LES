@@ -2,6 +2,15 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { envHostBackend } from '@/shared/utils/env';
 import { getCookie } from "@/shared/utils/getCookie";
+import {
+    buttonsDivStyle,
+    descriptionStyle, errorMessageStyle,
+    goHomeStyle, inputStyle, labelStyle,
+    mainDivStyle, mandatoryLabelStyle, submitButtonStyle,
+    successDivStyle,
+    successMessageStyle,
+    successOutDivStyle, titleStyle
+} from "@/shared/styles/formStyles.ts";
 
 export default function CreateRegTypeForm(props: any) {
     let eventID: string = props.eventID;
@@ -46,6 +55,12 @@ export default function CreateRegTypeForm(props: any) {
                 setMessage("Registration Type created successfully!");
                 setIsError(false);
                 setCreated(true);
+            } else if (res.status === 401) {
+                setMessage("Your session has expired. Please log in again.");
+                setIsError(true);
+            } else if (res.status === 409) {
+                setMessage("A registration type with this name already exists for this event. Please choose a different name.");
+                setIsError(true);
             } else {
                 setMessage(await res.text());
                 setIsError(true);
@@ -59,61 +74,85 @@ export default function CreateRegTypeForm(props: any) {
 
     if (created) {
         return (
-            <div style={{ textAlign: "center", margin: "100px" }}>
-                <h2 style={{ color: "green" }}>Registration Type created successfully!</h2>
-                <Link to={`/event/edit/${eventID}`}>Back to Edit Event</Link>
+            <div className={successOutDivStyle}>
+                <div className={successDivStyle}>
+                    <h2 className={successMessageStyle}>Registration Type created successfully!</h2>
+                    <Link to ={`/event/edit/${eventID}`} className={goHomeStyle}>Back to Edit Event</Link>
+                </div>
             </div>
         );
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Create Registration Type</h2>
+        <div className={mainDivStyle}>
+            <div>
+                <h2 className={titleStyle}>+ Create Registration Type</h2>
+                <p className={descriptionStyle}>
+                    Fill the fields bellow to create a new registration type for this event.
+                </p>
+            </div>
 
-            <label className="required">Name</label>
-            <input
-                type="text"
-                placeholder="e.g. VIP Pass"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-            />
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label className={mandatoryLabelStyle}>Name</label>
+                    <input
+                        type="text"
+                        placeholder="e.g. VIP Pass"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label className="required">Description</label>
-            <textarea
-                placeholder="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-            />
+                <div>
+                    <label className={mandatoryLabelStyle}>Description</label>
+                    <textarea
+                        placeholder="Provide a brief overview of this registration type"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label className="required">Price (€)</label>
-            <input
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="Price(€)"
-                value={price}
-                onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
-                required
-            />
+                <div>
+                    <label className={mandatoryLabelStyle}>Price (€)</label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder="e.g., 10€"
+                        value={price}
+                        onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
+                        required
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label>Benefits (comma-separated)</label>
-            <input
-                type="text"
-                placeholder="e.g. 'Lunch, Wi-Fi Access'"
-                value={benefits.join(",")}
-                onChange={(e) => setBenefits(e.target.value.split(","))}
-            />
+                <div>
+                    <label className={labelStyle}>Benefits (comma-separated)</label>
+                    <input
+                        type="text"
+                        placeholder="e.g. 'Lunch, Wi-Fi Access'"
+                        value={benefits.join(",")}
+                        onChange={(e) => setBenefits(e.target.value.split(","))}
+                        className={inputStyle}
+                    />
+                </div>
 
-            <button type="submit">Create Registration Type</button>
+                <div className={buttonsDivStyle}>
+                    <button type="submit" className={submitButtonStyle}>
+                        Create Registration Type
+                    </button>
+                </div>
 
-            <p className={isError ? "error" : "success"}>
-                {message}
-            </p>
-
-            <hr />
-            <Link to={`/event/edit/${eventID}`}>Back to Edit Event</Link>
-        </form>
+                {message && isError && (
+                    <p className={errorMessageStyle}>
+                        {message}
+                    </p>
+                )}
+            </form>
+        </div>
     );
 }

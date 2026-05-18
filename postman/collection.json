@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "4c66920a-2c78-4f89-a938-976364f986be",
+    "_postman_id": "9b00181a-18c7-4c94-a03c-3ced91d21f78",
     "name": "00 - LES API (Runner)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "52830737",
-    "_collection_link": "https://go.postman.co/collection/52830737-4c66920a-2c78-4f89-a938-976364f986be?source=collection_link"
+    "_exporter_id": "52499161",
+    "_collection_link": "https://go.postman.co/collection/52499161-9b00181a-18c7-4c94-a03c-3ced91d21f78?source=collection_link"
   },
   "item": [
     {
@@ -237,7 +237,7 @@
                   "});\r",
                   "\r",
                   "pm.test(\"UserLogout -> success message\", function () {\r",
-                  "  pm.expect(pm.response.text()).to.include(\"Log out with success\");\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Logged out successfully\");\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -729,7 +729,7 @@
                   "});\r",
                   "\r",
                   "pm.test(\"Edit Event -> success message\", function () {\r",
-                  "  pm.expect(pm.response.text()).to.include(\"Event edited successfully\");\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event updated successfully\");\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -972,7 +972,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/event/{{event_id}}/activity/list",
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/list?eventID={{event_id}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -981,6 +981,136 @@
                 "{{event_id}}",
                 "activity",
                 "list"
+              ],
+              "query": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activity_view",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"View Activity -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const activity = pm.response.json();",
+                  "",
+                  "pm.test(\"Correct activity returned\", function () {",
+                  "  pm.expect(activity.ID).to.eql(Number(pm.environment.get(\"activity_id\")));",
+                  "  pm.expect(activity.Name).to.eql(pm.environment.get(\"activity_name\"));",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/view/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "view",
+                "{{activity_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activity_edit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Edit Activity -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Edit Activity -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Activity updated\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "{{activity_name}}_edited",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Edited description",
+                  "type": "text"
+                },
+                {
+                  "key": "startDate",
+                  "value": "{{event_start}}",
+                  "type": "text"
+                },
+                {
+                  "key": "endDate",
+                  "value": "{{event_end}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/edit/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "edit",
+                "{{activity_id}}"
               ]
             }
           },
@@ -1467,6 +1597,100 @@
           "response": []
         },
         {
+          "name": "activity_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Delete Activity -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Delete Activity -> success message\", function () {",
+                  "  pm.expect(pm.response.text()).to.include(\"Activity deleted\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "eventID",
+                  "value": "{{event_id}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/delete/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "delete",
+                "{{activity_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "activity_view_after_delete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deleted activity cannot be viewed\", function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/{{event_id}}/activity/view/{{activity_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "{{event_id}}",
+                "activity",
+                "view",
+                "{{activity_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "event_publish",
           "event": [
             {
@@ -1478,7 +1702,7 @@
                   "});\r",
                   "\r",
                   "pm.test(\"Publish Event -> success message\", function () {\r",
-                  "  pm.expect(pm.response.text()).to.include(\"Event published with success\");\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event published successfully\");\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -1606,7 +1830,7 @@
                   "});\r",
                   "\r",
                   "pm.test(\"Delete Event -> success message\", function () {\r",
-                  "  pm.expect(pm.response.text()).to.include(\"Event deleted with success\");\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event deleted successfully\");\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -1932,6 +2156,12 @@
                   "value": "{{regtype_price}}",
                   "type": "text",
                   "uuid": "7553a344-9975-49f2-a085-faf46b95d2cd"
+                },
+                {
+                  "key": "benefits",
+                  "value": "{{benefits}}",
+                  "type": "text",
+                  "uuid": "034bdee9-43a5-4834-a623-26a86896ac36"
                 }
               ]
             },
@@ -2006,65 +2236,6 @@
                 "view",
                 "{{event_id}}",
                 "regtypes"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "regtype_view",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"View RegType -> 200\", function () {",
-                  "  pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "if (pm.response.code === 200) {",
-                  "  const regtype = pm.response.json();",
-                  "",
-                  "  pm.test(\"RegType object has correct properties\", function () {",
-                  "    pm.expect(regtype).to.be.an(\"object\");",
-                  "    pm.expect(regtype).to.have.property(\"ID\");",
-                  "    pm.expect(regtype).to.have.property(\"Name\");",
-                  "    pm.expect(regtype).to.have.property(\"Description\");",
-                  "    pm.expect(regtype).to.have.property(\"Price\");",
-                  "    pm.expect(regtype).to.have.property(\"Benefits\");",
-                  "  });",
-                  "",
-                  "  pm.test(\"Fetched RegType matches environment ID\", function () {",
-                  "    pm.expect(regtype.ID).to.eql(Number(pm.environment.get(\"regtype_id\")));",
-                  "  });",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/event/view/{{event_id}}/regtype/{{regtype_id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "event",
-                "view",
-                "{{event_id}}",
-                "regtype",
-                "{{regtype_id}}"
               ]
             }
           },
@@ -2379,9 +2550,9 @@
                 },
                 {
                   "key": "benefits",
-                  "value": "{{regtype_benefits}}",
+                  "value": "{{benefits}}",
                   "type": "text",
-                  "uuid": "af295fc2-9ead-43eb-9625-0ecb5061fb36"
+                  "uuid": "bedda50c-95b0-4092-9972-80f6b73ca85e"
                 }
               ]
             },
@@ -2465,6 +2636,74 @@
           "response": []
         },
         {
+          "name": "regtype_benefits",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Benefits list -> 200\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  const res = pm.response.json();",
+                  "",
+                  "  pm.test(\"Benefits list -> returns array\", function () {",
+                  "    pm.expect(res).to.be.an(\"array\");",
+                  "  });",
+                  "",
+                  "  pm.test(\"Benefits list -> array is not empty\", function () {",
+                  "    pm.expect(res.length).to.be.greaterThan(0);",
+                  "  });",
+                  "",
+                  "  const expectedRaw = pm.environment.get(\"benefits\");",
+                  "",
+                  "  if (expectedRaw) {",
+                  "    const expected = expectedRaw",
+                  "      .split(\",\")",
+                  "      .map(b => b.trim())",
+                  "      .filter(Boolean);",
+                  "",
+                  "    pm.test(\"Benefits list -> contains expected benefits\", function () {",
+                  "      expected.forEach(b => {",
+                  "        pm.expect(res).to.include(b);",
+                  "      });",
+                  "    });",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/view/{{event_id}}/benefits",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "event",
+                "view",
+                "{{event_id}}",
+                "benefits"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "event_publish_forTestsRegistration",
           "event": [
             {
@@ -2476,7 +2715,7 @@
                   "});\r",
                   "\r",
                   "pm.test(\"Publish Event -> success message\", function () {\r",
-                  "  pm.expect(pm.response.text()).to.include(\"Event published with success\");\r",
+                  "  pm.expect(pm.response.text()).to.include(\"Event published successfully\");\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -2804,190 +3043,6 @@
               "path": [
                 "event",
                 "pay"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "login_toSee_event_participants",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Login -> 200\", function () {\r",
-                  "  pm.response.to.have.status(200);\r",
-                  "});\r",
-                  "\r",
-                  "const setCookies = pm.response.headers.all()\r",
-                  "  .filter(h => h.key.toLowerCase() === \"set-cookie\")\r",
-                  "  .map(h => h.value);\r",
-                  "\r",
-                  "function getCookieValue(name) {\r",
-                  "  const row = setCookies.find(v => v.startsWith(name + \"=\"));\r",
-                  "  if (!row) return null;\r",
-                  "  return row.split(\";\")[0].substring(name.length + 1);\r",
-                  "}\r",
-                  "\r",
-                  "const csrf = getCookieValue(\"csrf_token\");\r",
-                  "pm.test(\"CSRF cookie veio no login\", function () {\r",
-                  "  pm.expect(csrf).to.not.be.null;\r",
-                  "});\r",
-                  "\r",
-                  "if (csrf) {\r",
-                  "  pm.environment.set(\"csrfToken\", csrf);\r",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            },
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "urlencoded",
-              "urlencoded": [
-                {
-                  "key": "email",
-                  "value": "{{email}}",
-                  "type": "text",
-                  "uuid": "c80fe009-1824-4fbb-9344-5904aadacce6"
-                },
-                {
-                  "key": "pass",
-                  "value": "{{password}}",
-                  "type": "text",
-                  "uuid": "ade1d20b-d44e-45da-9998-a21b71452b1e"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/user/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "user",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "event_participants_list",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Event participants list -> 200 and valid response\", function () {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "\r",
-                  "    const participants = pm.response.json();\r",
-                  "\r",
-                  "    pm.expect(participants).to.be.an(\"array\");\r",
-                  "    pm.expect(participants.length).to.be.greaterThan(0);\r",
-                  "\r",
-                  "    pm.expect(participants[0]).to.have.property(\"ID\");\r",
-                  "    pm.expect(participants[0]).to.have.property(\"FirstName\");\r",
-                  "    pm.expect(participants[0]).to.have.property(\"LastName\");\r",
-                  "    pm.expect(participants[0]).to.have.property(\"Email\");\r",
-                  "    pm.expect(participants[0]).to.have.property(\"Confirmed\");\r",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/event/view/{{event_id}}/participants",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "event",
-                "view",
-                "{{event_id}}",
-                "participants"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "event_beneficiaries_list",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Event participants list -> 200 and valid response\", function () {\r",
-                  "    pm.response.to.have.status(200);\r",
-                  "\r",
-                  "    const participants = pm.response.json();\r",
-                  "\r",
-                  "    pm.expect(participants).to.be.an(\"array\");\r",
-                  "    pm.expect(participants.length).to.be.greaterThan(0);\r",
-                  "\r",
-                  "    pm.expect(participants[0]).to.have.property(\"ID\");\r",
-                  "    pm.expect(participants[0]).to.have.property(\"FirstName\");\r",
-                  "    pm.expect(participants[0]).to.have.property(\"LastName\");\r",
-                  "    pm.expect(participants[0]).to.have.property(\"Email\");\r",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "X-CSRF-Token",
-                "value": "{{csrfToken}}",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/event/view/{{event_id}}/benefit_participants/{{benefit_id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "event",
-                "view",
-                "{{event_id}}",
-                "benefit_participants",
-                "{{benefit_id}}"
               ]
             }
           },
