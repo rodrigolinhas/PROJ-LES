@@ -110,10 +110,10 @@ export default function ActivitiesList({ eventId }: Props) {
     }
 
     return (
-        <div className="py-6">
+        <div>
             {/* Section header */}
             <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Activities</h2>
+                <h2>Activities</h2>
                 {activities && activities.length > 0 && (
                     <button
                         onClick={handleExportCSV}

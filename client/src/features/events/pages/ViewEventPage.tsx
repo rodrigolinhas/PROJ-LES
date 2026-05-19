@@ -5,6 +5,8 @@ import RegTypesList from "../regtypes/components/RegTypesList.tsx";
 import { envHostBackend } from "@/shared/utils/env";
 import { useUserID } from "@/shared/hooks/useUserID";
 import ActivitiesList from "../activities/components/ActivitiesList.tsx";
+import { mainDivStyle } from "@/shared/styles/formStyles.ts";
+import TopBar from "@/shared/components/TopBar.tsx";
 
 type EventDetails = {
     ID: number;
@@ -62,7 +64,9 @@ export default function ViewEventPage() {
     if (!event) return null;
 
     return (
-        <div className="m-auto max-w-[80%] border-3 p-5 rounded-xl bg-white">
+        <>
+        <TopBar />
+        <div className={mainDivStyle + "m-auto max-w-[80%]! bg-white shadow-xl"}>
             <h1 className="text-4xl my-2">{event.Name}</h1>
             { !event.Published &&
                 <span className="italic">(Unpublished)</span>
@@ -73,27 +77,30 @@ export default function ViewEventPage() {
             <p>Takes place in <strong>{event.Location}</strong></p>
             <p><i>Organized by {event.Organization}</i></p>
 
-            <hr />
+            <hr className="text-gray-400"/>
                 <RegTypesList eventId={id!} organizer={userID == event.OrganizerID} published={event.Published}/>
-            <hr />
+            <hr className="text-gray-400"/>
                 <ActivitiesList eventId={Number.parseInt(id!) || 0} />
-            <hr />
+            <hr className="text-gray-400"/>
 
             {/*TODO: Turn this into a style in order to remove repetition*/}
             <div className="flex">
-            <Link className="mr-3 mt-5 w-10 text-center block items-center gap-2 rounded-md bg-black px-5 py-3 text-white" to="/events">Back</Link>
+            <Link className="mr-3 mt-5 w-10 text-center block items-center gap-2 rounded-md bg-gray-900 hover:bg-gray-700 transition-colors px-5 py-3 text-white" to="/events">Back</Link>
             {event.OrganizerID == userID &&
-                <Link className="mr-3 mt-5 w-20 border-2 text-center block items-center gap-2 rounded-md bg-white px-5 py-3 text-black" to={`/event/edit/${event.ID}`}>
+                <>
+                <Link className={"mr-3 mt-5 w-20 border border-gray-300 shadow-sm text-center block items-center gap-2 rounded-md bg-white hover:bg-gray-50 transition-colors px-5 py-3 text-gray-700"} to={`/event/edit/${event.ID}`}>
                     Edit Event
                 </Link>
+                <Link className="mr-3 mt-5 w-35 border border-gray-300 shadow-sm text-center block items-center gap-2 rounded-md bg-white hover:bg-gray-50 transition-colors px-5 py-3 text-gray-700" to={`/event/${event.ID}/participants`}>
+                    View Participants
+                </Link>
+                </>
             }
-            <Link className="mr-3 mt-5 w-35 border-2 text-center block items-center gap-2 rounded-md bg-white px-5 py-3 text-black" to={`/event/${event.ID}/participants`}>
-                View Participants
-            </Link>
-            <Link className="mr-3 mt-5 w-35 border-2 text-center block items-center gap-2 rounded-md bg-white px-5 py-3 text-black" to={`/event/${event.ID}/benefits`}>
+            <Link className="mr-3 mt-5 w-35 border border-gray-300 shadow-sm text-center block items-center gap-2 rounded-md bg-white hover:bg-gray-50 transition-colors px-5 py-3 text-gray-700" to={`/event/${event.ID}/benefits`}>
                 View All Benefits
             </Link>
             </div>
         </div>
+        </>
     );
 }

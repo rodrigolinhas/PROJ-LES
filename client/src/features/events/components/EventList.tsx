@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getCookie } from "../../../shared/utils/getCookie";
+import { ArrowRight, Clock, MapPin } from "lucide-react";
 
 /** Minimal event representation returned by the listing endpoints. */
 type ShortEvent = {
@@ -103,9 +104,9 @@ export default function EventList({
                     placeholder="Filter by event name"
                     value={draftFilter}
                     onChange={(e) => setDraftFilter(e.target.value)}
-                    className="flex-1 rounded-md border-black border-2 border-solid"
+                    className="flex-1 rounded-md border-gray-900 border border-solid"
                 />
-                <button type="submit" className="flex-none w-20 bg-black text-white border-0 rounded-md">Search</button>
+                <button type="submit" className="flex-none w-20 bg-gray-900 hover:bg-gray-700 transition-colors text-white border-0 rounded-md">Search</button>
             </form>
 
             {loading && <p>Loading events...</p>}
@@ -115,18 +116,18 @@ export default function EventList({
             {!loading && !error && events.length > 0 && (
                 <div className="my-4">
                     {events.map((event) => (
-                        <Link className="block mt-3 border p-2 rounded-lg w-fit no-underline text-black" to={`/event/${event.ID}`}>
-                            <strong className="text-2xl">{event.Name}</strong> – {event.Theme}
-                            <br />
-                            <strong>Location:</strong> {event.Location}
-                            <br />
-                            <strong>Date/Time:</strong> {new Date(event.StartDate).toLocaleString()} — {new Date(event.EndDate).toLocaleString()}
-                            {showEditButton && (
-                                <>
-                                    {" "}
-                                    <Link to={`/event/edit/${event.ID}`}>Edit</Link>
-                                </>
-                            )}
+                        <Link className="flex mt-3 rounded-lg w-fit no-underline text-black group items-center gap-4 bg-gray-50 hover:bg-white border border-gray-200 hover:border-gray-300 p-4 transition-all duration-200 hover:shadow-sm" to={`/event/${event.ID}`}>
+                            <div className="flex-wrap items-center gap-1 text-gray-400">
+                                <div><strong className="text-2xl text-gray-900">{event.Name}</strong> – {event.Theme}</div>
+                                <div className="flex flex-wrap items-center gap-3 mt-1">
+                                <span><MapPin size={15} /> {event.Location}</span>
+                                <span><Clock size={15} /> {new Date(event.StartDate).toLocaleString()} — {new Date(event.EndDate).toLocaleString()}</span>
+                                </div>                                
+                            </div>
+                            <ArrowRight
+                                size={16}
+                                className="text-gray-300 group-hover:text-gray-500 shrink-0 transition-colors"
+                            />
                         </Link>
                     ))}
                 </div>

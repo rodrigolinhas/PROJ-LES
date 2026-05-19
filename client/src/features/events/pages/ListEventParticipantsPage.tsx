@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getCookie } from "../../../shared/utils/getCookie";
 import { envHostBackend } from "@/shared/utils/env";
+import TopBar from "@/shared/components/TopBar";
+import { mainDivStyle } from "@/shared/styles/formStyles";
 
 type EventParticipant = {
     ID: number;
@@ -85,7 +87,9 @@ export default function ListEventParticipantsPage() {
     if (error) return <p className="error">{error}</p>;
 
     return (
-        <div className="m-auto max-w-[80%] border-3 p-5 rounded-xl bg-white">
+        <>
+        <TopBar />
+        <div className={mainDivStyle + " m-auto max-w-[80%]! p-5 rounded-xl bg-white"}>
             <h2 className="mt-2">Participants</h2>
 
             {participants.length === 0 ? (
@@ -100,10 +104,11 @@ export default function ListEventParticipantsPage() {
                 </ul>
             )}
 
-            <Link className="mr-3 mt-5 w-30 text-center items-center gap-2 rounded-md bg-black px-5 py-3 text-white" to={`/event/${id}`}>Back to Event</Link>
-            <button onClick={handleExportCSV} className="my-2 w-40 border-2 border-black gap-2 rounded-md bg-white px-5 py-3 text-black">
+            <Link className="mr-3 mt-5 w-30 text-center items-center gap-2 rounded-md bg-gray-900 hover:bg-gray-700 transition-colors px-5 py-3 text-white" to={`/event/${id}`}>Back to Event</Link>
+            <button onClick={handleExportCSV} className="my-2 w-40 border border-gray-300 hover:bg-gray-50 shadow-sm transition-colors gap-2 rounded-md bg-white px-5 py-3 text-gray-700">
                 Export as CSV
             </button>
         </div>
+        </>
     );
 }
