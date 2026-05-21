@@ -48,7 +48,7 @@ export default function DeleteArticleButton({ articleID, onDeleted }: Props) {
     return (
         <>
             <button type="button" onClick={handleDelete} disabled={loading}>
-                {loading ? "Deleting..." : "Delete Article"}
+                {loading ? "Deleting..." : "🗑 Delete Article"}
             </button>
             {error && <p className="error">{error}</p>}
         </>

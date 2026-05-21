@@ -3,6 +3,16 @@ import { Link } from "react-router-dom";
 import { getCookie } from "@/shared/utils/getCookie.ts";
 import DeleteArticleButton from "../components/DeleteArticleButton";
 import {envHostBackend} from "@/shared/utils/env.ts";
+import {
+    backDivStyle, backLinkStyle,
+    buttonsDivStyle,
+    descriptionStyle, errorMessageStyle,
+    goHomeStyle, inputStyle, labelStyle,
+    mainDivStyle, submitButtonStyle,
+    successDivStyle,
+    successMessageStyle,
+    successOutDivStyle, titleStyle
+} from "@/shared/styles/formStyles.ts";
 
 type Props = {
     eventId: number;
@@ -126,11 +136,11 @@ export default function EditArticleForm({ eventId, activityId, articleId }: Prop
 
     if (deleted) {
         return (
-            <div>
-                <h2>Article deleted successfully!</h2>
-                <Link to={`/event/${eventId}/activity/${activityId}/article/list`}>
-                    Back to Articles
-                </Link>
+            <div className={successOutDivStyle}>
+                <div className={successDivStyle}>
+                    <h2 className={successMessageStyle}>Article deleted successfully!</h2>
+                    <Link to ={`/event/${eventId}/activity/${activityId}/article/list`} className={goHomeStyle}>Back to Articles</Link>
+                </div>
             </div>
         );
     }
@@ -138,65 +148,95 @@ export default function EditArticleForm({ eventId, activityId, articleId }: Prop
     if (!form) return <p>Loading...</p>;
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Edit Article</h2>
+        <div className={mainDivStyle}>
+            <div>
+                <h2 className={titleStyle}>✎ Edit Article</h2>
+                <p className={descriptionStyle}>
+                    Edit the article fields you want to change.
+                </p>
+            </div>
 
-            <label>Title</label>
-            <input
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-                required
-            />
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label className={labelStyle}>Title</label>
+                    <input
+                        value={form.title}
+                        onChange={(e) => setForm({ ...form, title: e.target.value })}
+                        required
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label>First Author ID</label>
-            <input
-                value={form.firstAuthorID}
-                onChange={(e) => setForm({ ...form, firstAuthorID: e.target.value })}
-            />
+                <div>
+                    <label className={labelStyle}>First Author ID</label>
+                    <input
+                        value={form.firstAuthorID}
+                        onChange={(e) => setForm({ ...form, firstAuthorID: e.target.value })}
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label>Publisher</label>
-            <input
-                value={form.publisher}
-                onChange={(e) => setForm({ ...form, publisher: e.target.value })}
-                required
-            />
+                <div>
+                    <label className={labelStyle}>Publisher</label>
+                    <input
+                        value={form.publisher}
+                        onChange={(e) => setForm({ ...form, publisher: e.target.value })}
+                        required
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label>DOI</label>
-            <input
-                value={form.doi}
-                onChange={(e) => setForm({ ...form, doi: e.target.value })}
-            />
+                <div>
+                    <label className={labelStyle}>DOI</label>
+                    <input
+                        value={form.doi}
+                        onChange={(e) => setForm({ ...form, doi: e.target.value })}
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label>ISBN</label>
-            <input
-                value={form.isbn}
-                onChange={(e) => setForm({ ...form, isbn: e.target.value })}
-            />
+                <div>
+                    <label className={labelStyle}>ISBN</label>
+                    <input
+                        value={form.isbn}
+                        onChange={(e) => setForm({ ...form, isbn: e.target.value })}
+                        className={inputStyle}
+                    />
+                </div>
 
-            <label>URL</label>
-            <input
-                value={form.url}
-                onChange={(e) => setForm({ ...form, url: e.target.value })}
-                required
-            />
+                <div>
+                    <label className={labelStyle}>URL</label>
+                    <input
+                        value={form.url}
+                        onChange={(e) => setForm({ ...form, url: e.target.value })}
+                        required
+                        className={inputStyle}
+                    />
+                </div>
 
-            <button type="submit">Save</button>
+                <div className={buttonsDivStyle}>
+                    <button type = "submit" className={submitButtonStyle}>
+                        Save Changes
+                    </button>
 
-            <p className={isError ? "error" : "success"}>
-                {message}
-            </p>
+                    <DeleteArticleButton
+                        articleID={articleId}
+                        onDeleted={() => setDeleted(true)}
+                    />
+                </div>
 
-            <hr />
+                {message && isError && (
+                    <p className={errorMessageStyle}>
+                        {message}
+                    </p>
+                )}
 
-            <DeleteArticleButton
-                articleID={articleId}
-                onDeleted={() => setDeleted(true)}
-            />
-
-            <br />
-            <Link to={`/event/${eventId}/activity/${activityId}/article/view/${articleId}`}>
-                Back
-            </Link>
-        </form>
+                <div className={backDivStyle}>
+                    <Link to={`/event/${eventId}/activity/${activityId}/article/view/${articleId}`} className={backLinkStyle}>
+                        ↶ Back
+                    </Link>
+                </div>
+            </form>
+        </div>
     );
 }
