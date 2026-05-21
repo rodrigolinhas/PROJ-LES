@@ -12,12 +12,17 @@ import (
 	"LES/server/internal/models"
 )
 
+type BenefitInfo struct {
+	ID   uint   `json:"ID" example:"1"`
+	Name string `json:"Name" example:"Lunch"`
+}
+
 type RegistrationType struct {
-	ID          uint     `example:"1"`
-	Name        string   `example:"Pass"`
-	Description string   `example:"Pass Description"`
-	Price       float64  `example:"7.5"`
-	Benefits    []string `example:"[\"Lunch\", \"Wi-Fi Access\"]"`
+	ID          uint    `example:"1"`
+	Name        string  `example:"Pass"`
+	Description string  `example:"Pass Description"`
+	Price       float64 `example:"7.5"`
+	Benefits    []BenefitInfo
 }
 
 func regTypePreface(c *gin.Context) (*models.Event, error) {
@@ -278,12 +283,12 @@ func RegistrationTypeList(c *gin.Context) {
 
 	var response []RegistrationType
 	for _, rt := range regtypes {
-		var benefits []string
+		var benefits []BenefitInfo
 		for _, b := range rt.Benefits {
-			benefits = append(benefits, b.Name)
+			benefits = append(benefits, BenefitInfo{ID: b.ID, Name: b.Name})
 		}
 		if benefits == nil {
-			benefits = []string{}
+			benefits = []BenefitInfo{}
 		}
 
 		response = append(response, RegistrationType{
@@ -438,12 +443,12 @@ func RegistrationTypeView(c *gin.Context) {
 		return
 	}
 
-	var benefits []string
+	var benefits []BenefitInfo
 	for _, b := range rt.Benefits {
-		benefits = append(benefits, b.Name)
+		benefits = append(benefits, BenefitInfo{ID: b.ID, Name: b.Name})
 	}
 	if benefits == nil {
-		benefits = []string{}
+		benefits = []BenefitInfo{}
 	}
 
 	response := RegistrationType{
@@ -472,13 +477,13 @@ type ParticipantInfo struct {
 // @Produce 	json
 // @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
 // @Param 		id				path		string	true	"ID of the event"
-// @Param 		benefitID		path		string	true	"ID of the benefit"
+// @Param 		benefitName		path		string	true	"Name of the benefit"
 // @Success 	200 {array} ParticipantInfo
 // @Failure		401 {string} string "Unauthorized"
 // @Failure		403 {string} string "You are not the organizer of this event"
 // @Failure		404 {string} string "Event not found/No participant found"
 // @Failure		500 {string} string "Failed to query benefit participants"
-// @Router 		/event/view/:id/benefit_participants/:benefitID [get]
+// @Router 		/event/view/:id/benefit_participants/:benefitName [get]
 func EventBenefitParticipants(c *gin.Context) {
 	user, autherr := Authorize(c)
 	if autherr != nil {
@@ -500,12 +505,13 @@ func EventBenefitParticipants(c *gin.Context) {
 		return
 	}
 
-	benefitID := c.Param("benefitID")
+	benefitName := c.Param("benefitName")
 
 	subquery := db.DB.Table("registration_type_benefits").
+		Joins("LEFT OUTER JOIN benefits ON benefit_id = benefits.id").
 		Joins("LEFT OUTER JOIN registration_types ON registration_type_id = registration_types.id").
 		Joins("LEFT OUTER JOIN events ON registration_types.event_id = events.id").
-		Where("event_id = ? AND benefit_id = ?", eventID, benefitID).
+		Where("event_id = ? AND benefits.name = ?", eventID, benefitName).
 		Select("registration_type_id")
 	if subquery.Error != nil {
 		c.String(http.StatusInternalServerError, "Failed to query benefit participants")

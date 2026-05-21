@@ -255,9 +255,9 @@
 			"enabled": true
 		},
 		{
-			"key": "benefit_id",
-			"value": "\"dinner\"",
-			"type": "default",
+			"key": "benefit_name",
+			"value": "",
+			"type": "any",
 			"enabled": true
 		}
 	],

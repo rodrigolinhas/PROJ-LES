@@ -41,6 +41,10 @@ COPY --from=builder /app/servidor .
 # Create the cmd directory to maintain compatibility with the Go code.
 # The app calls godotenv.Load("../.env") which expects to run from a
 # subdirectory — by setting WORKDIR to /app/cmd, "../.env" resolves to /app/.env
+#
+# On first boot the evaluation seeder (seeder.go) populates the SQLite DB
+# with demo data: one user, event, activity, article, etc.
+# Credentials: admin@seeder.com / seeder123 | student@seeder.com / student123
 RUN mkdir -p cmd
 
 EXPOSE 8080
