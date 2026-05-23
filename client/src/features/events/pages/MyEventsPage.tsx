@@ -2,6 +2,8 @@ import {Link} from "react-router-dom";
 import EventList from "../components/EventList";
 import {useUserRole} from "../../../shared/hooks/useUserRole";
 import { useState } from "react";
+import TopBar from "@/shared/components/TopBar";
+import { mainDivStyle, submitButtonStyle } from "@/shared/styles/formStyles";
 
 enum Tabs {
     Published,
@@ -17,23 +19,24 @@ export default function MyEventsPage() {
     const [tab, setTab] = useState(Tabs.Published);
 
     return (
-        // TODO: Add header
+        <>
+        <TopBar />
         <div>
             <h1 className="text-center text-4xl">Events</h1>
             <p className="text-center">Here you can filter published events and also see your own events.</p>
 
             {role === "EventOrganizer" && (
                 <div className="flex items-center content-center mx-auto my-5 w-fit [&_button]:w-45 ">
-                    <button className={"rounded-l-full border-solid border-black " + (tab === Tabs.Published ? "bg-black text-white" : "bg-white text-black")} onClick={() => setTab(Tabs.Published)}>
+                    <button className={"rounded-l-full border-solid border-gray-900 " + (tab === Tabs.Published ? "bg-gray-900 text-white hover:bg-gray-700 transition-colors" : "bg-white text-gray-900 hover:bg-gray-50 transition-colors")} onClick={() => setTab(Tabs.Published)}>
                         Published Events
                     </button>
-                    <button className={"rounded-r-full border-solid border-black " + (tab === Tabs.My ? "bg-black text-white" : "bg-white text-black")} onClick={() => setTab(Tabs.My)}>
+                    <button className={"rounded-r-full border-solid border-gray-900 " + (tab === Tabs.My ? "bg-gray-900 text-white hover:bg-gray-700 transition-colors" : "bg-white text-gray-900 hover:bg-gray-50 transition-colors")} onClick={() => setTab(Tabs.My)}>
                         My Events
                     </button>
                 </div>
             )}
 
-            <div className="max-w-[80%] m-auto rounded-xl p-5 border-3 bg-white">
+            <div className={mainDivStyle + " max-w-[80%]! p-5 bg-white"}>
                 {tab === Tabs.Published && (
                     <EventList
                         title="Published Events"
@@ -52,14 +55,10 @@ export default function MyEventsPage() {
             </div>
 
             {role === "EventOrganizer" && (
-                <Link className="mt-5 mx-auto w-35 text-center block items-center gap-2 rounded-md bg-black px-5 py-3 text-white no-underline" to="/event/create">Create Event</Link>
+                <Link className={submitButtonStyle + "mt-5 mx-auto w-35 text-center block min-w-0!"} to="/event/create">Create Event</Link>
             )}
 
-            {/* TODO: The user should return to the home page through the header instead */}
-            <button>
-                <Link to="/home">Back Home</Link>             
-            </button>
-
         </div>
+        </>
     );
 }

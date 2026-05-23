@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getCookie } from "@/shared/utils/getCookie";
 import { envHostBackend } from "@/shared/utils/env";
+import { mainDivStyle } from "@/shared/styles/formStyles";
+import TopBar from "@/shared/components/TopBar";
 
 type Beneficiary = {
     ID: number
@@ -97,7 +99,9 @@ export default function ListBenefitsPage() {
     if (error) return <p className="error">{error}</p>;
 
     return (
-        <div className="m-auto max-w-[80%] border-3 p-5 pb-8 rounded-xl bg-white">
+        <>
+        <TopBar />
+        <div className={mainDivStyle + " m-auto max-w-[80%]! p-5 pb-8 rounded-xl bg-white"}>
             <h2 className="mt-2">Benefits</h2>
 
             {benefits.length === 0 ? (
@@ -107,7 +111,7 @@ export default function ListBenefitsPage() {
                     {benefits.map((bene) => (
                         <li className="mb-0 h-8 content-center" onMouseEnter={() => setHovered(bene)} onMouseLeave={() => setHovered("")}>
                                 {bene} {bene === hovered && 
-                                    <button onClick={() => handleBeneficiariesCSV(bene)} className="ml-3 w-58 border-2 border-black gap-2 rounded-md bg-white px-2! py-1! text-black">
+                                    <button onClick={() => handleBeneficiariesCSV(bene)} className="ml-3 w-58 border border-gray-300 shadow-sm hover:bg-gray-50 transition-colors gap-2 rounded-md bg-white px-2! py-1! text-gray-700">
                                         Export Beneficiaries as CSV
                                     </button>
                                 }
@@ -116,7 +120,8 @@ export default function ListBenefitsPage() {
                 </ul>
             )}
 
-            <Link className="mr-3 mt-5 w-30 text-center items-center gap-2 rounded-md bg-black px-5 py-3 text-white" to={`/event/${id}`}>Back to Event</Link>
+            <Link className="mr-3 mt-5 w-30 text-center items-center gap-2 rounded-md bg-gray-900 hover:bg-gray-700 transition-colors px-5 py-3 text-white" to={`/event/${id}`}>Back to Event</Link>
         </div>
+        </>
     );
 }

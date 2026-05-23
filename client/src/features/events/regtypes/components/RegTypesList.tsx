@@ -60,10 +60,13 @@ export default function RegTypesList({ eventId, organizer, published }: { eventI
 
             <div className="flex">
                 {(!regTypes || regTypes.length == 0) ? (
-                    <p className="mt-0 mb-2">This event does not have registration types</p>
+                    <div className="text-center py-10 border border-dashed border-gray-200 rounded-xl w-full">
+                        {/*<CalendarDays size={28} className="text-gray-300 mx-auto mb-2" />*/}
+                        <p className="text-sm text-gray-400">This event does not have registration types yet.</p>
+                    </div>
                 ) :
                 <>{regTypes.map((rt) => (
-                    <div key={rt.ID} className="flex flex-col border border-[#181818] m-3 px-5 py-1 w-60 min-h-90 rounded-xl">
+                    <div key={rt.ID} className="flex flex-col border border-gray-200 bg-gray-50 shadow-sm m-3 px-5 py-1 w-60 min-h-90 rounded-xl">
                         <div className="grow min-w-full">
                             <h2 className="text-2xl my-4">{rt.Name}</h2>
                             <h3 className="text-1xl my-0"><strong>{rt.Price}€</strong></h3>
@@ -77,7 +80,7 @@ export default function RegTypesList({ eventId, organizer, published }: { eventI
                         </div>
                         <div className="flex-none my-2">
                             { (organizer && !published) &&
-                                <Link className="align-bottom m-auto w-10 border-2 text-center block items-center gap-2 rounded-md bg-white px-5 py-3 text-black" to={`/event/${eventId}/regtype/edit/${rt.ID}`}>
+                                <Link className={"align-bottom m-auto w-10 border border-gray-300 text-center block items-center gap-2 rounded-md bg-white hover:bg-gray-50 px-5 py-3 text-gray-700 shadow-sm transition-colors"} to={`/event/${eventId}/regtype/edit/${rt.ID}`}>
                                     Edit
                                 </Link>
                             }
