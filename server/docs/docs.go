@@ -1496,7 +1496,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Failed to complete event registration",
+                        "description": "Failed to complete event registration, you are already in the event",
                         "schema": {
                             "type": "string"
                         }
