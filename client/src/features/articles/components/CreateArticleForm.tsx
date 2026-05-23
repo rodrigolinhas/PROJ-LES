@@ -3,6 +3,14 @@ import { getCookie } from '@/shared/utils/getCookie';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import UserSearchInput, { AppUser } from '@/shared/components/UserSearchInput';
+import {
+    descriptionStyle,
+    mainDivStyle,
+    labelStyle,
+    mandatoryLabelStyle,
+    titleStyle,
+    inputStyle, buttonsDivStyle, submitButtonStyle, errorMessageStyle
+} from "@/shared/styles/formStyles.ts";
 
 type EventOption = {
     ID: number;
@@ -193,132 +201,176 @@ export default function CreateArticleForm() {
         );
     } else {
         return (
-            <form onSubmit={handleSubmit}>
-                <h2>Create Article</h2>
+            <div className={mainDivStyle}>
+                <div>
+                    <h2 className={titleStyle}>+ Create Article</h2>
+                    <p className={descriptionStyle}>
+                        Fill the fields bellow to create a new article.
+                    </p>
+                </div>
 
-                <label className="required">Event</label>
-                <select
-                    value={selectedEventId}
-                    onChange={(e) => {
-                        setSelectedEventId(e.target.value);
-                        setSelectedActivityId("");
-                    }}
-                    required
-                >
-                    <option value="">Select an event...</option>
-                    {events.map((ev) => (
-                        <option key={ev.ID} value={ev.ID}>
-                            {ev.Name}
-                        </option>
-                    ))}
-                </select>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label className={mandatoryLabelStyle}>Event</label>
+                            <select
+                                value={selectedEventId}
+                                onChange={(e) => {
+                                    setSelectedEventId(e.target.value);
+                                    setSelectedActivityId("");
+                                }}
+                                required
+                                className={inputStyle}
+                            >
+                                <option value="">Select an event...</option>
+                                {events.map((ev) => (
+                                    <option key={ev.ID} value={ev.ID}>
+                                        {ev.Name}
+                                    </option>
+                                ))}
+                            </select>
+                    </div>
 
-                <label className="required">Activity</label>
-                <select
-                    value={selectedActivityId}
-                    onChange={(e) => setSelectedActivityId(e.target.value)}
-                    required
-                    disabled={!selectedEventId}
-                >
-                    <option value="">
-                        {selectedEventId ? "Select an activity..." : "Select an event first"}
-                    </option>
-                    {activities.map((act) => (
-                        <option key={act.ID} value={act.ID}>
-                            {act.Name}
-                        </option>
-                    ))}
-                </select>
+                    <div>
+                        <label className={mandatoryLabelStyle}>Activity</label>
+                        <div>
+                            <select
+                                value={selectedActivityId}
+                                onChange={(e) => setSelectedActivityId(e.target.value)}
+                                required
+                                disabled={!selectedEventId}
+                                className={inputStyle}
+                            >
+                                <option value="">
+                                    {selectedEventId ? "Select an activity..." : "Select an event first"}
+                                </option>
+                                {activities.map((act) => (
+                                    <option key={act.ID} value={act.ID}>
+                                        {act.Name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
-                <label className="required">Title</label>
-                <input
-                    type="text"
-                    placeholder="Article title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                />
+                    </div>
 
-                <label className="required">First Author</label>
-                {firstAuthor ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+                    <div>
+                        <label className={mandatoryLabelStyle}>Title</label>
+                        <input
+                            type="text"
+                            placeholder="Article title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={mandatoryLabelStyle}>First Author</label>
+                        {firstAuthor ? (
+                            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
                         <span style={{ padding: "8px", border: "1px solid #ddd", borderRadius: "4px", flex: 1 }}>
                             <strong>{firstAuthor.firstName} {firstAuthor.lastName}</strong> ({firstAuthor.email})
                         </span>
-                        <button type="button" onClick={() => setFirstAuthor(null)}>Change</button>
+                                <button type="button" onClick={() => setFirstAuthor(null)}>Change</button>
+                            </div>
+                        ) : (
+                            <UserSearchInput
+                                onSelectUser={(user) => setFirstAuthor(user)}
+                                buttonText="Set as First Author"
+                                excludeUserIds={excludeIds}
+                            />
+                        )}
                     </div>
-                ) : (
-                    <UserSearchInput
-                        onSelectUser={(user) => setFirstAuthor(user)}
-                        buttonText="Set as First Author"
-                        excludeUserIds={excludeIds}
-                    />
-                )}
 
-                <label>Co-Authors</label>
-                {coAuthors.length > 0 && (
-                    <ul style={{ listStyle: "none", padding: 0, marginBottom: "10px" }}>
-                        {coAuthors.map(author => (
-                            <li key={author.id} style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                padding: "8px",
-                                border: "1px solid #ddd",
-                                borderRadius: "4px",
-                                marginBottom: "5px"
-                            }}>
-                                <span><strong>{author.firstName} {author.lastName}</strong> ({author.email})</span>
-                                <button type="button" onClick={() => handleRemoveCoAuthor(author.id)}>Remove</button>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-                <UserSearchInput
-                    onSelectUser={(user) => setCoAuthors(prev => [...prev, user])}
-                    buttonText="Add Co-Author"
-                    excludeUserIds={excludeIds}
-                />
+                    <div>
+                        <label className={labelStyle}>Co-Authors</label>
+                        {coAuthors.length > 0 && (
+                            <ul style={{ listStyle: "none", padding: 0, marginBottom: "10px" }}>
+                                {coAuthors.map(author => (
+                                    <li key={author.id} style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        padding: "8px",
+                                        border: "1px solid #ddd",
+                                        borderRadius: "4px",
+                                        marginBottom: "5px"
+                                    }}>
+                                        <span><strong>{author.firstName} {author.lastName}</strong> ({author.email})</span>
+                                        <button type="button" onClick={() => handleRemoveCoAuthor(author.id)}>Remove</button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                        <UserSearchInput
+                            onSelectUser={(user) => setCoAuthors(prev => [...prev, user])}
+                            buttonText="Add Co-Author"
+                            excludeUserIds={excludeIds}
 
-                <label className="required">Publisher</label>
-                <input
-                    type="text"
-                    placeholder="Publisher name"
-                    value={publisher}
-                    onChange={(e) => setPublisher(e.target.value)}
-                    required
-                />
+                        />
+                    </div>
 
-                <label>DOI</label>
-                <input
-                    type="text"
-                    placeholder="Digital Object Identifier"
-                    value={doi}
-                    onChange={(e) => setDoi(e.target.value)}
-                />
+                    <div>
+                        <label className={mandatoryLabelStyle}>Publisher</label>
+                        <input
+                            type="text"
+                            placeholder="Publisher name"
+                            value={publisher}
+                            onChange={(e) => setPublisher(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
 
-                <label>ISBN</label>
-                <input
-                    type="text"
-                    placeholder="ISBN"
-                    value={isbn}
-                    onChange={(e) => setIsbn(e.target.value)}
-                />
+                    <div>
+                        <label className={labelStyle}>DOI</label>
+                        <input
+                            type="text"
+                            placeholder="Digital Object Identifier"
+                            value={doi}
+                            onChange={(e) => setDoi(e.target.value)}
+                            className={inputStyle}
+                        />
+                    </div>
 
-                <label className="required">URL</label>
-                <input
-                    type="url"
-                    placeholder="https://example.com/article"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    required
-                />
+                    <div>
+                        <label className={labelStyle}>ISBN</label>
+                        <input
+                            type="text"
+                            placeholder="ISBN"
+                            value={isbn}
+                            onChange={(e) => setIsbn(e.target.value)}
+                            className={inputStyle}
+                        />
+                    </div>
 
-                <button type="submit">Create Article</button>
-                <p className={isError ? "error" : "success"}>
-                    {message}
-                </p>
-            </form>
+                    <div>
+                        <label className={mandatoryLabelStyle}>URL</label>
+                        <input
+                            type="url"
+                            placeholder="https://example.com/article"
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
+                            required
+                            className={inputStyle}
+                        />
+                    </div>
+
+
+                    <div className={buttonsDivStyle}>
+                        <button type="submit" className={submitButtonStyle}>
+                            Create Article
+                        </button>
+                    </div>
+
+                    {message && isError && (
+                        <p className={errorMessageStyle}>
+                            {message}
+                        </p>
+                    )}
+                </form>
+            </div>
         );
     }
 }

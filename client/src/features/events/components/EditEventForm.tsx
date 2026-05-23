@@ -96,6 +96,7 @@ export default function EditEventForm(props: any) {
     const [isError, setIsError] = useState(false);
     const [eventLoaded, setEventLoaded] = useState(false);
     const [eventDeleted, setEventDeleted] = useState(false);
+    const [regTypes, setRegTypes] = useState<RegType[]>([]);
 
     function loadEventState(event: LongEvent) {
         let start = new Date(event.StartDate)
@@ -155,13 +156,19 @@ export default function EditEventForm(props: any) {
     }
 
     useEffect(() => {
-        Promise.all([loadEventInfo(eventID), loadRegTypes(eventID)])
-            .then(([event]) => {
-                loadEventState(event);
-                setEventLoaded(true);
-            })
-            .catch((err) => console.log(err));
-    }, [eventID]);
+        if (!eventLoaded) {
+            Promise.all([loadEventInfo(eventID), loadRegTypes(eventID)])
+                .then(([event, types]) => {
+                    loadEventState(event);
+                    setRegTypes(types);
+                    setEventLoaded(true);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setEventLoaded(true);
+                });
+        }
+    }, [eventID, eventLoaded]);
 
     if (!eventLoaded) {
         return (
@@ -307,23 +314,39 @@ export default function EditEventForm(props: any) {
                                     Add Activity
                                 </Link>
                             </div>
+                        </div>
+                    </div>
 
-                            <div className="flex gap-4 items-center">
-                                <Link
-                                    to={`/event/${eventID}/regtype/list`}
-                                    className={smallLinksStyle}
-                                >
-                                    View Registration Types
-                                </Link>
-                                <span className="text-gray-300">|</span>
-                                <Link
-                                    to={`/event/${eventID}/regtype/create`}
-                                    className={smallLinksStyle}
-                                >
-                                    Add Registration Type
-                                </Link>
-                            </div>
+                    <div className="border border-gray-200 bg-white rounded-lg p-5 mt-8 shadow-sm">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-bold text-gray-900">Registration Types</h3>
+                            <Link
+                                to={`/event/${eventID}/regtype/create`}
+                                className="text-sm font-medium text-gray-500 hover:underline flex items-center gap-1"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                                Add New
+                            </Link>
+                        </div>
 
+                        <div className="flex flex-col gap-2">
+                            {regTypes.length === 0 ? (
+                                <p className="text-sm text-gray-500 italic text-center py-4">No registration types found.</p>
+                            ) : (
+                                regTypes.map(rt => (
+                                    <div key={rt.ID} className="flex justify-between items-center p-3 bg-gray-50 border border-gray-100 rounded hover:bg-gray-100 transition-colors">
+                                        <span className="text-sm text-gray-700">
+                                            <strong className="font-semibold text-gray-900">{rt.Name}</strong> • {rt.Price}€
+                                        </span>
+                                        <Link
+                                            to={`/event/${eventID}/regtype/edit/${rt.ID}`}
+                                            className="text-sm text-gray-500 hover:text-gray-900 font-medium underline"
+                                        >
+                                            Edit
+                                        </Link>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
 
