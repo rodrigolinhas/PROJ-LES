@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getCookie } from "../../../shared/utils/getCookie.ts";
 import { envHostBackend } from "@/shared/utils/env.ts";
-import { User, Mail, Settings, ArrowLeft, FlaskConical } from "lucide-react";
+import { User, Mail, Settings } from "lucide-react";
+import BackButton from "@/shared/components/BackButton.tsx";
+import TopBar from "@/shared/components/TopBar.tsx";
 
 type UserDetails = {
     FirstName: string;
@@ -70,9 +72,11 @@ export default function ViewUserPage() {
             <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
                 <div className="text-center">
                     <p className="text-sm text-red-600 bg-red-50 border border-red-100 px-4 py-3 rounded-lg">{error}</p>
-                    <Link to="/home" className="mt-4 inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition">
-                        <ArrowLeft size={14} /> Back to Home
-                    </Link>
+                    <BackButton
+                        to="/home"
+                        label="Back to Home"
+                        className="mt-4"
+                    />
                 </div>
             </div>
         );
@@ -86,31 +90,12 @@ export default function ViewUserPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* ── Top Bar ── */}
-            <header className="bg-white border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center">
-                    <Link
-                        to="/"
-                        className="flex items-center gap-2 text-gray-900 font-semibold text-lg tracking-tight hover:opacity-80 transition-opacity"
-                    >
-                        <FlaskConical size={22} strokeWidth={1.8} />
-                        <span>SciEvents</span>
-                    </Link>
-                </div>
-            </header>
+            <TopBar/>
+            <BackButton/>
 
             {/* ── Content ── */}
             <main className="flex justify-center px-4 py-12">
                 <div className="w-full max-w-lg flex flex-col gap-4">
-
-                    {/* Back link */}
-                    <Link
-                        to="/home"
-                        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition w-fit"
-                    >
-                        <ArrowLeft size={14} />
-                        Back to Home
-                    </Link>
 
                     {/* Profile card */}
                     <div className="bg-white border border-gray-100 rounded-2xl shadow-sm">
