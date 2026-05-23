@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getCookie } from "../../../shared/utils/getCookie";
 import { envHostBackend } from "../../../shared/utils/env";
+import TopBar from "@/shared/components/TopBar.tsx";
+import BackButton from "@/shared/components/BackButton.tsx";
 
 type AppTag = {
     id: number;
@@ -156,6 +158,9 @@ export default function ManageArticleTagsPage() {
     );
 
     return (
+        <>
+        <TopBar />
+        <BackButton/>
         <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
             <h2>Manage Tags for Article</h2>
             <h3>{articleTitle}</h3>
@@ -224,5 +229,6 @@ export default function ManageArticleTagsPage() {
                 </Link>
             </div>
         </div>
+        </>
     );
 }

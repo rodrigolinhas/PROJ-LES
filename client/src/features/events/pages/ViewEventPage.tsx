@@ -68,7 +68,7 @@ export default function ViewEventPage() {
         <>
         <TopBar />
         <BackButton
-            to="/home"
+            to="/events"
         />
         <div className={mainDivStyle + "m-auto max-w-[80%]! bg-white shadow-xl"}>
             <h1 className="text-4xl my-2">{event.Name}</h1>
@@ -89,7 +89,6 @@ export default function ViewEventPage() {
 
             {/*TODO: Turn this into a style in order to remove repetition*/}
             <div className="flex">
-            <Link className="mr-3 mt-5 w-10 text-center block items-center gap-2 rounded-md bg-gray-900 hover:bg-gray-700 transition-colors px-5 py-3 text-white" to="/events">Back</Link>
             {event.OrganizerID == userID &&
                 <>
                 <Link className={"mr-3 mt-5 w-20 border border-gray-300 shadow-sm text-center block items-center gap-2 rounded-md bg-white hover:bg-gray-50 transition-colors px-5 py-3 text-gray-700"} to={`/event/edit/${event.ID}`}>

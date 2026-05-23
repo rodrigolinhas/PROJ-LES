@@ -45,6 +45,7 @@ function App() {
                     <Route path="/event/edit/:id" element={<EditEventPage />} />
                     <Route path="/event/:id" element={<ViewEventPage />} />
                     <Route path="/event/:id/participants" element={<ListEventParticipantsPage />} />
+                    <Route path="/event/:id/pay" element={<EventPaymentPage />} />
                     <Route path="/event/:id/benefits" element={<ListBenefitsPage />} />
                     <Route path="/article/create" element={<CreateArticlePage />} />
 

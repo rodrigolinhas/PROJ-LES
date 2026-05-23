@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getCookie } from "../../../../shared/utils/getCookie";
+import TopBar from "@/shared/components/TopBar.tsx";
+import { envHostBackend } from "@/shared/utils/env";
 import {
     Clock,
     MapPin,
@@ -46,7 +48,7 @@ export default function ViewActivityPage() {
 
             try {
                 const response = await fetch(
-                    `http://localhost:8080/event/${eventId}/activity/view/${id}`,
+                    `http://${envHostBackend()}/event/${eventId}/activity/view/${id}`,
                     {
                         credentials: "include",
                         headers: { "X-CSRF-Token": csrfToken }
@@ -95,6 +97,8 @@ export default function ViewActivityPage() {
     if (!activity) return null;
 
     return (
+        <>
+        <TopBar />
         <div className="max-w-3xl mx-auto px-4 py-10">
             {/* ── Back link ── */}
             <Link
@@ -175,5 +179,6 @@ export default function ViewActivityPage() {
                 </div>
             </div>
         </div>
+        </>
     );
 }

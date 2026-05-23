@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getCookie } from "../../../../shared/utils/getCookie";
+import { envHostBackend } from "@/shared/utils/env";
 import {
     Clock,
     MapPin,
@@ -46,7 +47,7 @@ export default function ActivitiesList({ eventId }: Props) {
             const csrfToken = getCookie("csrf_token");
 
             const response = await fetch(
-                `http://localhost:8080/event/${eventId}/activity/list`,
+                `http://${envHostBackend()}/event/${eventId}/activity/list`,
                 {
                     credentials: "include",
                     headers: { "X-CSRF-Token": csrfToken }

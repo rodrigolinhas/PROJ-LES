@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getCookie } from "../../../../shared/utils/getCookie.ts";
 import { envHostBackend } from '@/shared/utils/env';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type RegType = {
     ID: number;
@@ -40,6 +40,47 @@ export async function getEventRegTypes(eventId: string) {
 }
 
 export default function RegTypesList({ eventId, organizer, published }: { eventId: string, organizer: boolean, published: boolean }) {
+    const navigate = useNavigate();
+    const [enrollingId, setEnrollingId] = useState<number | null>(null);
+    const [enrollError, setEnrollError] = useState("");
+    const [enrollSuccess, setEnrollSuccess] = useState("");
+
+    async function handleEnroll(regTypeId: number) {
+        setEnrollingId(regTypeId);
+        setEnrollError("");
+        setEnrollSuccess("");
+
+        const csrfToken = getCookie("csrf_token") || "";
+        const formData = new FormData();
+        formData.append("eventID", eventId);
+        formData.append("regTypeID", regTypeId.toString());
+
+        try {
+            const res = await fetch(`http://${envHostBackend()}/event/register`, {
+                method: "POST",
+                body: formData,
+                headers: { "X-CSRF-Token": csrfToken },
+                credentials: "include",
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                if (data.payToken && data.payToken !== "") {
+                    navigate(`/event/${eventId}/pay`, { state: { payToken: data.payToken, eventId } });
+                } else {
+                    setEnrollSuccess("Successfully enrolled! Your registration is confirmed.");
+                }
+            } else {
+                const text = await res.text();
+                setEnrollError(text || "Failed to enroll");
+            }
+        } catch {
+            setEnrollError("Server error during enrollment");
+        } finally {
+            setEnrollingId(null);
+        }
+    }
+
     const [regTypes, setRegTypes] = useState<RegType[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -73,8 +114,8 @@ export default function RegTypesList({ eventId, organizer, published }: { eventI
                             <p>{rt.Description}</p>
                             <hr className="text-[#ddd]"/>
                             <ul className="pl-6 list-disc mt-4">
-                                {rt.Benefits.map((b, i) => (
-                                    <li className="my-2" key={i}>{b}</li>
+                                {(rt.Benefits || []).map((b: any, i) => (
+                                    <li className="my-2" key={i}>{typeof b === "string" ? b : b.Name}</li>
                                 ))}
                             </ul>
                         </div>
@@ -84,11 +125,21 @@ export default function RegTypesList({ eventId, organizer, published }: { eventI
                                     Edit
                                 </Link>
                             }
-                            {/*TODO: Add enroll button*/}
+                            { (!organizer && published) &&
+                                <button
+                                    onClick={() => handleEnroll(rt.ID)}
+                                    disabled={enrollingId === rt.ID}
+                                    className="w-full mt-2 px-4 py-2.5 rounded-md bg-gray-900 hover:bg-gray-700 text-white text-sm font-medium transition-colors disabled:opacity-50"
+                                >
+                                    {enrollingId === rt.ID ? "Enrolling..." : "Enroll"}
+                                </button>
+                            }
                         </div>
                     </div>
                 ))}</>}
             </div>
+            {enrollError && <p className="text-sm text-red-600 mt-2">{enrollError}</p>}
+            {enrollSuccess && <p className="text-sm text-emerald-600 mt-2">{enrollSuccess}</p>}
         </div>
     );
 }

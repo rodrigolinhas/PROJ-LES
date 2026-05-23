@@ -19,7 +19,7 @@ export default function BackButton({
     const navigate = useNavigate();
 
     const baseClassName =
-        "inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition bg-transparent border-0 p-0 cursor-pointer appearance-none";
+        "inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition bg-transparent border-0 p-0 ml-4 mt-2 cursor-pointer appearance-none";
 
     const content = (
         <>

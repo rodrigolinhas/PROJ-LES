@@ -59,11 +59,12 @@ export default function EditRegTypeForm(props: any) {
     const [regTypeDeleted, setRegTypeDeleted] = useState(false);
     const [loaded, setLoaded] = useState(false);
 
-    function loadRegTypeState(regType: RegType) {
+    function loadRegTypeState(regType: any) {
         setName(regType.Name)
         setDescription(regType.Description)
         setPrice(regType.Price)
-        setBenefits(regType.Benefits || [])
+        const benefitNames = (regType.Benefits || []).map((b: any) => typeof b === 'string' ? b : b.Name);
+        setBenefits(benefitNames)
     }
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import DeleteActivityButton from "./DeleteActivityButton";
 import { Link } from "react-router-dom";
 import { getCookie } from "@/shared/utils/getCookie.ts"
+import { envHostBackend } from "@/shared/utils/env";
 import {
     backDivStyle,
     backLinkStyle, buttonsDivStyle,
@@ -39,7 +40,7 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
 
             try {
                 const res = await fetch(
-                    `http://localhost:8080/event/${eventId}/activity/view/${activityID}`,
+                    `http://${envHostBackend()}/event/${eventId}/activity/view/${activityID}`,
                     {
                         credentials: "include",
                         headers: {
@@ -80,7 +81,7 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
 
         try {
             const res = await fetch(
-                `http://localhost:8080/event/${eventId}/activity/edit/${activityID}`,
+                `http://${envHostBackend()}/event/${eventId}/activity/edit/${activityID}`,
                 {
                     method: "POST",
                     body: formData,
@@ -112,7 +113,7 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
             <div className={successOutDivStyle}>
                 <div className={successDivStyle}>
                     <h2 className={successMessageStyle}>Activity deleted successfully!</h2>
-                    <Link to ={`/event/${eventId}/activity/list`} className={goHomeStyle}>Back to Activities</Link>
+                    <Link to ={`/event/${eventId}`} className={goHomeStyle}>Back to Event</Link>
                 </div>
             </div>
         );

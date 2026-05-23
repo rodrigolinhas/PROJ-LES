@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getCookie } from "@/shared/utils/getCookie.ts";
 import { envHostBackend } from "@/shared/utils/env.ts";
+import TopBar from "@/shared/components/TopBar.tsx";
 import {
     FileText,
     ArrowRight,
@@ -86,6 +87,8 @@ export default function ListArticlesPage() {
     }
 
     return (
+        <>
+        <TopBar />
         <div className="max-w-3xl mx-auto px-4 py-10">
             {/* ── Back link ── */}
             <Link
@@ -105,7 +108,7 @@ export default function ListArticlesPage() {
                     </span>
                     <Link
                         to="/article/create"
-                        className="inline-flex items-center gap-1.5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow transition-all duration-200"
+                        className="inline-flex items-center gap-1.5 bg-gray-900 hover:bg-gray-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow transition-all duration-200"
                     >
                         <Plus size={16} strokeWidth={2} />
                         Create Article
@@ -166,5 +169,6 @@ export default function ListArticlesPage() {
                 </div>
             )}
         </div>
+        </>
     );
 }
