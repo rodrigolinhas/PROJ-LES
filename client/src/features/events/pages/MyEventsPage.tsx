@@ -4,6 +4,7 @@ import {useUserRole} from "../../../shared/hooks/useUserRole";
 import { useState } from "react";
 import TopBar from "@/shared/components/TopBar";
 import { mainDivStyle, submitButtonStyle } from "@/shared/styles/formStyles";
+import BackButton from "@/shared/components/BackButton.tsx";
 
 enum Tabs {
     Published,
@@ -21,6 +22,7 @@ export default function MyEventsPage() {
     return (
         <>
         <TopBar />
+        <BackButton/>
         <div>
             <h1 className="text-center text-4xl">Events</h1>
             <p className="text-center">Here you can filter published events and also see your own events.</p>

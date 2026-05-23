@@ -38,7 +38,6 @@ export default function EventList({
                                       title,
                                       endpoint,
                                       emptyMessage,
-                                      showEditButton = false,
                                   }: EventListProps) {
     const [events, setEvents] = useState<ShortEvent[]>([]);
     const [loading, setLoading] = useState(true);

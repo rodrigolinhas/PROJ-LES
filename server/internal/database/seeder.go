@@ -28,13 +28,13 @@ func SeedEvalData() {
 	log.Println("[Seeder] Seeding evaluation data…")
 
 	// ── 1. User (EventOrganizer) ───────────────────────────────────────
-	hashedPass, err := utils.HashPassword("12345678")
+	hashedPass, err := utils.HashPassword("Jb@12345678")
 	if err != nil {
 		log.Printf("[Seeder] Error hashing password: %v\n", err)
 		return
 	}
 
-	user, err := models.NewUser("Admin", "Seeder", "EventOrganizer", "admin@mail.com", hashedPass)
+	user, err := models.NewUser("José", "Barateiro", "EventOrganizer", "admin@mail.com", hashedPass)
 	if err != nil {
 		log.Printf("[Seeder] Error creating user model: %v\n", err)
 		return
@@ -46,7 +46,7 @@ func SeedEvalData() {
 	log.Printf("[Seeder] User created  (ID=%d, email=%s)\n", user.ID, user.Email)
 
 	// ── 2. Second user (Student — for article co-author / registration)
-	hashedPass2, _ := utils.HashPassword("12345678")
+	hashedPass2, _ := utils.HashPassword("Jb@12345678")
 	student, _ := models.NewUser("Maria", "Silva", "Student", "student@mail.com", hashedPass2)
 	if res := DB.Create(student); res.Error != nil {
 		log.Printf("[Seeder] Error saving student: %v\n", res.Error)
@@ -180,6 +180,6 @@ func SeedEvalData() {
 	log.Println("[Seeder] Student added as co-author")
 
 	log.Println("[Seeder] Evaluation data seeded successfully!")
-	log.Println("[Seeder] Admin login: admin@mail.com / 12345678")
-	log.Println("[Seeder] Student login: student@mail.com / 12345678")
+	log.Println("[Seeder] Admin login: admin@mail.com / Jb@12345678")
+	log.Println("[Seeder] Student login: student@mail.com / Jb@12345678")
 }

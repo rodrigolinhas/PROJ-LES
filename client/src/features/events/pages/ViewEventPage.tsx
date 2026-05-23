@@ -7,6 +7,7 @@ import { useUserID } from "@/shared/hooks/useUserID";
 import ActivitiesList from "../activities/components/ActivitiesList.tsx";
 import { mainDivStyle } from "@/shared/styles/formStyles.ts";
 import TopBar from "@/shared/components/TopBar.tsx";
+import BackButton from "@/shared/components/BackButton.tsx";
 
 type EventDetails = {
     ID: number;
@@ -66,6 +67,9 @@ export default function ViewEventPage() {
     return (
         <>
         <TopBar />
+        <BackButton
+            to="/home"
+        />
         <div className={mainDivStyle + "m-auto max-w-[80%]! bg-white shadow-xl"}>
             <h1 className="text-4xl my-2">{event.Name}</h1>
             { !event.Published &&

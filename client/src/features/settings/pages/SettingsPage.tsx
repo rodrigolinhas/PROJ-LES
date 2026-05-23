@@ -1,5 +1,6 @@
 import SettingsForm from "../components/SettingsForm";
 import TopBar from "@/shared/components/TopBar";
+import BackButton from "@/shared/components/BackButton.tsx";
 
 /**
  * Page for editing the authenticated user's account settings.
@@ -12,6 +13,7 @@ export default function SettingsPage() {
         <div className="min-h-screen bg-gray-50">
             {/* ── Top bar (same style as AuthLayout / Landing Navbar) ── */}
             <TopBar />
+            <BackButton/>
 
             {/* ── Centered card ── */}
             <main className="flex justify-center px-4 py-12">

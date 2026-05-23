@@ -10,7 +10,7 @@ type Props = {
 
 export default function DeleteActivityButton({ eventId, activityID, onDeleted }: Props) {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [, setError] = useState("");
 
     async function handleDelete() {
         const confirmDelete = window.confirm("Are you sure you want to delete this activity?");
