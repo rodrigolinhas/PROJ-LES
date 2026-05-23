@@ -26,6 +26,7 @@ import ListArticlesPage from "@/features/articles/pages/ListArticlesPage.tsx";
 import ViewArticlePage from "@/features/articles/pages/ViewArticlePage.tsx";
 import EditArticlePage from "@/features/articles/pages/EditArticlePage.tsx";
 import ListEventParticipantsPage from "@/features/events/pages/ListEventParticipantsPage.tsx";
+import EventPaymentPage from "@/features/events/pages/EventPaymentPage.tsx";
 
 function App() {
     return (
