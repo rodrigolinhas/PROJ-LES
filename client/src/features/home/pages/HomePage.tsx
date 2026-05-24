@@ -132,14 +132,6 @@ export default function HomePage() {
             accent: "bg-emerald-50",
             accentText: "text-emerald-600",
         },
-        {
-            label: "Settings",
-            description: "Manage your preferences",
-            to: "/settings",
-            icon: Settings,
-            accent: "bg-gray-100",
-            accentText: "text-gray-600",
-        },
     ];
 
     /* ── Date formatting helper ── */

@@ -5,6 +5,7 @@ import { envHostBackend } from "@/shared/utils/env";
 import { mainDivStyle } from "@/shared/styles/formStyles";
 import TopBar from "@/shared/components/TopBar";
 import { useUserRole } from "@/shared/hooks/useUserRole";
+import BackButton from "@/shared/components/BackButton.tsx";
 
 type Beneficiary = {
     ID: number
@@ -103,6 +104,7 @@ export default function ListBenefitsPage() {
     return (
         <>
         <TopBar />
+        <BackButton to={`/event/${id}`}/>
         <div className={mainDivStyle + " m-auto max-w-[80%]! p-5 pb-8 rounded-xl bg-white"}>
             <h2 className="mt-2">Benefits</h2>
 

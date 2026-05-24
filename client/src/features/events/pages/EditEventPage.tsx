@@ -8,7 +8,7 @@ export default function EditEventPage() {
     return (
         <div>
             <TopBar/>
-            <BackButton/>
+            <BackButton to={`/event/${id}`}/>
             <EditEventForm eventID={id}/>
         </div>
     );

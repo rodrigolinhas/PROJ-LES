@@ -11,6 +11,7 @@ import {
     Plus,
 } from "lucide-react";
 import { useUserID } from "@/shared/hooks/useUserID";
+import BackButton from "@/shared/components/BackButton.tsx";
 
 type Article = {
     id: number;
@@ -134,15 +135,8 @@ export default function ListArticlesPage() {
     return (
         <>
         <TopBar />
+        <BackButton to={`/event/${eventId}/activity/view/${activityId}`}/>
         <div className="max-w-3xl mx-auto px-4 py-10">
-            {/* ── Back link ── */}
-            <Link
-                to={`/event/${eventId}/activity/view/${activityId}`}
-                className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors mb-6"
-            >
-                <ArrowLeft size={15} />
-                Back to Activity
-            </Link>
 
             {/* ── Page header ── */}
             <div className="flex items-center justify-between mb-6">

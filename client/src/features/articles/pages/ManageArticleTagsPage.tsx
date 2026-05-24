@@ -161,7 +161,7 @@ export default function ManageArticleTagsPage() {
     return (
         <>
         <TopBar />
-        <BackButton/>
+        <BackButton to={`/event/${eventId}/activity/${activityId}/article/view/${articleId}`}/>
         <div className={mainDivStyle + " bg-white"}>
             <h2>Manage Tags for Article</h2>
             <h3>{articleTitle}</h3>

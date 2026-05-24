@@ -13,7 +13,7 @@ export default function SettingsPage() {
         <div className="min-h-screen bg-gray-50">
             {/* ── Top bar (same style as AuthLayout / Landing Navbar) ── */}
             <TopBar />
-            <BackButton/>
+            <BackButton to={`/user/me`}/>
 
             {/* ── Centered card ── */}
             <main className="flex justify-center px-4 py-12">

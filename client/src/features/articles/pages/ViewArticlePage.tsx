@@ -13,6 +13,8 @@ import {
     Users,
     User,
 } from "lucide-react";
+import TopBar from "@/shared/components/TopBar.tsx";
+import BackButton from "@/shared/components/BackButton.tsx";
 
 type ArticleTag = {
     Name?: string;
@@ -126,16 +128,10 @@ export default function ViewArticlePage() {
     const firstAuthorName = getAuthorName(article.firstAuthor);
 
     return (
+        <>
+            <TopBar/>
+            <BackButton to={`/event/${eventId}/activity/${activityId}/article/list`}/>
         <div className="max-w-3xl mx-auto px-4 py-10">
-            {/* ── Back link ── */}
-            <Link
-                to={`/event/${eventId}/activity/${activityId}/article/list`}
-                className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors mb-6"
-            >
-                <ArrowLeft size={15} />
-                Back to articles
-            </Link>
-
             {/* ── Main card ── */}
             <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
                 {/* Title section */}
@@ -257,6 +253,7 @@ export default function ViewArticlePage() {
                 </div>
             </div>
         </div>
+        </>
     );
 }
 

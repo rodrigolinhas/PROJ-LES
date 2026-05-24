@@ -91,7 +91,7 @@ export default function ViewUserPage() {
     return (
         <div className="min-h-screen bg-gray-50">
             <TopBar/>
-            <BackButton/>
+            <BackButton to={`/home`}/>
 
             {/* ── Content ── */}
             <main className="flex justify-center px-4 py-12">
