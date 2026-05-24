@@ -99,7 +99,6 @@ export default function ListBenefitsPage() {
     }
 
     if (loading) return <p>Loading...</p>;
-    if (error) return <p className="error">{error}</p>;
 
     return (
         <>
@@ -107,9 +106,9 @@ export default function ListBenefitsPage() {
         <BackButton to={`/event/${id}`}/>
         <div className={mainDivStyle + " m-auto max-w-[80%]! p-5 pb-8 rounded-xl bg-white"}>
             <h2 className="mt-2">Benefits</h2>
-
+            {/* {error && <p className="error">{error}</p>} */}
             {benefits.length === 0 ? (
-                <p>No benefits found.</p>
+                <p className="mb-8">No benefits found.</p>
             ) : (
                 <ul className="my-3 mb-8 ml-5 list-disc">
                     {benefits.map((bene) => (

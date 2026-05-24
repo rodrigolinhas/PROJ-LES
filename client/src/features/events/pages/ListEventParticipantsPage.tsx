@@ -85,7 +85,7 @@ export default function ListEventParticipantsPage() {
     }
 
     if (loading) return <p>Loading...</p>;
-    if (error) return <p className="error">{error}</p>;
+    //if (error) return <p className="error">{error}</p>;
 
     return (
         <>
@@ -95,7 +95,7 @@ export default function ListEventParticipantsPage() {
             <h2 className="mt-2">Participants</h2>
 
             {participants.length === 0 ? (
-                <p>No participants found.</p>
+                <p className="my-3">No participants found.</p>
             ) : (
                 <ul className="my-3">
                     {participants.map((p) => (
