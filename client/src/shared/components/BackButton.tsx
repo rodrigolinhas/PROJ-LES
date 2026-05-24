@@ -29,6 +29,8 @@ export default function BackButton({
     );
 
     function handleBack() {
+        if (to) return;
+
         if (window.history.length > 1) {
             navigate(-1);
         } else {
@@ -36,24 +38,13 @@ export default function BackButton({
         }
     }
 
-    if (to) {
-        return (
-            <Link
-                to={to}
-                className={`${baseClassName} ${className}`}
-            >
-                {content}
-            </Link>
-        );
-    }
-
     return (
-        <button
-            type="button"
+        <Link
+            to={to ?? fallbackTo}
             onClick={handleBack}
             className={`${baseClassName} ${className}`}
         >
             {content}
-        </button>
+        </Link>
     );
 }

@@ -90,7 +90,7 @@ export default function ListEventParticipantsPage() {
     return (
         <>
         <TopBar />
-        <BackButton/>
+        <BackButton to={`/event/${id}`}/>
         <div className={mainDivStyle + " m-auto max-w-[80%]! p-5 rounded-xl bg-white"}>
             <h2 className="mt-2">Participants</h2>
 
@@ -106,7 +106,6 @@ export default function ListEventParticipantsPage() {
                 </ul>
             )}
 
-            <Link className="mr-3 mt-5 w-30 text-center items-center gap-2 rounded-md bg-gray-900 hover:bg-gray-700 transition-colors px-5 py-3 text-white" to={`/event/${id}`}>Back to Event</Link>
             <button onClick={handleExportCSV} className="my-2 w-40 border border-gray-300 hover:bg-gray-50 shadow-sm transition-colors gap-2 rounded-md bg-white px-5 py-3 text-gray-700">
                 Export as CSV
             </button>

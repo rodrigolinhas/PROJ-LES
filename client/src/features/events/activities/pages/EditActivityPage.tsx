@@ -11,7 +11,7 @@ export default function EditActivityPage() {
     return (
         <div>
             <TopBar/>
-            <BackButton/>
+            <BackButton to={`/event/${eventId}/activity/view/${id}`}/>
             <EditActivityForm
                 eventId={Number(eventId)}
                 activityID={Number(id)}

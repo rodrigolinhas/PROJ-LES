@@ -13,7 +13,7 @@ export default function EditArticlePage() {
     return (
         <>
         <TopBar />
-        <BackButton/>
+        <BackButton to={`/event/${eventId}/activity/${activityId}/article/view/${articleId}`}/>
         <div>
             <EditArticleForm
                 eventId={Number(eventId)}

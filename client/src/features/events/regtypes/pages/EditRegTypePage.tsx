@@ -13,7 +13,7 @@ export default function EditRegTypePage() {
     return (
         <div>
             <TopBar/>
-            <BackButton/>
+            <BackButton to={`/event/${eventId}`}/>
             <EditRegTypeForm
                 eventID={eventId}
                 regTypeID={regTypeId}

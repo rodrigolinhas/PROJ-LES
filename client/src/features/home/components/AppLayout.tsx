@@ -25,7 +25,6 @@ const MAIN_NAV: NavItem[] = [
     { label: "Home", to: "/home", icon: Home },
     { label: "Events", to: "/events", icon: CalendarDays },
     { label: "Profile", to: "/user/me", icon: User },
-    { label: "Settings", to: "/settings", icon: Settings },
 ];
 
 /**

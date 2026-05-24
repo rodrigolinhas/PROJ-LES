@@ -10,16 +10,16 @@ Este projeto foi desenvolvido no âmbito da unidade curricular de **Laboratório
 
 O tema do projeto é **Sistema de Gestão Local de Eventos Científicos**, que se centra no desenvolvimento de uma aplicação para a gestão de eventos, atividades e conteúdos científicos associados, como artigos, tipos de registos nos eventos e benefícios. A aplicação permite aos utilizadores consultar informação, criar e gerir eventos, associar atividades a esses eventos e interagir com diferentes funcionalidades através de uma aplicação web.
 
-O sistema foi desenvolvido com uma separação entre frontend e backend. O frontend é responsável pela interação com o utilizador, enquanto o backend disponibiliza uma API responsável por toda a lógica de negócio por trâs: validação dos pedidos, segurança e comunicação com a base de dados.
+O sistema foi desenvolvido com uma separação entre frontend e backend.
 
 Ao longo do desenvolvimento foram aplicadas práticas como organização modular do código, utilização de componentes reutilizáveis, CI/CD, documentação da API, controlo de versões e uso de Docker para facilitar a execução do projeto em diferentes ambientes.
 
 ---
 
 ## Escolhas de Design
-A aplicação foi dividida em duas partes principais: **frontend** e **backend**.
+O sistema foi dividido em duas partes principais: **frontend** e **backend**.
 
-O frontend é responsável pela interface com o utilizador, incluindo a navegação entre páginas, o preenchimento de formulários e a interação com os dados da aplicação. O backend disponibiliza a API responsável pela lógica, validação dos pedidos, autenticação/autorização e comunicação direta com a base de dados.
+O frontend é responsável pela interação com o utilizador, enquanto o backend disponibiliza uma API responsável por toda a lógica de negócio por trás, validação dos pedidos, segurança e comunicação com a base de dados.
 
 A comunicação entre o frontend e o backend é feita através de uma **API REST**. Esta abordagem permite que o frontend realize operações CRUD, como consultar, criar, editar e eliminar recursos através de pedidos HTTP.
 
@@ -123,7 +123,7 @@ cd ..
 ```
 
 Este comando gera os ficheiros necessários para a documentação Swagger da API.
-> **Nota:** este passo deve ser repetido sempre que forem feitas alterações aos endpoints ou aos comentários usados para gerar a documentação.
+> **Nota:** Este passo deve ser repetido sempre que forem feitas alterações aos endpoints ou aos comentários usados para gerar a documentação.
 
 ---
 
@@ -143,7 +143,7 @@ cd PROJ-LES
 #### 1. Criar o ficheiro `.env`
 Criar o .env com as credenciais do Google OAuth.
 
-> **Nota:** sem as credenciais do Google OAuth corretamente configuradas, o login com Google não irá funcionar.
+> **Nota:** Caso estas não fiquem corretamente configuradas, o login com Google não irá funcionar.
 
 #### 2. Gerar a documentação Swagger
 Antes de correr o projeto, deve-se garantir que a documentação Swagger da API está gerada e atualizada.
@@ -172,7 +172,7 @@ Para parar todos os serviços, deve executar o seguinte comando:
 docker compose down
 ```
 
-> **Nota:** ao executar o comando acima, os serviços simplesmente são parados, mantendo os dados da base de dados. Para parar os serviços e remover também os dados guardados na base de dados, deve usar o comando `docker compose down -v`.
+> **Nota:** Ao executar o comando acima, os serviços simplesmente são parados, mantendo os dados da base de dados. Para parar os serviços e remover também os dados guardados na base de dados, deve usar o comando `docker compose down -v`.
 
 ---
 
@@ -233,7 +233,7 @@ No frontend, a pasta `features` agrupa as funcionalidades principais da aplicaç
 ## Dados de Teste / Seeder
 O projeto inclui um seeder com dados de avaliação, criado para facilitar o teste da aplicação por parte dos docentes.
 
-O seeder popula automaticamente a base de dados com exemplos das principais entidades do sistema, permitindo testar as funcionalidades principais sem ser necessário criar todos os dados manualmente.
+O seeder povoa automaticamente a base de dados com exemplos das principais entidades do sistema, permitindo testar as funcionalidades principais sem ser necessário criar todos os dados manualmente.
 
 ### Dados criados
 O seeder cria, entre outros, os seguintes dados:
