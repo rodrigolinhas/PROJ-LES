@@ -5,6 +5,7 @@ import { envHostBackend } from "@/shared/utils/env";
 import { mainDivStyle } from "@/shared/styles/formStyles";
 import TopBar from "@/shared/components/TopBar";
 import { useUserRole } from "@/shared/hooks/useUserRole";
+import BackButton from "@/shared/components/BackButton";
 
 type Beneficiary = {
     ID: number
@@ -98,16 +99,16 @@ export default function ListBenefitsPage() {
     }
 
     if (loading) return <p>Loading...</p>;
-    if (error) return <p className="error">{error}</p>;
 
     return (
         <>
         <TopBar />
+        <BackButton />
         <div className={mainDivStyle + " m-auto max-w-[80%]! p-5 pb-8 rounded-xl bg-white"}>
             <h2 className="mt-2">Benefits</h2>
-
+            {/* {error && <p className="error">{error}</p>} */}
             {benefits.length === 0 ? (
-                <p>No benefits found.</p>
+                <p className="mb-8">No benefits found.</p>
             ) : (
                 <ul className="my-3 mb-8 ml-5 list-disc">
                     {benefits.map((bene) => (
