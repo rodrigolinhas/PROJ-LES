@@ -42,7 +42,7 @@ const (
 
 // INFO: Change keys based on frontend form
 var RoleMap = map[string]Role{
-	"none":           None,
+	"None":           None,
 	"Student":        Student,
 	"Professor":      Professor,
 	"EventOrganizer": EventOrganizer,

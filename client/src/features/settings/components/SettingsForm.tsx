@@ -24,6 +24,7 @@ export default function SettingsForm() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [role, setRole] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -33,6 +34,7 @@ export default function SettingsForm() {
         firstName: "",
         lastName: "",
         email: "",
+        role: "",
     });
 
     const [loading, setLoading] = useState(true);
@@ -53,10 +55,12 @@ export default function SettingsForm() {
                     setFirstName(data.FirstName);
                     setLastName(data.LastName);
                     setEmail(data.Email);
+                    setRole(data.Role);
                     setOriginalData({
                         firstName: data.FirstName,
                         lastName: data.LastName,
                         email: data.Email,
+                        role: data.Role,
                     });
                 } else {
                     setMessage("Failed to load user data");
@@ -94,6 +98,7 @@ export default function SettingsForm() {
         if (firstName !== originalData.firstName) formData.append("firstName", firstName);
         if (lastName !== originalData.lastName) formData.append("lastName", lastName);
         if (email !== originalData.email) formData.append("email", email);
+        if (role !== originalData.role) formData.append("role", role);
         if (password !== "") formData.append("password", password);
 
         const csrfToken = getCookie("csrf_token");
@@ -112,7 +117,7 @@ export default function SettingsForm() {
                 setIsError(false);
                 setPassword("");
                 setPasswordConfirm("");
-                setOriginalData({ firstName, lastName, email });
+                setOriginalData({ firstName, lastName, email, role });
             } else {
                 const errorText = await response.text();
                 setMessage(errorText || "Failed to update settings");
@@ -212,6 +217,27 @@ export default function SettingsForm() {
                                 className="flex-1 py-2.5 text-sm text-gray-900 bg-transparent border-0 focus:outline-none min-w-0"
                             />
                         </div>
+                    </div>
+
+                    {/* Role */}
+                    <div className="flex flex-col gap-1.5">
+                        <label
+                            htmlFor="settings-role"
+                            className="text-sm font-medium text-gray-700"
+                        >
+                            Role
+                        </label>
+                        <select
+                            id="settings-role"
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                            className="w-full px-3 py-2.5 text-sm text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition cursor-pointer"
+                        >
+                            <option value="None">None</option>
+                            <option value="Student">Student</option>
+                            <option value="Professor">Professor</option>
+                            <option value="EventOrganizer">Event Organizer</option>
+                        </select>
                     </div>
                 </div>
 

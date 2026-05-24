@@ -70,6 +70,7 @@ func UserInfoEdit(c *gin.Context) {
 	lastName := c.PostForm("lastName")
 	email := c.PostForm("email")
 	password := c.PostForm("password")
+	role := c.PostForm("role")
 
 	if firstName != "" {
 		user.FirstName = firstName
@@ -92,6 +93,14 @@ func UserInfoEdit(c *gin.Context) {
 			return
 		}
 		user.HashedPassword = hashedPass
+	}
+	if role != "" {
+		roleEnum, valid := models.RoleMap[role]
+		if !valid {
+			c.String(http.StatusBadRequest, "Invalid Role")
+			return
+		}
+		user.Role = roleEnum
 	}
 
 	res := db.DB.Save(&user)
