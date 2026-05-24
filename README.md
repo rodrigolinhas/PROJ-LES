@@ -229,6 +229,36 @@ No frontend, a pasta `features` agrupa as funcionalidades principais da aplicaç
 
 ---
 
+## Dados de Teste / Seeder
+O projeto inclui um seeder com dados de avaliação, criado para facilitar o teste da aplicação por parte dos docentes.
+
+O seeder popula automaticamente a base de dados com exemplos das principais entidades do sistema, permitindo testar as funcionalidades principais sem ser necessário criar todos os dados manualmente.
+
+### Dados criados
+O seeder cria, entre outros, os seguintes dados:
+- Um utilizador com perfil de organizador de eventos;
+- Um utilizador com perfil de estudante;
+- Um evento científico de exemplo;
+- Um tipo de inscrição associado ao evento de exemplo;
+- Benefícios associados ao tipo de inscrição no evento de exemplo, quando disponíveis;
+- Uma inscrição de estudante no evento de exemplo;
+- Uma atividade associada ao evento de exemplo;
+- Um artigo científico associado à atividade;
+
+### Credenciais de teste
+Podem ser usadas as seguintes contas para testar a aplicação:
+```txt
+Organizador:
+Email:    admin@mail.com
+Password: Jb@12345678
+
+Estudante:
+Email:    student@mail.com
+Password: Jb@12345678
+```
+
+---
+
 ## Equipa de desenvolvimento
 - **[Miguel Alvito](https://github.com/m-alvito)** — a83924
 - **[Nicole Reis](https://github.com/nicoleacreis)** — a83926
