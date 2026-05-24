@@ -39,7 +39,7 @@ type EventParticipant struct {
 // @Failure		401 {string} string "Unauthorized"
 // @Failure		404 {string} string "Event / Discount code not found"
 // @Failure		409 {string} string "Cannot enroll in an unpublished event"
-// @Failure 	500 {string} string "Failed to complete event registration"
+// @Failure 	500 {string} string "Failed to complete event registration, you are already in the event"
 // @Router 		/event/register [post]
 func EventRegister(c *gin.Context) {
 	user, autherr := Authorize(c)
@@ -117,7 +117,7 @@ func EventRegister(c *gin.Context) {
 		return nil
 	})
 	if trans != nil {
-		c.String(http.StatusInternalServerError, "Failed to complete event registration")
+		c.String(http.StatusInternalServerError, "Failed to complete event registration, you are already in the event.")
 		return
 	}
 

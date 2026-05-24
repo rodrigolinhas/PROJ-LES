@@ -301,10 +301,10 @@ export default function EditEventForm(props: any) {
 
                             <div className="flex gap-4 items-center">
                                 <Link
-                                    to={`/event/${eventID}/activity/list`}
+                                    to={`/event/${eventID}`}
                                     className={smallLinksStyle}
                                 >
-                                    View Activities
+                                    View Event
                                 </Link>
                                 <span className="text-gray-300">|</span>
                                 <Link

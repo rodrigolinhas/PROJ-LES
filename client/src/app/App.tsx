@@ -26,6 +26,7 @@ import ListArticlesPage from "@/features/articles/pages/ListArticlesPage.tsx";
 import ViewArticlePage from "@/features/articles/pages/ViewArticlePage.tsx";
 import EditArticlePage from "@/features/articles/pages/EditArticlePage.tsx";
 import ListEventParticipantsPage from "@/features/events/pages/ListEventParticipantsPage.tsx";
+import EventPaymentPage from "@/features/events/pages/EventPaymentPage.tsx";
 
 function App() {
     return (
@@ -45,6 +46,7 @@ function App() {
                     <Route path="/event/edit/:id" element={<EditEventPage />} />
                     <Route path="/event/:id" element={<ViewEventPage />} />
                     <Route path="/event/:id/participants" element={<ListEventParticipantsPage />} />
+                    <Route path="/event/:id/pay" element={<EventPaymentPage />} />
                     <Route path="/event/:id/benefits" element={<ListBenefitsPage />} />
                     <Route path="/article/create" element={<CreateArticlePage />} />
 

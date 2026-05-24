@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { getCookie } from "../../../shared/utils/getCookie";
 import { envHostBackend } from "@/shared/utils/env";
 import TopBar from "@/shared/components/TopBar";
+import BackButton from "@/shared/components/BackButton";
 import { mainDivStyle } from "@/shared/styles/formStyles";
 
 type EventParticipant = {
@@ -89,6 +90,7 @@ export default function ListEventParticipantsPage() {
     return (
         <>
         <TopBar />
+        <BackButton/>
         <div className={mainDivStyle + " m-auto max-w-[80%]! p-5 rounded-xl bg-white"}>
             <h2 className="mt-2">Participants</h2>
 

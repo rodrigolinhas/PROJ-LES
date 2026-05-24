@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getCookie } from "@/shared/utils/getCookie";
 import { envHostBackend } from "@/shared/utils/env";
+import TopBar from "@/shared/components/TopBar.tsx";
+import BackButton from "@/shared/components/BackButton.tsx";
 
 import UserSearchInput from "@/shared/components/UserSearchInput";
 
@@ -134,6 +136,9 @@ export default function ManageArticleAuthorsPage() {
     const currentAuthorIds = currentAuthors.map((a) => a.id);
 
     return (
+        <>
+        <TopBar />
+        <BackButton/>
         <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
             <h2>Manage Authors for Article</h2>
             <h3>{articleTitle}</h3>
@@ -204,5 +209,6 @@ export default function ManageArticleAuthorsPage() {
                 </Link>
             </div>
         </div>
+        </>
     );
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getCookie } from "@/shared/utils/getCookie.ts"
+import { envHostBackend } from '@/shared/utils/env';
 import {
     mainDivStyle,
     titleStyle,
@@ -42,7 +43,7 @@ export default function CreateActivityForm() {
         formData.append("place", place);
 
         try {
-            const response = await fetch(`http://localhost:8080/event/${eventId}/activity/create`, {
+            const response = await fetch(`http://${envHostBackend()}/event/${eventId}/activity/create`, {
                 method: "POST",
                 body: formData,
                 headers: {
@@ -80,7 +81,7 @@ export default function CreateActivityForm() {
             <div className={successOutDivStyle}>
                 <div className={successDivStyle}>
                     <h2 className={successMessageStyle}>Activity created with success!</h2>
-                    <Link to = {`/event/${eventId}/activity/list`} className={goHomeStyle}>Go back to this event's activities list</Link>
+                    <Link to = {`/event/${eventId}`} className={goHomeStyle}>Back to Event</Link>
                 </div>
             </div>
         );

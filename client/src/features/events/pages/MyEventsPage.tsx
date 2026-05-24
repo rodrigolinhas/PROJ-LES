@@ -5,6 +5,7 @@ import { useState } from "react";
 import TopBar from "@/shared/components/TopBar";
 import { mainDivStyle, submitButtonStyle } from "@/shared/styles/formStyles";
 import BackButton from "@/shared/components/BackButton.tsx";
+import { envHostBackend } from "@/shared/utils/env";
 
 enum Tabs {
     Published,
@@ -22,7 +23,7 @@ export default function MyEventsPage() {
     return (
         <>
         <TopBar />
-        <BackButton/>
+        <BackButton to="/home"/>
         <div>
             <h1 className="text-center text-4xl">Events</h1>
             <p className="text-center">Here you can filter published events and also see your own events.</p>
@@ -42,7 +43,7 @@ export default function MyEventsPage() {
                 {tab === Tabs.Published && (
                     <EventList
                         title="Published Events"
-                        endpoint="http://localhost:8080/event/list"
+                        endpoint={`http://${envHostBackend()}/event/list`}
                         emptyMessage="No published events found."
                     />
                 )}
@@ -50,7 +51,7 @@ export default function MyEventsPage() {
                 {tab === Tabs.My && (
                     <EventList
                         title="My Events"
-                        endpoint="http://localhost:8080/event/my"
+                        endpoint={`http://${envHostBackend()}/event/my`}
                         emptyMessage="You have no events yet."
                     />
                 )}

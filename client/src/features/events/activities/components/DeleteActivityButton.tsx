@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getCookie } from "@/shared/utils/getCookie.ts"
+import { envHostBackend } from "@/shared/utils/env";
 import {deleteButtonStyle} from "@/shared/styles/formStyles.ts";
 
 type Props = {
@@ -22,7 +23,7 @@ export default function DeleteActivityButton({ eventId, activityID, onDeleted }:
 
         try {
             const response = await fetch(
-                `http://localhost:8080/event/${eventId}/activity/delete/${activityID}`,
+                `http://${envHostBackend()}/event/${eventId}/activity/delete/${activityID}`,
                 {
                     method: "POST",
                     headers: {

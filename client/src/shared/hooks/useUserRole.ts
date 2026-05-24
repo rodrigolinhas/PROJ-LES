@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCookie } from "../utils/getCookie";
+import { envHostBackend } from "../utils/env";
 
 /**
  * Custom hook that fetches the authenticated user's role from the API.
@@ -18,7 +19,7 @@ export function useUserRole(): string | null {
         const fetchRole = async () => {
             const csrfToken = getCookie("csrf_token");
             try {
-                const res = await fetch("http://localhost:8080/user/me", {
+                const res = await fetch(`http://${envHostBackend()}/user/me`, {
                     credentials: "include",
                     headers: {
                         "X-CSRF-Token": csrfToken,
