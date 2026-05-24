@@ -161,7 +161,7 @@ Este comando inicia os serviços necessários para a aplicação, incluindo fron
 Depois de os containers iniciarem corretamente, a aplicação pode ser acedida através dos seguintes links:
 ```txt
 Frontend:      http://localhost:5173
-Backend:       http://localhost:8080/ping
+Backend:       http://localhost:8080
 Swagger Docs:  http://localhost:8080/docs/index.html
 ```
 
