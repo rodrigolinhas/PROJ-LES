@@ -6,6 +6,7 @@ import TopBar from "@/shared/components/TopBar.tsx";
 import BackButton from "@/shared/components/BackButton.tsx";
 
 import UserSearchInput from "@/shared/components/UserSearchInput";
+import { mainDivStyle } from "@/shared/styles/formStyles";
 
 export default function ManageArticleAuthorsPage() {
     const { eventId, activityId, articleId } = useParams<{
@@ -139,7 +140,7 @@ export default function ManageArticleAuthorsPage() {
         <>
         <TopBar />
         <BackButton/>
-        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
+        <div className={mainDivStyle}>
             <h2>Manage Authors for Article</h2>
             <h3>{articleTitle}</h3>
 
@@ -203,11 +204,13 @@ export default function ManageArticleAuthorsPage() {
                 </p>
             )}
 
+            {/*
             <div style={{ marginTop: "30px" }}>
                 <Link to={`/event/${eventId}/activity/${activityId}/article/view/${articleId}`}>
                     Back to Article
                 </Link>
             </div>
+            */}
         </div>
         </>
     );

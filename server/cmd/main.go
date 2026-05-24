@@ -103,6 +103,7 @@ func setEndpoints(router *gin.Engine) {
 	router.GET("/event/view/:id/benefits", api.EventBenefitsList)
 	router.GET("/event/view/:id/regtype/:regid", api.RegistrationTypeView)
 	router.GET("/event/view/:id/benefit_participants/:benefitName", api.EventBenefitParticipants)
+	router.GET("/event/:eventId/enrolled", api.EventEnrolled)
 
 	//event activities
 	router.POST("/event/:eventId/activity/create", api.EventActivityCreate)

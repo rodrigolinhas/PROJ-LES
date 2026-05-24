@@ -4,6 +4,7 @@ import { getCookie } from "@/shared/utils/getCookie";
 import { envHostBackend } from "@/shared/utils/env";
 import { mainDivStyle } from "@/shared/styles/formStyles";
 import TopBar from "@/shared/components/TopBar";
+import { useUserRole } from "@/shared/hooks/useUserRole";
 
 type Beneficiary = {
     ID: number
@@ -18,6 +19,7 @@ export default function ListBenefitsPage() {
     const [hovered, setHovered] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const userRole = useUserRole();
 
     useEffect(() => {
         async function fetchParticipants() {
@@ -110,7 +112,7 @@ export default function ListBenefitsPage() {
                 <ul className="my-3 mb-8 ml-5 list-disc">
                     {benefits.map((bene) => (
                         <li className="mb-0 h-8 content-center" onMouseEnter={() => setHovered(bene)} onMouseLeave={() => setHovered("")}>
-                                {bene} {bene === hovered && 
+                                {bene} {(bene === hovered && userRole === "EventOrganizer") && 
                                     <button onClick={() => handleBeneficiariesCSV(bene)} className="ml-3 w-58 border border-gray-300 shadow-sm hover:bg-gray-50 transition-colors gap-2 rounded-md bg-white px-2! py-1! text-gray-700">
                                         Export Beneficiaries as CSV
                                     </button>

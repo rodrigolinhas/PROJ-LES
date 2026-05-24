@@ -82,6 +82,7 @@ export default function RegTypesList({ eventId, organizer, published }: { eventI
     }
 
     const [regTypes, setRegTypes] = useState<RegType[]>([]);
+    const [enrolled, setEnrolled] = useState<RegType | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -91,6 +92,38 @@ export default function RegTypesList({ eventId, organizer, published }: { eventI
             .catch((err) => setError(err.message))
             .finally(() => setLoading(false));
     }, [eventId]);
+
+    useEffect(() => {
+        async function getEnrolled(eventId: string) {
+            const csrfToken = getCookie("csrf_token") || "";
+
+            const res = await fetch(`http://` + envHostBackend() + `/event/${eventId}/enrolled`, {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "X-CSRF-Token": csrfToken,
+                },
+            });
+
+            const text = await res.text();
+
+            if (res.status === 404) {
+                return null;
+            }
+
+            if (!res.ok) {
+                throw new Error(text);
+            }
+
+            try {
+                return JSON.parse(text);
+            } catch {
+                throw new Error("Invalid JSON response");
+            }
+        }
+
+        getEnrolled(eventId).then(setEnrolled)
+    }, [eventId])
 
     if (loading) return <p>Loading registration types...</p>;
     if (error) return <p>Error: {error}</p>;
@@ -125,7 +158,7 @@ export default function RegTypesList({ eventId, organizer, published }: { eventI
                                     Edit
                                 </Link>
                             }
-                            { (!organizer && published) &&
+                            { (!organizer && published && !enrolled) &&
                                 <button
                                     onClick={() => handleEnroll(rt.ID)}
                                     disabled={enrollingId === rt.ID}
@@ -133,6 +166,14 @@ export default function RegTypesList({ eventId, organizer, published }: { eventI
                                 >
                                     {enrollingId === rt.ID ? "Enrolling..." : "Enroll"}
                                 </button>
+                            }
+                            {
+                              (enrolled?.ID == rt.ID) &&
+                                <div
+                                    className="block m-auto mt-2 px-4 py-2.5 text-gray-900 rounded-md text-center font-medium"
+                                >
+                                    Enrolled
+                                </div>
                             }
                         </div>
                     </div>

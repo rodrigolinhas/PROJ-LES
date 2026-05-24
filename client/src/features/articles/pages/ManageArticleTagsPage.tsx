@@ -4,6 +4,7 @@ import { getCookie } from "../../../shared/utils/getCookie";
 import { envHostBackend } from "../../../shared/utils/env";
 import TopBar from "@/shared/components/TopBar.tsx";
 import BackButton from "@/shared/components/BackButton.tsx";
+import { backLinkStyle, mainDivStyle } from "@/shared/styles/formStyles";
 
 type AppTag = {
     id: number;
@@ -161,7 +162,7 @@ export default function ManageArticleTagsPage() {
         <>
         <TopBar />
         <BackButton/>
-        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
+        <div className={mainDivStyle + " bg-white"}>
             <h2>Manage Tags for Article</h2>
             <h3>{articleTitle}</h3>
 
@@ -223,11 +224,13 @@ export default function ManageArticleTagsPage() {
                 </p>
             )}
 
-            <div style={{ marginTop: "30px" }}>
+            {/*
+            <div className={backLinkStyle} style={{ marginTop: "30px" }}>
                 <Link to={`/event/${eventId}/activity/${activityId}/article/view/${articleId}`}>
                     Back to Article
                 </Link>
             </div>
+            */}
         </div>
         </>
     );
