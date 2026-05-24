@@ -39,6 +39,6 @@ export const smallLinksStyle = "text-sm font-medium text-gray-600 hover:text-gra
 export const errorMessageStyle = "mt-2 text-center text-sm font-medium text-red-600";
 
 // Back link stle:
-export const backDivStyle = "border-t border-gray-200 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4";
+//export const backDivStyle = "border-t border-gray-200 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4";
 
-export const backLinkStyle = "text-sm font-medium text-gray-700 bg-white border border-gray-300 px-4 py-2 rounded hover:bg-gray-50 transition-colors shadow-sm";
+//export const backLinkStyle = "text-sm font-medium text-gray-700 bg-white border border-gray-300 px-4 py-2 rounded hover:bg-gray-50 transition-colors shadow-sm";

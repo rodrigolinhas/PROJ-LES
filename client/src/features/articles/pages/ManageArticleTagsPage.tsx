@@ -4,7 +4,7 @@ import { getCookie } from "../../../shared/utils/getCookie";
 import { envHostBackend } from "../../../shared/utils/env";
 import TopBar from "@/shared/components/TopBar.tsx";
 import BackButton from "@/shared/components/BackButton.tsx";
-import { backLinkStyle, mainDivStyle } from "@/shared/styles/formStyles";
+import { mainDivStyle } from "@/shared/styles/formStyles";
 
 type AppTag = {
     id: number;

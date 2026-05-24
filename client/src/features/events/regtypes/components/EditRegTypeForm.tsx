@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { getCookie } from "@/shared/utils/getCookie";
 import { envHostBackend } from '@/shared/utils/env';
 import {
-    backDivStyle, backLinkStyle,
     buttonsDivStyle,
     descriptionStyle, errorMessageStyle,
     goHomeStyle, inputStyle, labelStyle,
@@ -207,12 +206,6 @@ export default function EditRegTypeForm(props: any) {
                             {message}
                         </p>
                     )}
-
-                    <div className={backDivStyle}>
-                        <Link to={`/event/edit/${eventID}`} className={backLinkStyle}>
-                            ↶ Back to Edit Event
-                        </Link>
-                    </div>
                 </form>
             </div>
         );

@@ -4,7 +4,6 @@ import { getCookie } from "@/shared/utils/getCookie.ts";
 import DeleteArticleButton from "../components/DeleteArticleButton";
 import {envHostBackend} from "@/shared/utils/env.ts";
 import {
-    backDivStyle, backLinkStyle,
     buttonsDivStyle,
     descriptionStyle, errorMessageStyle,
     goHomeStyle, inputStyle, labelStyle,
@@ -230,12 +229,6 @@ export default function EditArticleForm({ eventId, activityId, articleId }: Prop
                         {message}
                     </p>
                 )}
-
-                <div className={backDivStyle}>
-                    <Link to={`/event/${eventId}/activity/${activityId}/article/view/${articleId}`} className={backLinkStyle}>
-                        ↶ Back
-                    </Link>
-                </div>
             </form>
         </div>
     );

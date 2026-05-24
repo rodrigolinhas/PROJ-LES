@@ -6,7 +6,7 @@ import { envHostBackend } from '@/shared/utils/env.ts';
 import { getCookie } from "@/shared/utils/getCookie.ts";
 import {
     mainDivStyle, titleStyle, descriptionStyle, labelStyle, inputStyle, submitButtonStyle, errorMessageStyle,
-    otherButtonsDivStyle, backLinkStyle, buttonsDivStyle, backDivStyle, smallLinksStyle, successOutDivStyle,
+    otherButtonsDivStyle, buttonsDivStyle, smallLinksStyle, successOutDivStyle,
     successDivStyle, successMessageStyle, goHomeStyle
 } from '@/shared/styles/formStyles';
 
@@ -348,12 +348,6 @@ export default function EditEventForm(props: any) {
                                 ))
                             )}
                         </div>
-                    </div>
-
-                    <div className={backDivStyle}>
-                        <Link to={`/events`} className={backLinkStyle}>
-                            ↶ Back to Events
-                        </Link>
                     </div>
                 </form>
             </div>

@@ -4,8 +4,7 @@ import { Link } from "react-router-dom";
 import { getCookie } from "@/shared/utils/getCookie.ts"
 import { envHostBackend } from "@/shared/utils/env";
 import {
-    backDivStyle,
-    backLinkStyle, buttonsDivStyle,
+    buttonsDivStyle,
     descriptionStyle, errorMessageStyle,
     goHomeStyle, inputStyle, labelStyle,
     mainDivStyle, submitButtonStyle,
@@ -214,12 +213,6 @@ export default function EditActivityForm({ eventId, activityID }: Props) {
                         {message}
                     </p>
                 )}
-
-                <div className={backDivStyle}>
-                    <Link to={`/event/${eventId}/activity/view/${activityID}`}  className={backLinkStyle}>
-                        ↶ Back to Activity
-                    </Link>
-                </div>
             </form>
         </div>
     );
