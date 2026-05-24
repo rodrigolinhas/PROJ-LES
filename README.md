@@ -135,7 +135,7 @@ git clone https://github.com/rodrigolinhas/PROJ-LES.git
 
 Certifique-se que antes de prosseguir para os próximos passos, encontra-se na pasta do projeto. Para isso:
 ```bash
-cd nomeProjeto
+cd PROJ-LES
 ```
 
 ### Correr o projeto com Docker
