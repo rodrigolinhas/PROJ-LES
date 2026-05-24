@@ -778,6 +778,44 @@ paths:
       summary: Google SSO callback
       tags:
       - Auth
+  /event/:eventId/enrolled:
+    get:
+      consumes:
+      - text/plain
+      description: A user can view if they enrolled in a certain event
+      parameters:
+      - description: User's CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      - description: ID of the event
+        in: path
+        name: eventID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.RegistrationType'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "404":
+          description: Registration not found
+          schema:
+            type: string
+        "500":
+          description: Failed to load enrolled event
+          schema:
+            type: string
+      summary: View if user enrolled in a event
+      tags:
+      - Event
   /event/{eventId}/activity/create:
     post:
       consumes:

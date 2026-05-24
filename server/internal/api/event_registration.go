@@ -279,3 +279,62 @@ func EventRegistrationList(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, events)
 }
+
+// EventEnrolled
+// @Summary 	View if user enrolled in a event
+// @Description A user can view if they enrolled in a certain event
+// @Tags 		Event
+// @Accept		plain
+// @Produce 	json
+// @Param 		X-CSRF-Token	header		string	true	"User's CSRF Token"
+// @Param 		eventID			path		string	true	"ID of the event"
+// @Success 	200 {object} RegistrationType
+// @Failure		401 {string} string "Unauthorized"
+// @Failure		404 {string} string "Registration not found"
+// @Failure 	500 {string} string "Failed to load enrolled event"
+// @Router 		/event/:eventId/enrolled [get]
+func EventEnrolled(c *gin.Context) {
+	user, autherr := Authorize(c)
+	if autherr != nil {
+		c.String(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	eventID := c.Param("eventId")
+
+	var rt models.RegistrationType
+	sub := db.DB.Model(&models.EventRegistration{}).
+		Where("user_id = ?", user.ID).
+		Select("reg_type_id")
+	res := db.DB.Preload("Benefits").Table("registration_types").
+		Where("event_id = ? AND id IN (?)", eventID, sub).
+		Take(&rt)
+
+	if res.Error != nil {
+		c.String(http.StatusInternalServerError, "Failed to load enrolled event")
+		return
+	}
+	if res.RowsAffected == 0 {
+		c.String(http.StatusNotFound, "Registration not found")
+		return
+	}
+
+	var regtype RegistrationType
+	var benefits []BenefitInfo
+	for _, b := range rt.Benefits {
+		benefits = append(benefits, BenefitInfo{ID: b.ID, Name: b.Name})
+	}
+	if benefits == nil {
+		benefits = []BenefitInfo{}
+	}
+
+	regtype = RegistrationType{
+		ID:          rt.ID,
+		Name:        rt.Name,
+		Description: rt.Description,
+		Price:       rt.Price,
+		Benefits:    benefits,
+	}
+
+	c.IndentedJSON(http.StatusOK, regtype)
+}

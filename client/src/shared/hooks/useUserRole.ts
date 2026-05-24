@@ -5,7 +5,7 @@ import { envHostBackend } from "../utils/env";
 /**
  * Custom hook that fetches the authenticated user's role from the API.
  *
- * @returns The user's numeric role, or `null` while loading / on error.
+ * @returns The user's as a string, or `null` while loading / on error.
  *
  * Role values (as defined by the backend):
  * - Student

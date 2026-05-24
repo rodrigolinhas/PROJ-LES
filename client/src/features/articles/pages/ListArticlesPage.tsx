@@ -10,6 +10,7 @@ import {
     Tag,
     Plus,
 } from "lucide-react";
+import { useUserID } from "@/shared/hooks/useUserID";
 
 type Article = {
     id: number;
@@ -21,11 +22,55 @@ type Article = {
     tags: string[];
 };
 
+type EventDetails = {
+    ID: number;
+    Name: string;
+    Theme: string;
+    Description: string;
+    Organization: string;
+    Location: string;
+    StartDate: string;
+    EndDate: string;
+    OrganizerID: number;
+    Published: boolean;
+};
+
 export default function ListArticlesPage() {
     const { eventId, activityId } = useParams();
     const [articles, setArticles] = useState<Article[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    const [event, setEvent] = useState<EventDetails | null>(null);
+    const userID = useUserID();
+    
+    useEffect(() => {
+        async function fetchEvent() {
+            const csrfToken = getCookie("csrf_token");
+
+            try {
+                const response = await fetch(
+                    `http://${envHostBackend()}/event/view/${eventId}`,
+                    {
+                        credentials: "include",
+                        headers: {
+                            "X-CSRF-Token": csrfToken,
+                        },
+                    }
+                );
+
+                if (response.status === 200) {
+                    const data = await response.json();
+                    setEvent(data);
+                } else {
+                    setError("Event not found");
+                }
+            } catch {
+            }
+        }
+
+        fetchEvent();
+    }, [activityId]);
 
     useEffect(() => {
         async function fetchArticles() {
@@ -106,6 +151,7 @@ export default function ListArticlesPage() {
                     <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
                         {articles.length} {articles.length === 1 ? "article" : "articles"}
                     </span>
+            {event!.OrganizerID == userID &&
                     <Link
                         to="/article/create"
                         className="inline-flex items-center gap-1.5 bg-gray-900 hover:bg-gray-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow transition-all duration-200"
@@ -113,6 +159,7 @@ export default function ListArticlesPage() {
                         <Plus size={16} strokeWidth={2} />
                         Create Article
                     </Link>
+            }
                 </div>
             </div>
 
