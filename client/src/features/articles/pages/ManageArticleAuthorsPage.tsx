@@ -139,7 +139,7 @@ export default function ManageArticleAuthorsPage() {
     return (
         <>
         <TopBar />
-        <BackButton/>
+        <BackButton to={`/event/${eventId}/activity/${activityId}/article/view/${articleId}`}/>
         <div className={mainDivStyle}>
             <h2>Manage Authors for Article</h2>
             <h3>{articleTitle}</h3>

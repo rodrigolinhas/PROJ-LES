@@ -100,7 +100,7 @@ export default function ViewActivityPage() {
     return (
         <>
         <TopBar />
-        <BackButton />
+        <BackButton to={`/event/${eventId}`}/>
         <div className="max-w-3xl mx-auto px-4 py-10">
             {/* ── Header card ── */}
             <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
