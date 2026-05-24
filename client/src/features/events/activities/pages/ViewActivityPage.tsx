@@ -10,6 +10,7 @@ import {
     Pencil,
     FileText,
 } from "lucide-react";
+import BackButton from "@/shared/components/BackButton.tsx";
 
 type Activity = {
     ID: number;
@@ -99,16 +100,8 @@ export default function ViewActivityPage() {
     return (
         <>
         <TopBar />
+        <BackButton />
         <div className="max-w-3xl mx-auto px-4 py-10">
-            {/* ── Back link ── */}
-            <Link
-                to={`/event/${eventId}/`}
-                className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors mb-6"
-            >
-                <ArrowLeft size={15} />
-                Back to event
-            </Link>
-
             {/* ── Header card ── */}
             <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
                 {/* Title section */}
