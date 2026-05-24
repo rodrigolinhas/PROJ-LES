@@ -123,7 +123,7 @@ export default function ListBenefitsPage() {
                 </ul>
             )}
 
-            <Link className="mr-3 mt-5 w-30 text-center items-center gap-2 rounded-md bg-gray-900 hover:bg-gray-700 transition-colors px-5 py-3 text-white" to={`/event/${id}`}>Back to Event</Link>
+            {/* <Link className="mr-3 mt-5 w-30 text-center items-center gap-2 rounded-md bg-gray-900 hover:bg-gray-700 transition-colors px-5 py-3 text-white" to={`/event/${id}`}>Back to Event</Link> */}
         </div>
         </>
     );
