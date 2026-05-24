@@ -123,7 +123,7 @@ cd ..
 ```
 
 Este comando gera os ficheiros necessários para a documentação Swagger da API.
-> **Nota:** este passo deve ser repetido sempre que forem feitas alterações aos endpoints ou aos comentários usados para gerar a documentação.
+> **Nota:** Este passo deve ser repetido sempre que forem feitas alterações aos endpoints ou aos comentários usados para gerar a documentação.
 
 ---
 
@@ -143,7 +143,7 @@ cd PROJ-LES
 #### 1. Criar o ficheiro `.env`
 Criar o .env com as credenciais do Google OAuth.
 
-> **Nota:** sem as credenciais do Google OAuth corretamente configuradas, o login com Google não irá funcionar.
+> **Nota:** Caso estas não fiquem corretamente configuradas, o login com Google não irá funcionar.
 
 #### 2. Gerar a documentação Swagger
 Antes de correr o projeto, deve-se garantir que a documentação Swagger da API está gerada e atualizada.
@@ -172,7 +172,7 @@ Para parar todos os serviços, deve executar o seguinte comando:
 docker compose down
 ```
 
-> **Nota:** ao executar o comando acima, os serviços simplesmente são parados, mantendo os dados da base de dados. Para parar os serviços e remover também os dados guardados na base de dados, deve usar o comando `docker compose down -v`.
+> **Nota:** Ao executar o comando acima, os serviços simplesmente são parados, mantendo os dados da base de dados. Para parar os serviços e remover também os dados guardados na base de dados, deve usar o comando `docker compose down -v`.
 
 ---
 
@@ -233,7 +233,7 @@ No frontend, a pasta `features` agrupa as funcionalidades principais da aplicaç
 ## Dados de Teste / Seeder
 O projeto inclui um seeder com dados de avaliação, criado para facilitar o teste da aplicação por parte dos docentes.
 
-O seeder popula automaticamente a base de dados com exemplos das principais entidades do sistema, permitindo testar as funcionalidades principais sem ser necessário criar todos os dados manualmente.
+O seeder povoa automaticamente a base de dados com exemplos das principais entidades do sistema, permitindo testar as funcionalidades principais sem ser necessário criar todos os dados manualmente.
 
 ### Dados criados
 O seeder cria, entre outros, os seguintes dados:
