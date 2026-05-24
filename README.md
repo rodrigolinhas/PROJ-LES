@@ -10,16 +10,16 @@ Este projeto foi desenvolvido no âmbito da unidade curricular de **Laboratório
 
 O tema do projeto é **Sistema de Gestão Local de Eventos Científicos**, que se centra no desenvolvimento de uma aplicação para a gestão de eventos, atividades e conteúdos científicos associados, como artigos, tipos de registos nos eventos e benefícios. A aplicação permite aos utilizadores consultar informação, criar e gerir eventos, associar atividades a esses eventos e interagir com diferentes funcionalidades através de uma aplicação web.
 
-O sistema foi desenvolvido com uma separação entre frontend e backend. O frontend é responsável pela interação com o utilizador, enquanto o backend disponibiliza uma API responsável por toda a lógica de negócio por trâs: validação dos pedidos, segurança e comunicação com a base de dados.
+O sistema foi desenvolvido com uma separação entre frontend e backend.
 
 Ao longo do desenvolvimento foram aplicadas práticas como organização modular do código, utilização de componentes reutilizáveis, CI/CD, documentação da API, controlo de versões e uso de Docker para facilitar a execução do projeto em diferentes ambientes.
 
 ---
 
 ## Escolhas de Design
-A aplicação foi dividida em duas partes principais: **frontend** e **backend**.
+O sistema foi dividido em duas partes principais: **frontend** e **backend**.
 
-O frontend é responsável pela interface com o utilizador, incluindo a navegação entre páginas, o preenchimento de formulários e a interação com os dados da aplicação. O backend disponibiliza a API responsável pela lógica, validação dos pedidos, autenticação/autorização e comunicação direta com a base de dados.
+O frontend é responsável pela interação com o utilizador, enquanto o backend disponibiliza uma API responsável por toda a lógica de negócio por trás, validação dos pedidos, segurança e comunicação com a base de dados.
 
 A comunicação entre o frontend e o backend é feita através de uma **API REST**. Esta abordagem permite que o frontend realize operações CRUD, como consultar, criar, editar e eliminar recursos através de pedidos HTTP.
 
