@@ -84,6 +84,7 @@ Por fim, para integração contínua e entrega contínua, usámos o **GitHub Act
 ## Diagrama de Componentes
 
 Para validar a stack tecnológica e representar a organização geral do sistema, foi elaborado um diagrama de componentes, tal como aprendemos em AMS.
+
 <img width="1044" height="567" alt="LES" src="https://github.com/user-attachments/assets/76ce8be1-b7d7-4cf3-9361-2db98d2392ad" />
 ---
 
